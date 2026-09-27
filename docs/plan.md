@@ -85,15 +85,15 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 
 ## Stage 0. Setup
 
-**0.1 Choose the stack.** (S)
+**0.1 Choose the stack.** (S) ✅ Done 2026-09-27
 - Recommended, based on the research: **Python + FastAPI** backend (the existing prototype and all ML tools are Python); a **TypeScript PWA** frontend (React + Vite, or SvelteKit if you prefer); **Postgres**; hosting on **Cloud Run in Mumbai (asia-south1)** or one small VM; LLM on **Groq or Fireworks** with zero data retention, using a GPT-OSS or Qwen model.
 - Done when: the choices are written in a short "Stack" section at the top of the repo README.
 
-**0.2 Set up the repo.** (S)
+**0.2 Set up the repo.** (S) ✅ Done 2026-09-27
 - One repo, folders for `backend/`, `frontend/`, `docs/`, `tools/`. Git, a `.gitignore` that keeps `.env` out, a basic README.
 - Done when: the repo builds an empty backend and frontend locally.
 
-**0.3 Fix or drop `fetch_videos.py`.** (S)
+**0.3 Fix or drop `fetch_videos.py`.** (S) ✅ Done 2026-09-27: dropped; kept in git history (commit 19d4385)
 - It keeps YouTube data with no deletion limit and its `--check-shorts` uses an undocumented URL. Either delete it, or move it to `tools/` with the Shorts check removed and an automatic delete of its output after 30 days.
 - Done when: nothing in the repo stores YouTube data without a date and a purge.
 

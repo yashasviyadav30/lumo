@@ -97,7 +97,7 @@ Chosen after the feasibility round found that YouTube's compliance guide bans ap
 | Whether IS 17802 accessibility rules bind a small private app (the draft RPwD Amendment Rules 2026 would make it mandatory for apps; still a draft) | **Lawyer** |
 | Privacy policy, 7-day deletion (YouTube) and DPDP notices | **Lawyer** |
 | Pirated re-uploads of paid courses appearing in feeds | **Lawyer** + filter |
-| Earlier drafts: `fetch_videos.py` stores YouTube data with no deletion limit, and its `--check-shorts` uses a non-API URL | Fix or drop before use |
+| ~~Earlier drafts: `fetch_videos.py` stores YouTube data with no deletion limit, and its `--check-shorts` uses a non-API URL~~ | Dropped 2026-09-27 (plan step 0.3); recoverable from git history |
 
 ## Accessibility mode
 
