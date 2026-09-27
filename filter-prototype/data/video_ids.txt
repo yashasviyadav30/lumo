@@ -1,0 +1,3 @@
+# One video ID or URL per line. Lines starting with # are ignored.
+# Mix learning and entertainment, and Hindi, English and Hinglish titles.
+# Add the tricky cases too: law lectures, music theory, movie reviews, "study with me" streams.
