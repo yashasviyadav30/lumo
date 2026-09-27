@@ -12,6 +12,14 @@ Written 2026-09-27, revised the same day (two tests, timeline, stop rule, curato
 
 Set 2026-09-27. In Google Cloud, **never turn on billing, create anything that costs money, delete any project, or change permissions without asking first and stating the expected cost.** Free actions (creating a project, enabling the YouTube API, creating an API key) are fine without asking.
 
+## Portability rule
+
+Set 2026-09-27. Until launch the app runs on Render (backend), Cloudflare Pages (frontend) and Supabase (database), all free. Moving to Cloud Run and Cloud SQL at launch (step 13.0) must be easy, so:
+- The backend runs in **Docker**, the same image everywhere.
+- **All settings come from environment variables** (keys, database URL, allowed origins). Nothing host-specific in the code.
+- **Use Supabase only as plain Postgres**, through a standard connection string. No Supabase Auth, Storage, Edge Functions or client libraries.
+- **No Render- or Cloudflare-only features** (no Cloudflare Workers code, no Render-only config the app depends on). The frontend is a plain static build.
+
 ## How to use this plan
 
 - The plan has three parts: **Part A** builds the smallest app that real users can try and ends with **Test 1**. **Part B** adds the rest of the product and ends with **Test 2**. **Part C** takes it to public launch.
@@ -90,7 +98,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 ## Stage 0. Setup
 
 **0.1 Choose the stack.** (S) ✅ Done 2026-09-27
-- Recommended, based on the research: **Python + FastAPI** backend (the existing prototype and all ML tools are Python); a **TypeScript PWA** frontend (React + Vite, or SvelteKit if you prefer); **Postgres**; hosting on **Cloud Run in Mumbai (asia-south1)** or one small VM; LLM on **Groq or Fireworks** with zero data retention, using a GPT-OSS or Qwen model.
+- Recommended, based on the research: **Python + FastAPI** backend (the existing prototype and all ML tools are Python); a **TypeScript PWA** frontend (React + Vite, or SvelteKit if you prefer); **Postgres**; hosting on **Cloud Run in Mumbai (asia-south1)** or one small VM (updated 2026-09-27: free no-card hosting until step 13.0; Cloud Run decided there); LLM on **Groq or Fireworks** with zero data retention, using a GPT-OSS or Qwen model.
 - Done when: the choices are written in a short "Stack" section at the top of the repo README.
 
 **0.2 Set up the repo.** (S) ✅ Done 2026-09-27
@@ -110,7 +118,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - Done when: a test call works and a screenshot of the ZDR setting is saved in `docs/`.
 
 **0.6 Hosting and database.** (S)
-- One Postgres (Cloud SQL micro, or Supabase Mumbai for early testing, noting it pauses after a week idle) and one deploy target.
+- Updated 2026-09-27: **no billing and no card for now.** Chosen: **Supabase Free in Mumbai** (Postgres only; pauses after a week idle), **Render Free in Singapore** for the backend (sleeps after 15 min idle, about 1 min to wake; no keep-awake ping), **Cloudflare Pages** for the frontend. Cloud Run moves to step 13.0. Follow the portability rule.
 - Done when: a "hello" endpoint is live on a public URL with HTTPS.
 
 **0.7 Confirm the testers.** (S)
@@ -515,6 +523,10 @@ Needs tracks P2 (partners) and P3 (lawyer's licence template). Runs alongside ot
 ## Stage 13. Launch readiness
 
 Can start alongside Stage 11 because most of it is waiting on others.
+
+**13.0 Billing decision and move to Cloud Run.** (M)
+- Decide whether to turn on Google Cloud billing (Google Cloud rule: ask first, with the expected cost). If yes, move the backend to **Cloud Run in Mumbai (asia-south1)** with a budget alert, and decide whether the database moves to Cloud SQL.
+- Done when: the decision is recorded, and if billing is on, the backend runs on Cloud Run.
 
 **13.1 Privacy policy, terms and DPDP notices.** (M, needs the lawyer)
 - Must cover YouTube's required links (YouTube Terms, Google Privacy Policy, Google's security settings page) and 7-day deletion.

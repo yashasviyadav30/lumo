@@ -13,7 +13,8 @@ Confirmed 2026-09-27 (plan step 0.1).
 | Backend | **Python + FastAPI** | The research tools and any later ML work are in Python |
 | Frontend | **TypeScript, React + Vite**, built as a PWA | One web app for Android, iPhone and laptops; installable |
 | Database | **Postgres** | One database for user data and the short-lived YouTube cache |
-| Hosting | **Google Cloud Run, Mumbai (`asia-south1`)** | Pay per use, free tier covers the early stage, data stays in India |
+| Hosting until launch | **Render Free, Singapore** (backend, in Docker), **Cloudflare Pages** (frontend), **Supabase Free, Mumbai** (Postgres only) | No card or billing needed; everything stays portable (see the portability rule in the plan) |
+| Hosting at launch | **Google Cloud Run, Mumbai (`asia-south1`)**, maybe Cloud SQL | Decided at plan step 13.0, when billing is decided |
 | LLM | **Groq or Fireworks, zero data retention on**, GPT-OSS or Qwen model | Fast, no data kept, and the same open model can be self-hosted later |
 
 ## Layout
