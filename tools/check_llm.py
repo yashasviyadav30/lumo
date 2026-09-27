@@ -27,6 +27,8 @@ def read_key() -> str:
 
 
 def main() -> None:
+    # The Windows console can't print some characters the model uses (e.g. non-breaking hyphens).
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     key = read_key()
     start = time.perf_counter()
     response = httpx.post(

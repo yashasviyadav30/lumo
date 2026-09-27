@@ -105,7 +105,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - Create the project, enable YouTube Data API v3, create a key restricted to your backend (never in the frontend).
 - Done when: one `search.list` and one `videos.list` call succeed from the backend, and the quota page shows them.
 
-**0.5 LLM account with zero retention.** (S)
+**0.5 LLM account with zero retention.** (S) ✅ Done 2026-09-27: Groq, Global ZDR on (docs/groq-zdr.png); openai/gpt-oss-20b answered in 0.56 s
 - Groq (turn on Zero Data Retention in Data Controls) or Fireworks (zero retention by default). Pick one GPT-OSS or Qwen model to start; the full comparison comes after Test 1 (step 4.3).
 - Done when: a test call works and a screenshot of the ZDR setting is saved in `docs/`.
 
