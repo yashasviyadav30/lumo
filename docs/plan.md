@@ -8,6 +8,10 @@ Written 2026-09-27, revised the same day (two tests, timeline, stop rule, curato
 
 **After every stage, stop and wait for your confirmation before starting the next one.** At the end of a stage: tick its steps, run the compliance checklist (step 0.8), write a short note of what was done and what changed, then wait.
 
+## Google Cloud rule
+
+Set 2026-09-27. In Google Cloud, **never turn on billing, create anything that costs money, delete any project, or change permissions without asking first and stating the expected cost.** Free actions (creating a project, enabling the YouTube API, creating an API key) are fine without asking.
+
 ## How to use this plan
 
 - The plan has three parts: **Part A** builds the smallest app that real users can try and ends with **Test 1**. **Part B** adds the rest of the product and ends with **Test 2**. **Part C** takes it to public launch.
@@ -97,7 +101,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - It keeps YouTube data with no deletion limit and its `--check-shorts` uses an undocumented URL. Either delete it, or move it to `tools/` with the Shorts check removed and an automatic delete of its output after 30 days.
 - Done when: nothing in the repo stores YouTube data without a date and a purge.
 
-**0.4 Google Cloud project and YouTube API key.** (S)
+**0.4 Google Cloud project and YouTube API key.** (S) ✅ Done 2026-09-27: project `focus-learn-8936` (billing off), YouTube Data API v3 on, key `backend-youtube` limited to that API, check passed
 - Create the project, enable YouTube Data API v3, create a key restricted to your backend (never in the frontend).
 - Done when: one `search.list` and one `videos.list` call succeed from the backend, and the quota page shows them.
 
