@@ -1,13 +1,17 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { APP_NAME } from '../config'
-import { renderAt } from './render'
+import { renderAt, signInForTest } from './render'
 
 describe('app shell (1.1)', () => {
-  it('shows our own name and the four tabs', () => {
+  beforeEach(() => {
+    signInForTest()
+  })
+
+  it('shows our own name and the four tabs', async () => {
     renderAt('/')
-    expect(screen.getByText(APP_NAME)).toBeInTheDocument()
+    expect(await screen.findByText(APP_NAME)).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Main' })
     for (const label of ['Home', 'Search', 'Library', 'Settings']) {
       expect(nav).toHaveTextContent(label)
@@ -16,23 +20,23 @@ describe('app shell (1.1)', () => {
 
   it('switches pages when a tab is tapped', async () => {
     const { router } = renderAt('/')
-    await userEvent.click(screen.getByRole('link', { name: 'Library' }))
+    await userEvent.click(await screen.findByRole('link', { name: 'Library' }))
     expect(router.state.location.pathname).toBe('/library')
     expect(screen.getByRole('heading', { name: 'Library' })).toBeInTheDocument()
   })
 
-  it('marks the current tab as active', () => {
+  it('marks the current tab as active', async () => {
     renderAt('/settings')
-    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page')
+    expect(await screen.findByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page')
   })
 
-  it('says it is not made by YouTube (R9)', () => {
+  it('says it is not made by YouTube (R9)', async () => {
     renderAt('/settings')
-    expect(screen.getByText(/not made by YouTube or Google/)).toBeInTheDocument()
+    expect(await screen.findByText(/not made by YouTube or Google/)).toBeInTheDocument()
   })
 
-  it('shows a not-found page for unknown paths', () => {
+  it('shows a not-found page for unknown paths', async () => {
     renderAt('/nope')
-    expect(screen.getByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
   })
 })

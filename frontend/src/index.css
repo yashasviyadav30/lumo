@@ -207,3 +207,77 @@ label {
   color: var(--muted);
   font-size: 0.9rem;
 }
+
+.narrow {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.content.public {
+  padding-bottom: 32px;
+}
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+.welcome {
+  text-align: center;
+  padding-top: 24px;
+}
+.lead {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.help {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 400;
+  min-height: var(--tap);
+}
+.check input {
+  width: 22px;
+  min-height: 22px;
+}
+form button[type='submit'] {
+  margin-top: 16px;
+  width: 100%;
+}
+.notice {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 16px;
+  margin: 12px 0;
+}
+.notice h2 {
+  font-size: 1.05rem;
+}
+button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.confirm {
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+h2 {
+  font-size: 1.15rem;
+  margin-top: 1.5em;
+}

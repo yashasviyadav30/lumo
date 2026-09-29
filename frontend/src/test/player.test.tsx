@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { VIDEO_ID, playerErrorMessage, playerVars } from '../lib/youtube'
-import { renderAt } from './render'
+import { renderAt, signInForTest } from './render'
 
 afterEach(() => {
   delete window.YT
@@ -9,15 +9,19 @@ afterEach(() => {
 })
 
 describe('watch page (1.2)', () => {
+  beforeEach(() => {
+    signInForTest()
+  })
+
   it('accepts real video IDs and rejects others', () => {
     expect(VIDEO_ID.test('dQw4w9WgXcQ')).toBe(true)
     expect(VIDEO_ID.test('short')).toBe(false)
     expect(VIDEO_ID.test('dQw4w9WgXcQ<script>')).toBe(false)
   })
 
-  it('shows a friendly message for a bad video link', () => {
+  it('shows a friendly message for a bad video link', async () => {
     renderAt('/watch/bad-id')
-    expect(screen.getByRole('heading', { name: 'Video not found' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Video not found' })).toBeInTheDocument()
   })
 
   it('creates the official player with standard controls and no autoplay (R7)', async () => {
@@ -37,7 +41,7 @@ describe('watch page (1.2)', () => {
     expect(opts.videoId).toBe('dQw4w9WgXcQ')
     expect(opts.host).toBe('https://www.youtube-nocookie.com')
     expect(opts.playerVars).toMatchObject({ autoplay: 0, controls: 1, playsinline: 1 })
-    expect(screen.getByRole('link', { name: 'Watch on YouTube' })).toHaveAttribute(
+    expect(await screen.findByRole('link', { name: 'Watch on YouTube' })).toHaveAttribute(
       'href',
       'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     )
