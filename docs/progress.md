@@ -8,26 +8,22 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 
 | Step | Status | Note |
 |---|---|---|
-| 0.9 Curated sources (research) | 🔄 running | 4 parallel research agents (CS, CMA, NEET, AI) → `backend/app/data/fields/*.json`, `docs/curation/*.md` |
-| 1.1 App shell | ✅ | Tabs, own name/logo, PWA with offline shell (commit 8074ad5) |
-| 1.2 Watch page | ✅ | Official IFrame player, privacy-enhanced mode, no autoplay; 10 frontend tests pass |
-| 1.3 iPhone Error 153 | 🟡 fix built, needs a device | Referrer meta + origin set; test on a real iPhone |
-| 1.4 Player links | 🟡 needs devices | Tap logo/end screen on Android + iPhone and note where they go |
-| 1.5 First deploy | ⛔ blocked | Needs Cloudflare login |
-| 2.1–2.7 Accounts and data rules | ✅ | Backend + screens (sign-up with 18+ check, not-yet page, notice, privacy draft, delete my data); checked end-to-end against Supabase |
-| 3.1–3.7 Light layer search | 🔄 backend ✅, search screen next | 35 backend tests; measured: cold ≈1.3 s, cached ≈60 ms (see below) |
-| 4.1–4.8 (4A) Smart agent core | ⏳ | |
+| 0.9 Curated sources (research) | ✅ draft | CS 66 topics / 15 sources, CMA 125 / 15, NEET 53 / 21, AI 29 / 30. Each needs a quick human check (`docs/curation/*.md`) |
+| 1.1 App shell | ✅ | Own name/logo, tabs, PWA with offline shell |
+| 1.2 Watch page | ✅ | Official player, privacy-enhanced mode, no autoplay; checked in real Edge |
+| 1.3 iPhone Error 153 | 🟡 | Fix built in; needs a real iPhone |
+| 1.4 Player links | 🟡 | Needs Android and iPhone |
+| 1.5 First deploy | ⛔ | Frontend needs the Cloudflare login; backend is live on Render |
+| 2.1–2.7 Accounts and data rules | ✅ | Sign-up with 18+ check, notice, privacy draft, delete my data, purge, clean logs |
+| 3.1–3.7 Light layer search | ✅ | Hidden line, cache, quota guard; cold ≈1.3 s, cached ≈60 ms |
+| 4.1, 4.2, 4.4, 4.5, 4.7a, 4.8 (4A) | ✅ | Goal parser 98% (hybrid) on 66 goals; Did-you-mean; topic chips; query builder on topic for 20/20 |
+| 5.6 Follow your own teachers | 🟡 backend | Added to the plan; backend and the search button built; feed use comes in 5.2 |
+
+Tests: backend 52 (pytest), frontend 27 (vitest), plus an end-to-end run in real Edge (`npm run e2e`).
 
 ## Next
 
-1. Stage 2 frontend: sign-up/in, first-run notice, 18+ refusal screen, Settings → Delete my data, draft privacy page.
-2. (Done) Stage 2 backend, as designed:
-   - `app/config.py` (pydantic-settings), `app/db.py` (SQLAlchemy; SQLite in tests), Alembic migrations run against Supabase.
-   - Our data: users (no DOB stored, only `adult_confirmed_at`), sessions (opaque tokens, stored hashed), consents, goals, mutes, follows (user's own teachers), settings, app_log, quota_usage. YouTube data: yt_videos, yt_search_cache, each with `fetched_at`.
-   - Purge >30 days at startup + every 6 h; app_log kept 1 year.
-   - Logging: uvicorn access log off; middleware logs route template, status, time, HMAC user pseudonym, truncated IP. Video IDs only in POST bodies.
-   - Delete-my-data endpoint deletes at once.
-3. Stages 3 and 4A as in plan.md.
+Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (curated mapping and feed).
 
 ## Measurements (step 3.7)
 
@@ -56,6 +52,13 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 - Entertainment by YouTube's type: its entertainment categories (incl. non-assignable ones like Movies, Trailers, Shows) + entertainment topics, but topics are ignored when YouTube itself says Education/Science/How-to. Documentary is never hidden. Curated and followed channels are exempt.
 - App name: working name "FocusLearn" in `frontend/src/config.ts` until the user picks a real one.
 
+- Goal parser: rules (96%, ~3 ms) vs LLM-only vs hybrid (98%, LLM on 1 of 66 goals). LLM-only is refused by Groq's free tier (HTTP 429) because our catalogue prompt is ~5,500 tokens; hybrid falls back to rules when that happens. Picked hybrid.
+- Query builder: CS/CMA papers use the stage + full paper name (codes like CMSL/CRVI are rarely in video titles); units use the search term closest to what the user typed; up to 2 user words kept ("one shot", "botany"). All 20 real test searches were on topic by eye.
+- Thumbnails: the duration badge moved off the thumbnail, so YouTube's image is shown untouched (guide: thumbnails must not be altered).
+
 ## Tools added
 
 - `tools/resolve_channel.py`: handle → channel ID (1 quota unit each), for the curator sheet. Doesn't score channels.
+- `tools/measure_search.py`: real search timings, cold and cached (step 3.7).
+- `tools/eval_goals.py`: scores goal parsers on the 66-goal test set.
+- `frontend/e2e/smoke.mjs` (`npm run e2e`): end-to-end run in real Edge.
