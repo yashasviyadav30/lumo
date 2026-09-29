@@ -9,26 +9,41 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 | Step | Status | Note |
 |---|---|---|
 | 0.9 Curated sources (research) | 🔄 running | 4 parallel research agents (CS, CMA, NEET, AI) → `backend/app/data/fields/*.json`, `docs/curation/*.md` |
-| 1.1 App shell | ⏳ | |
-| 1.2 Watch page | ⏳ | |
-| 1.3 iPhone Error 153 | ⏳ | |
-| 1.4 Player links | ⏳ | |
-| 1.5 First deploy | ⏳ | |
-| 2.1–2.7 Accounts and data rules | ⏳ | |
+| 1.1 App shell | ✅ | Tabs, own name/logo, PWA with offline shell (commit 8074ad5) |
+| 1.2 Watch page | ✅ | Official IFrame player, privacy-enhanced mode, no autoplay; 10 frontend tests pass |
+| 1.3 iPhone Error 153 | 🟡 fix built, needs a device | Referrer meta + origin set; test on a real iPhone |
+| 1.4 Player links | 🟡 needs devices | Tap logo/end screen on Android + iPhone and note where they go |
+| 1.5 First deploy | ⛔ blocked | Needs Cloudflare login |
+| 2.1–2.7 Accounts and data rules | 🔄 started | Backend libraries added (SQLAlchemy, Alembic, psycopg, argon2, httpx); no code yet |
 | 3.1–3.7 Light layer search | ⏳ | |
 | 4.1–4.8 (4A) Smart agent core | ⏳ | |
 
 ## Next
 
-Build Stage 1 (frontend shell).
+1. Commit the four field research outputs when the agents finish (`backend/app/data/fields/*.json`, `docs/curation/*.md`); validate the JSON.
+2. Stage 2 backend, design already chosen:
+   - `app/config.py` (pydantic-settings), `app/db.py` (SQLAlchemy; SQLite in tests), Alembic migrations run against Supabase.
+   - Our data: users (no DOB stored, only `adult_confirmed_at`), sessions (opaque tokens, stored hashed), consents, goals, mutes, follows (user's own teachers), settings, app_log, quota_usage. YouTube data: yt_videos, yt_search_cache, each with `fetched_at`.
+   - Purge >30 days at startup + every 6 h; app_log kept 1 year.
+   - Logging: uvicorn access log off; middleware logs route template, status, time, HMAC user pseudonym, truncated IP. Video IDs only in POST bodies.
+   - Delete-my-data endpoint deletes at once.
+3. Stages 3 and 4A as in plan.md.
 
 ## Blocked on the user
+
+- **App name** (R9): "FocusLearn" is a placeholder.
+- **Render environment variables:** the deployed backend will need DATABASE_URL, SECRET_KEY, YOUTUBE_API_KEY and GROQ_API_KEY set in the Render dashboard (or a Render API key for Claude to do it).
+- **Device checks (1.3, 1.4):** iPhone playback from the installed PWA; where player links go on Android and iPhone.
 
 - **Cloudflare login (step 1.5):** `wrangler whoami` says not authenticated. Needs `npx wrangler login` in a browser.
 
 ## Decisions and comparisons
 
-(One line each: what was compared, what was picked, why.)
+- Player host: privacy-enhanced `youtube-nocookie.com` over `youtube.com`: same player and controls, fewer cookies on users.
+- PWA: `vite-plugin-pwa` over a hand-written service worker: it keeps the offline file list right on every build.
+- Sign-in (planned): email + password (argon2) now; magic link needs an email provider account, Google sign-in needs an OAuth client (both need the user).
+- Sessions (planned): opaque bearer tokens stored hashed, over JWT (can be revoked on account deletion) and over cookies (frontend and backend are on different sites; Safari blocks third-party cookies).
+- App name: working name "FocusLearn" in `frontend/src/config.ts` until the user picks a real one.
 
 ## Tools added
 
