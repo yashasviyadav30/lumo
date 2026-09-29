@@ -306,6 +306,20 @@ Required before any real user, so it's all in Part A.
 - The first-run screen and About page say "we try to hide harmful content" (R13).
 - Done when: no screen uses the word "safe" about videos.
 
+**6.7 Rotate all secrets before Test 1.** (S) (added 2026-09-29)
+- Why: an old screenshot showed the secrets, so treat every current one as leaked. Rotate each one, and only then let testers in.
+- The four secrets live in two places: `backend/.env` (local) and Render's environment variables (imported from `.env` on 2026-09-29). Update **both** every time.
+
+| Secret | Where to rotate | Then |
+|---|---|---|
+| `YOUTUBE_API_KEY` | Google Cloud project `focus-learn-8936` → Credentials: create a new key restricted to YouTube Data API v3 | Update both places, run `tools/check_youtube_api.py`, then delete the old key (ask first; free) |
+| `GROQ_API_KEY` | Groq console → API Keys: create a new key | Update both places, run `tools/check_llm.py`, then revoke the old key. Confirm Zero Data Retention is still on |
+| Supabase database password (inside `DATABASE_URL`) | Supabase → project `focus-app` → Database settings → reset password | Claude generates the new password and writes the new `DATABASE_URL` into `.env` without showing it; update Render; check the connection |
+| `SECRET_KEY` | Claude generates a new one into `.env` | Update Render. Log pseudonyms change from then on (old log rows can't be linked to new ones), which is fine |
+
+- Never paste a secret into chat or a screenshot. Use `python tools/set_env_value.py NAME` (hidden input) locally.
+- Done when: all four are new in `.env` and on Render; the old YouTube and Groq keys are deleted and the old database password no longer works; `/health`, the two check tools and `npm run e2e` pass; and a scan of git history still finds no secrets.
+
 ⏸ **Stop and wait for confirmation.**
 
 ## Test 1. Core test

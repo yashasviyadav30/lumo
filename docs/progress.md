@@ -36,7 +36,8 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 ## Blocked on the user
 
 - **App name** (R9): "FocusLearn" is a placeholder.
-- **Render environment variables:** the deployed backend will need DATABASE_URL, SECRET_KEY, YOUTUBE_API_KEY and GROQ_API_KEY set in the Render dashboard (or a Render API key for Claude to do it).
+- ~~Render environment variables~~: done by the user 2026-09-29 ("Import from .env"); `/api/me` now answers 401 instead of 503. Still to add: `CORS_ORIGINS` with the frontend's address once it's on Cloudflare.
+- **Rotate all secrets before Test 1** (plan step 6.7): an old screenshot showed them.
 - **Device checks (1.3, 1.4):** iPhone playback from the installed PWA; where player links go on Android and iPhone.
 
 - **Cloudflare login (step 1.5):** `wrangler whoami` says not authenticated. Needs `npx wrangler login` in a browser.
