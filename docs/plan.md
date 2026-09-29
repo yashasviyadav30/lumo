@@ -127,7 +127,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - Groq (turn on Zero Data Retention in Data Controls) or Fireworks (zero retention by default). Pick one GPT-OSS or Qwen model to start; the full comparison comes after Test 1 (step 4.3).
 - Done when: a test call works and a screenshot of the ZDR setting is saved in `docs/`.
 
-**0.6 Hosting and database.** (S)
+**0.6 Hosting and database.** (S) ✅ Done 2026-09-29: Supabase `focus-app` (Mumbai, Data API off, automatic RLS on) connected in 0.24 s through the session pooler; backend live on Render as service `focus-app` at https://focus-app-6fb9.onrender.com (`/health` → 200 over HTTPS; HTTP redirects to HTTPS). Code in the private GitHub repo `yashasviyadav30/focus-app`. Cloudflare Pages is set up with the first frontend deploy in step 1.5.
 - Updated 2026-09-27: **no billing and no card for now.** Chosen: **Supabase Free in Mumbai** (Postgres only; pauses after a week idle), **Render Free in Singapore** for the backend (sleeps after 15 min idle, about 1 min to wake; no keep-awake ping), **Cloudflare Pages** for the frontend. Cloud Run moves to step 13.0. Follow the portability rule.
 - Done when: a "hello" endpoint is live on a public URL with HTTPS.
 
@@ -135,7 +135,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - List your sister and the ~5 friends, their field (CS, CMA, NEET, AI) and confirm each is **18 or over** (R10). If anyone is under 18, they can't be in either test.
 - Done when: a tester list with fields and "18+ confirmed" exists (keep it outside the repo).
 
-**0.8 Turn the rules into a checklist.** (S)
+**0.8 Turn the rules into a checklist.** (S) ✅ Done 2026-09-29: `docs/compliance-checklist.md`, Stage 0 checked
 - Copy R1–R14 into `docs/compliance-checklist.md` as a checklist used at the end of every stage.
 - Done when: the file exists and Stage 0 is ticked against it.
 
