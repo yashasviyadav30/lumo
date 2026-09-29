@@ -1,0 +1,1659 @@
+{
+  "field": "ai",
+  "display_name": "AI and machine learning",
+  "status": "draft, needs a quick human check",
+  "checked_on": "2026-09-29",
+  "aliases": [
+    "AI",
+    "A.I.",
+    "artificial intelligence",
+    "ML",
+    "machine learning",
+    "deep learning",
+    "DL",
+    "data science",
+    "AIML",
+    "AI/ML",
+    "AI ML",
+    "gen AI",
+    "generative AI",
+    "LLM",
+    "LLMs",
+    "neural networks",
+    "NLP",
+    "computer vision",
+    "machine learning in hindi",
+    "AI hindi",
+    "AI seekhna hai",
+    "machine learning seekhna",
+    "ML kaise seekhe",
+    "data science hindi",
+    "मशीन लर्निंग",
+    "आर्टिफिशियल इंटेलिजेंस",
+    "कृत्रिम बुद्धिमत्ता",
+    "डीप लर्निंग",
+    "डेटा साइंस"
+  ],
+  "syllabus_source": {
+    "body": "No official syllabus. Outline built from open university and NPTEL course outlines.",
+    "url": "https://www.cse.iitm.ac.in/~ravi/nptel-courses/intro-to-machine-learning/",
+    "version": "Outline compiled 2026-09-29 from: NPTEL Intro to ML (IIT Madras, 12 weeks); Stanford CS229 (Fall 2022 syllabus, https://cs229.stanford.edu/syllabus-fall2022.html); NPTEL Deep Learning Part 1 (noc19_cs85); NPTEL Intro to LLMs (IIT Delhi, https://nptel.ac.in/courses/106102576); CampusX 100 Days of ML outline.",
+    "note": "Our own short outline, top level only. 'Data science' overlaps with Foundations and Machine learning. 'AI' alone is vague; the app asks or infers the level."
+  },
+  "levels": [
+    {
+      "id": "ai-fnd",
+      "name": "Foundations (Python and maths for ML)"
+    },
+    {
+      "id": "ai-ml",
+      "name": "Machine learning"
+    },
+    {
+      "id": "ai-dl",
+      "name": "Deep learning"
+    },
+    {
+      "id": "ai-llm",
+      "name": "LLMs and applied AI"
+    }
+  ],
+  "topics": [
+    {
+      "id": "ai-fnd-foundations",
+      "name": "Foundations for AI",
+      "level": "ai-fnd",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "maths for machine learning",
+          "python for machine learning"
+        ],
+        "hi": [
+          "machine learning ke liye maths",
+          "python for ML hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-fnd-python",
+      "name": "Python programming",
+      "level": "ai-fnd",
+      "parent": "ai-fnd-foundations",
+      "search_terms": {
+        "en": [
+          "python for beginners",
+          "python full course"
+        ],
+        "hi": [
+          "python hindi",
+          "python tutorial in hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-fnd-data-tools",
+      "name": "Working with data in Python (NumPy, pandas, plots)",
+      "level": "ai-fnd",
+      "parent": "ai-fnd-foundations",
+      "search_terms": {
+        "en": [
+          "numpy pandas tutorial",
+          "python for data science",
+          "matplotlib tutorial"
+        ],
+        "hi": [
+          "pandas hindi",
+          "python data science hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-fnd-linalg",
+      "name": "Linear algebra for ML",
+      "level": "ai-fnd",
+      "parent": "ai-fnd-foundations",
+      "search_terms": {
+        "en": [
+          "linear algebra for machine learning",
+          "vectors and matrices"
+        ],
+        "hi": [
+          "linear algebra hindi",
+          "matrix hindi machine learning"
+        ]
+      }
+    },
+    {
+      "id": "ai-fnd-calculus",
+      "name": "Calculus and optimisation for ML",
+      "level": "ai-fnd",
+      "parent": "ai-fnd-foundations",
+      "search_terms": {
+        "en": [
+          "calculus for machine learning",
+          "gradient descent math"
+        ],
+        "hi": [
+          "calculus hindi machine learning"
+        ]
+      }
+    },
+    {
+      "id": "ai-fnd-probstats",
+      "name": "Probability and statistics",
+      "level": "ai-fnd",
+      "parent": "ai-fnd-foundations",
+      "search_terms": {
+        "en": [
+          "statistics for data science",
+          "probability for machine learning"
+        ],
+        "hi": [
+          "statistics hindi data science",
+          "probability hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-machine-learning",
+      "name": "Machine learning",
+      "level": "ai-ml",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "machine learning course",
+          "machine learning full course"
+        ],
+        "hi": [
+          "machine learning hindi",
+          "machine learning in hindi full course"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-intro",
+      "name": "What ML is and its types",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "what is machine learning",
+          "supervised vs unsupervised learning"
+        ],
+        "hi": [
+          "machine learning kya hai",
+          "supervised unsupervised hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-data-prep",
+      "name": "Data preparation, EDA and feature engineering",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "exploratory data analysis",
+          "feature engineering",
+          "data preprocessing"
+        ],
+        "hi": [
+          "feature engineering hindi",
+          "EDA hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-regression",
+      "name": "Regression",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "linear regression",
+          "ridge lasso regression"
+        ],
+        "hi": [
+          "linear regression hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-classification",
+      "name": "Classification (logistic regression, trees, SVM, k-NN, naive Bayes)",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "logistic regression",
+          "decision tree",
+          "support vector machine"
+        ],
+        "hi": [
+          "logistic regression hindi",
+          "decision tree hindi",
+          "svm hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-ensembles",
+      "name": "Ensembles (random forest, boosting, XGBoost)",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "random forest",
+          "gradient boosting",
+          "xgboost explained"
+        ],
+        "hi": [
+          "random forest hindi",
+          "xgboost hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-unsupervised",
+      "name": "Unsupervised learning (clustering, PCA)",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "k means clustering",
+          "pca explained",
+          "hierarchical clustering"
+        ],
+        "hi": [
+          "k means hindi",
+          "pca hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-evaluation",
+      "name": "Model evaluation and tuning (metrics, bias-variance)",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "bias variance tradeoff",
+          "cross validation",
+          "precision recall roc"
+        ],
+        "hi": [
+          "cross validation hindi",
+          "bias variance hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-rl",
+      "name": "Reinforcement learning basics",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "reinforcement learning basics",
+          "q learning"
+        ],
+        "hi": [
+          "reinforcement learning hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-ml-classic-ai",
+      "name": "Classic AI (search, logic, planning)",
+      "level": "ai-ml",
+      "parent": "ai-ml-machine-learning",
+      "search_terms": {
+        "en": [
+          "artificial intelligence search algorithms",
+          "a star search",
+          "introduction to artificial intelligence"
+        ],
+        "hi": [
+          "artificial intelligence hindi",
+          "AI search algorithm hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-deep-learning",
+      "name": "Deep learning",
+      "level": "ai-dl",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "deep learning course",
+          "neural networks course"
+        ],
+        "hi": [
+          "deep learning hindi",
+          "neural network hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-nn-basics",
+      "name": "Neural network basics (perceptron, backpropagation)",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "neural network from scratch",
+          "backpropagation explained",
+          "perceptron"
+        ],
+        "hi": [
+          "backpropagation hindi",
+          "perceptron hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-training",
+      "name": "Training deep nets (optimisers, regularisation)",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "adam optimizer",
+          "dropout batch normalization",
+          "vanishing gradient"
+        ],
+        "hi": [
+          "optimizers hindi deep learning"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-cnn",
+      "name": "CNNs and computer vision",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "convolutional neural network",
+          "cnn computer vision"
+        ],
+        "hi": [
+          "cnn hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-rnn",
+      "name": "RNNs and sequence models (LSTM, GRU)",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "rnn lstm explained",
+          "sequence models"
+        ],
+        "hi": [
+          "lstm hindi",
+          "rnn hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-transformers",
+      "name": "Attention and transformers",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "transformer architecture",
+          "self attention explained"
+        ],
+        "hi": [
+          "transformer hindi",
+          "attention mechanism hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-dl-frameworks",
+      "name": "Deep learning frameworks (PyTorch, TensorFlow)",
+      "level": "ai-dl",
+      "parent": "ai-dl-deep-learning",
+      "search_terms": {
+        "en": [
+          "pytorch tutorial",
+          "tensorflow keras tutorial"
+        ],
+        "hi": [
+          "pytorch hindi",
+          "tensorflow hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-llms-applied-ai",
+      "name": "LLMs and applied AI",
+      "level": "ai-llm",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "large language models course",
+          "generative ai course"
+        ],
+        "hi": [
+          "generative ai hindi",
+          "LLM hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-nlp-basics",
+      "name": "NLP basics (text processing, word embeddings)",
+      "level": "ai-llm",
+      "parent": "ai-llm-llms-applied-ai",
+      "search_terms": {
+        "en": [
+          "natural language processing basics",
+          "word embeddings word2vec"
+        ],
+        "hi": [
+          "nlp hindi",
+          "word2vec hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-how-llms",
+      "name": "How LLMs work (pretraining, GPT, tokenisation)",
+      "level": "ai-llm",
+      "parent": "ai-llm-llms-applied-ai",
+      "search_terms": {
+        "en": [
+          "how large language models work",
+          "build gpt from scratch",
+          "tokenization llm"
+        ],
+        "hi": [
+          "LLM kaise kaam karta hai",
+          "gpt hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-finetune",
+      "name": "Fine-tuning and alignment (LoRA, RLHF)",
+      "level": "ai-llm",
+      "parent": "ai-llm-llms-applied-ai",
+      "search_terms": {
+        "en": [
+          "fine tuning llm",
+          "lora fine tuning",
+          "rlhf explained"
+        ],
+        "hi": [
+          "fine tuning hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-prompt-rag",
+      "name": "Prompting, RAG and agents",
+      "level": "ai-llm",
+      "parent": "ai-llm-llms-applied-ai",
+      "search_terms": {
+        "en": [
+          "retrieval augmented generation",
+          "prompt engineering",
+          "ai agents tutorial"
+        ],
+        "hi": [
+          "rag hindi",
+          "prompt engineering hindi"
+        ]
+      }
+    },
+    {
+      "id": "ai-llm-deploy",
+      "name": "Building and deploying ML/AI apps (MLOps)",
+      "level": "ai-llm",
+      "parent": "ai-llm-llms-applied-ai",
+      "search_terms": {
+        "en": [
+          "end to end machine learning project",
+          "mlops tutorial",
+          "deploy machine learning model"
+        ],
+        "hi": [
+          "end to end project hindi",
+          "mlops hindi"
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "kind": "channel",
+      "channel_id": "UCCWi3hpnq_Pe03nGxuS7isg",
+      "name": "CampusX",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-data-tools",
+        "ai-fnd-probstats",
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-deep-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-cnn",
+        "ai-dl-rnn",
+        "ai-dl-transformers",
+        "ai-dl-frameworks",
+        "ai-llm-nlp-basics",
+        "ai-llm-deploy"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "Hindi; end-to-end data science, Python, ML fundamentals, projects",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "beginner-friendly projects: Python, ML workflows, deep learning, applied AI",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "beginner-friendly hands-on tutorials for students",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Teacher: Nitish Singh. Hindi. Known for the '100 Days of ML/DL' series (listed below as playlists)."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCNU_lfiiWBdtULKOw6X0Dig",
+      "name": "Krish Naik",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-deep-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-cnn",
+        "ai-dl-rnn",
+        "ai-dl-transformers",
+        "ai-dl-frameworks",
+        "ai-llm-nlp-basics",
+        "ai-llm-prompt-rag",
+        "ai-llm-deploy"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "NLP, computer vision, ML frameworks, theory and implementation",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "practical, project-driven ML from basics to deep learning and NLP",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "industry-focused end-to-end ML projects",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "data science and ML, practical problem-solving",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://analyticsindiamag.com/ai-trends/14-best-youtube-channels-for-data-science/",
+          "says": "ML, deep learning and AI in real-world scenarios",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://dev.to/aniruddhaadak/top-youtube-channels-for-learning-ai-a-beginners-guide-44o4",
+          "says": "practical ML tutorials plus career guidance",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Main channel is mostly English; Hindi content is on the separate 'Krish Naik Hindi' channel. Also promotes his paid courses; the free playlists are what we map."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCjWY5hREA6FFYrthD0rZNIw",
+      "name": "Krish Naik Hindi",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-probstats",
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-deep-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-cnn",
+        "ai-dl-rnn",
+        "ai-dl-transformers",
+        "ai-dl-frameworks"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "Hindi tutorials: Python, SQL, statistics, full data science path",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Only one page names this channel directly; the main Krish Naik channel has many. Kept because Hindi coverage matters for our users."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+      "name": "codebasics",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-data-tools",
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-deep-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-frameworks",
+        "ai-llm-deploy"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "project-based tutorials, data analytics, practical skills",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "Python, SQL, visualisation on real-world datasets",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "programming, data science, analytics, AI, ML",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Teacher: Dhaval Patel. Mostly English (Hindi content sits on a separate 'codebasics Hindi' channel, not added ❓)."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+      "name": "StatQuest with Josh Starmer",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-fnd-probstats",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-nn-basics",
+        "ai-dl-transformers"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "statistics, probability, classical ML algorithms, clear explanations",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "statistics, ML math foundations, intuitive explanations",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "statistics, ML, data science fundamentals",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "visual explanations of stats and ML algorithms",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "maths and stats foundations of ML",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Short visual explainers; good for one concept at a time."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
+      "name": "3Blue1Brown",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-fnd-linalg",
+        "ai-fnd-calculus",
+        "ai-dl-nn-basics",
+        "ai-dl-transformers",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "linear algebra, calculus, neural networks, visual math",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "linear algebra, calculus, neural networks with visuals",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "math and deep learning with animation",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://analyticsindiamag.com/ai-trends/14-best-youtube-channels-for-data-science/",
+          "says": "maths from a visual perspective",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://dev.to/aniruddhaadak/top-youtube-channels-for-learning-ai-a-beginners-guide-44o4",
+          "says": "animations that make neural network maths intuitive",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "General maths channel; only its linear algebra, calculus and neural network series fit this field (listed below as playlists)."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCXUPKJO5MZQN11PqgIvyuvQ",
+      "name": "Andrej Karpathy",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-dl-nn-basics",
+        "ai-dl-transformers",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "neural networks, GPT, transformers, from-scratch implementations",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "deep dives on neural networks and training models from scratch",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Advanced but beginner-friendly in pace; code-first."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCcIXc5mJsHVYTZR1maL5l9w",
+      "name": "DeepLearning.AI",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-dl-deep-learning",
+        "ai-llm-prompt-rag",
+        "ai-llm-finetune"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "structured courses, deep learning, MLOps, NLP, Andrew Ng",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "deep learning concepts and foundations",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "led by Andrew Ng; AI/ML theory for beginners",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://dev.to/aniruddhaadak/top-youtube-channels-for-learning-ai-a-beginners-guide-44o4",
+          "says": "founded by Andrew Ng; deep learning and interviews",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Andrew Ng's organisation. Some videos are short promos for its own courses ❓."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "name": "Stanford Online",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-dl-deep-learning",
+        "ai-dl-cnn",
+        "ai-llm-nlp-basics",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "Andrew Ng's ML lectures and modern deep learning seminars",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://github.com/dair-ai/ML-YouTube-Courses",
+          "says": "lists Stanford CS229, CS224N, CS230, CS234 playlists",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Full university lectures; heavy on maths. Best for motivated learners."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCfzlCWGWYyIQ0aLC5w48gBQ",
+      "name": "sentdex",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-data-tools",
+        "ai-ml-machine-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-frameworks"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "Python, practical ML, TensorFlow, PyTorch",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "Python, neural networks, real-world ML projects",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "Python, ML, data analysis",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://analyticsindiamag.com/ai-trends/14-best-youtube-channels-for-data-science/",
+          "says": "1000+ videos on Python and ML",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "hands-on Python, ML and deep learning",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Teacher: Harrison Kinsley. Also covers finance and robotics; map by playlist."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UC8butISFwT-Wl7EV0hUK0BQ",
+      "name": "freeCodeCamp.org",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-data-tools",
+        "ai-ml-machine-learning",
+        "ai-dl-deep-learning",
+        "ai-llm-llms-applied-ai"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "full-length courses on every ML topic",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "complete data science courses",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "General coding channel with many long ML/AI courses by guest teachers; quality varies by course ❓."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UC640y4UvDAlya_WOj5U4pfA",
+      "name": "NPTEL",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml",
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-classic-ai",
+        "ai-dl-deep-learning"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.nptel.ac.in/courses/106106139",
+          "says": "official NPTEL course page (IIT Madras, Intro to ML)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Official NPTEL channel (handle @iit), IIT/IISc lectures in all subjects; only AI/ML courses fit this field. ❓ Trust rests on being the official IIT/IISc programme, not on 'best channel' pages. Useful later for the NPTEL deep layer."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCYa1WtI-vb_bx-anHdmpNfA",
+      "name": "NPTEL-NOC IITM",
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml",
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-fnd-data-tools",
+        "ai-ml-machine-learning",
+        "ai-ml-classic-ai",
+        "ai-dl-deep-learning"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://onlinecourses.nptel.ac.in/noc19_cs85/preview",
+          "says": "official NPTEL course page: Deep Learning Part 1 (IITM)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://nptel.ac.in/courses/106106247",
+          "says": "official NPTEL course page: Machine Learning (ML) in Hindi",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Official NPTEL online-course channel for IIT Madras; hosts the Khapra deep learning, Khemani AI and Hindi ML playlists below. Many subjects; map by playlist. ❓ Same caveat as NPTEL."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCyHta2dyCTkf29AB67AYn7A",
+      "name": "5 Minutes Engineering",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-fnd-probstats",
+        "ai-ml-machine-learning",
+        "ai-ml-classification",
+        "ai-ml-unsupervised",
+        "ai-ml-classic-ai"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "simplifies data science, statistics and technical foundations in Hindi",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ One page only. Short, exam-style explainers for engineering students (university AI/ML papers). Covers many non-AI subjects too."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH",
+      "channel_id": "UCCWi3hpnq_Pe03nGxuS7isg",
+      "name": "100 Days of Machine Learning (CampusX)",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwith.campusx.in/courses/100-Days-of-Machine-Learning-YouTube-1763210027804-6918732bee601b12112865e6",
+          "says": "CampusX's own notes page for the playlist; outline covers EDA, feature engineering, regression, classification, ensembles, clustering",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "recommends CampusX for ML fundamentals",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Long Hindi ML course in order; good default for Hindi-speaking beginners."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn",
+      "channel_id": "UCCWi3hpnq_Pe03nGxuS7isg",
+      "name": "100 Days of Deep Learning (CampusX)",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-dl-deep-learning",
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-cnn",
+        "ai-dl-rnn",
+        "ai-dl-transformers",
+        "ai-dl-frameworks"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwith.campusx.in/courses/100-Days-of-Deep-Learning-YouTube-6818549cc1a70a79d992169f",
+          "says": "CampusX notes page for the playlist",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://placementdrive.in/the-best-youtube-channels-to-learn-ml-without-feeling-overwhelmed",
+          "says": "recommends CampusX for deep learning",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Covers ANN, CNN, RNN, attention and transformers ❓ (from public notes pages; check the end of the series)."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLTDARY42LDV7WGmlzZtY-w9pemyPrKNUZ",
+      "channel_id": "UCjWY5hREA6FFYrthD0rZNIw",
+      "name": "Machine Learning Playlist (Krish Naik Hindi)",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-data-science-youtube-channels/",
+          "says": "recommends Krish Naik Hindi for the data science path",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Playlist found through web search; not named on a recommendation page itself."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLeo1K3hjS3uvCeTYTeyfe0-rN5r8zn9rw",
+      "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+      "name": "Machine Learning Tutorial Python (codebasics)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "recommends codebasics for practical ML",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.analyticsvidhya.com/blog/2023/12/data-science-youtube-channels/",
+          "says": "recommends codebasics for ML",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Short, practical scikit-learn lessons. ❓ Pages recommend the channel, not this exact list."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",
+      "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
+      "name": "Essence of linear algebra (3Blue1Brown)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd"
+      ],
+      "topics": [
+        "ai-fnd-linalg"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "suggests starting with Essence of Linear Algebra and Calculus",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "recommends 3Blue1Brown for linear algebra",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Visual intuition, not exam drill."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr",
+      "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
+      "name": "Essence of calculus (3Blue1Brown)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd"
+      ],
+      "topics": [
+        "ai-fnd-calculus"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "suggests Essence of Calculus before ML",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "recommends 3Blue1Brown for calculus",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+      "channel_id": "UCYO_jab_esuFRV4b17AJtAw",
+      "name": "Neural networks (3Blue1Brown)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-dl-nn-basics",
+        "ai-dl-transformers",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "neural networks series",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://dev.to/aniruddhaadak/top-youtube-channels-for-learning-ai-a-beginners-guide-44o4",
+          "says": "neural network fundamentals through animation",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Short series; later videos cover transformers and GPT ❓."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ",
+      "channel_id": "UCXUPKJO5MZQN11PqgIvyuvQ",
+      "name": "Neural Networks: Zero to Hero (Andrej Karpathy)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-transformers",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://github.com/dair-ai/ML-YouTube-Courses",
+          "says": "listed under deep learning courses",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://karpathy.ai/zero-to-hero.html",
+          "says": "course page: backprop from scratch up to GPT",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://learnwithpath.com/blog/best-youtube-channels-for-machine-learning-2026",
+          "says": "names Zero to Hero as the primary deep learning curriculum",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Code-first; needs Python."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "name": "Stanford CS229: Machine Learning, Andrew Ng, Autumn 2018",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-ml-machine-learning",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation",
+        "ai-ml-rl"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://github.com/dair-ai/ML-YouTube-Courses",
+          "says": "listed under ML foundations",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "Andrew Ng's ML lectures on Stanford Online",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Maths-heavy university course."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLoROMvodv4rOSH4v6133s9LFPRHjEmbmJ",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "name": "Stanford CS224N: NLP with Deep Learning, Winter 2021",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-llm-nlp-basics",
+        "ai-dl-transformers",
+        "ai-llm-how-llms"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://github.com/dair-ai/ML-YouTube-Courses",
+          "says": "listed under NLP",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "modern deep learning seminars on Stanford Online",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "A 2024 run also exists (PLoROMvodv4rOaMFbaqxPDoLWjDaRAdP9D) ❓ a human may prefer the newer one."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLfYUBJiXbdtSvpQjSnJJ_PmDQB_VyT5iU",
+      "channel_id": "UCX7Y2qWriXpqocG97SFW2OQ",
+      "name": "Practical Deep Learning for Coders (fast.ai, Jeremy Howard)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-dl-deep-learning",
+        "ai-dl-cnn",
+        "ai-dl-frameworks",
+        "ai-llm-deploy"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.guvi.in/blog/best-youtube-channels-to-learn-machine-learning/",
+          "says": "Jeremy Howard: deep learning, practical applications (links this playlist)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://growtechie.substack.com/p/top-10-youtube-channels-to-learn",
+          "says": "Practical Deep Learning for Coders, building working systems",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://github.com/dair-ai/ML-YouTube-Courses",
+          "says": "listed under practical deep learning",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Top-down, code-first."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLyqSpQzTE6M9gCgajvQbc68Hk_JKGBAYT",
+      "channel_id": "UCYa1WtI-vb_bx-anHdmpNfA",
+      "name": "NPTEL Deep Learning (CS7015), Prof. Mitesh Khapra, IIT Madras",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl"
+      ],
+      "topics": [
+        "ai-dl-nn-basics",
+        "ai-dl-training",
+        "ai-dl-cnn",
+        "ai-dl-rnn",
+        "ai-dl-transformers"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://onlinecourses.nptel.ac.in/noc19_cs85/preview",
+          "says": "official course page: Deep Learning Part 1, Khapra and Iyengar",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.youtube.com/playlist?list=PLEAYkSg4uSQ1r-2XrJ_GBzzS6I-f8yfRU",
+          "says": "a third-party playlist collects the same lectures, a sign people reuse it",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Official NPTEL upload. Rigorous; good for university students and GATE-DA style depth. Part 2 is PLyqSpQzTE6M-_1jAqrFCsgCcuTYm_2urp (not added). Candidate for the NPTEL deep layer."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLyqSpQzTE6M94dXgPKwm1oKrpM0igmT-7",
+      "channel_id": "UCYa1WtI-vb_bx-anHdmpNfA",
+      "name": "NPTEL Machine Learning (ML) in Hindi",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-fnd-probstats",
+        "ai-fnd-linalg",
+        "ai-ml-machine-learning",
+        "ai-ml-intro",
+        "ai-ml-data-prep",
+        "ai-ml-regression",
+        "ai-ml-classification",
+        "ai-ml-ensembles",
+        "ai-ml-unsupervised",
+        "ai-ml-evaluation"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://nptel.ac.in/courses/106106247",
+          "says": "official NPTEL course page: Machine Learning (ML) in Hindi",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Official Hindi NPTEL ML course; search results name Prof. Anubha Gupta as teacher (unconfirmed). There are two playlists with the same title; this one starts with maths review and regression, the other (PLyqSpQzTE6M9d12n_D5z002YRPTzrmt_U) starts with a course intro and neural networks. A human should check which one is the full course."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLyqSpQzTE6M8N9lDWllq6NqB5dmpy6gtc",
+      "channel_id": "UCYa1WtI-vb_bx-anHdmpNfA",
+      "name": "NPTEL AI: Search Methods for Problem Solving, Prof. Deepak Khemani, IIT Madras",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-ml-classic-ai"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.youtube.com/playlist?list=PLEAYkSg4uSQ1FaQoCxoFvmMFnBsHTBokj",
+          "says": "a third-party playlist collects the same course",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Classic AI (search). ❓ No 'best of' page found for it; kept as the official NPTEL course for university AI papers."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLyqSpQzTE6M_fFg1zZmeGIkenMDgXKGYi",
+      "channel_id": "UCYa1WtI-vb_bx-anHdmpNfA",
+      "name": "NPTEL Python for Data Science, IIT Madras",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-fnd",
+        "ai-ml"
+      ],
+      "topics": [
+        "ai-fnd-python",
+        "ai-fnd-data-tools",
+        "ai-ml-regression"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.youtube.com/playlist?list=PLT7tzDyUrQ49_iHxrM7YAfqLDxvLc-Nsn",
+          "says": "a third-party playlist names it as the SWAYAM/NPTEL course by Prof. Ragunathan Rengasamy",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Official NPTEL; trust rests on the source, not on recommendation pages."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLp6ek2hDcoNDDRINFiWGDlPKUwW-g1Hjk",
+      "channel_id": "UC2f8Yv7uTOwRqecRZbgsAuA",
+      "name": "NPTEL Introduction to Large Language Models (LLMs), IIT Delhi",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "ai-dl",
+        "ai-llm"
+      ],
+      "topics": [
+        "ai-llm-nlp-basics",
+        "ai-dl-transformers",
+        "ai-llm-how-llms",
+        "ai-llm-finetune",
+        "ai-llm-prompt-rag"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://nptel.ac.in/courses/106102576",
+          "says": "official NPTEL course page (Prof. Tanmoy Chakraborty, IIT Delhi)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://x.com/kalyan_kpl/status/1864246752423158147",
+          "says": "recommends it as a free course for a strong LLM foundation",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "On the NPTEL IIT Delhi channel. Needs ML and Python first."
+    }
+  ]
+}
