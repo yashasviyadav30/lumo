@@ -1,0 +1,9 @@
+# Keep secrets and local files out of the image. Settings come from the host's environment.
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/

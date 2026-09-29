@@ -22,9 +22,19 @@ Chosen after the feasibility round found that YouTube's compliance guide bans ap
 |---|---|---|
 | **Smart agent** | Understands the user's goal and each search, for every user and every search: parses the goal, builds queries, picks sources, asks one "Did you mean" tap only when truly ambiguous. | The user's own text (goal, search, mutes). Not used to judge YouTube videos. |
 | **Deep layer** | Transcript-based features: search inside lectures, jump to a topic, syllabus mapping. | Only NPTEL content and licensed partner teachers, under off-API agreements that supply their caption files and topic labels. |
-| **Light layer** | Everything else on YouTube: goal-based queries, curated channels, YouTube's own fields (`safeSearch=strict`, `topicDetails`, age-restricted, embeddable) and user rules (mutes, Shorts). | YouTube API data, used only through YouTube's own fields and the user's rules. |
+| **Light layer** | Everything else on YouTube: goal-based queries, curated channels, YouTube's own fields (`categoryId`, `topicDetails`, `safeSearch=strict`, age-restricted, embeddable) and user rules (mutes, Shorts). | YouTube API data, used only through YouTube's own fields and the user's rules. |
 | **Behaviour learning** | Reorders within allowed content. | Our own user data; **18+ only**, and adults can switch it off. |
-| **Title-based judging** of arbitrary YouTube videos | Off. Kept as a removable layer. | Switched on only if the compliance audit allows it. |
+| **Title-based judging** of arbitrary YouTube videos | **Not part of the product** (updated 2026-09-29). A video's type always comes from YouTube. | — |
+
+## How the product works (the user's view, recorded 2026-09-29)
+
+1. **Video type comes from YouTube, not from us.** The compliance guide says apps "may only use the content type returned by the YouTube API". So filtering uses YouTube's own fields (`categoryId`, `topicDetails`, `safeSearch`, age-restricted, embeddable). Our LLM never reads a title or description to decide a video's category. **YouTube is the primary layer; this app is a secondary layer on top.** Uploaders choose their own category, and it's sometimes wrong (a lecture filed under "Entertainment", a vlog under "Education"). That's why curated teachers, user mutes and the "Show" tap also exist.
+2. **No transcripts for arbitrary videos.** The API doesn't allow it, and fetching 30–40 transcripts per search would be slow anyway. Titles and descriptions are only displayed to the user and parsed into chapters. YouTube's own search already reads titles, descriptions and transcripts internally, so **the agent's job is to write excellent search queries**. Transcripts exist only in the deep layer (NPTEL, licensed partners).
+3. **The player stays exactly as on YouTube**: same comments, live chat, timeline and ads. Player links open the YouTube app.
+4. **No rewards for watching.**
+5. **No YouTube data kept longer than 30 days.**
+6. **The independent value is the smart agent, and it judges the user, not the video**: their goal, level, growth, and which distractions they're likely to follow. The app is designed from how the human brain works. It decides what to show, what to bring forward and what to keep away, so the user needs almost no effort. It should feel as personal and trustworthy as ChatGPT: it understands what the user means, remembers their progress and suggests the next step.
+   - Limits from the rules: learning a user's habits and likely distractions is behaviour learning, so it's **18+ only, with a separate consent, and adults can switch it off** (DPDP; YouTube's guide bans tracking viewing history "without their knowledge or consent"). Anything it keeps away still shows up in the "hidden" line, and the user can always override.
 
 ## Decisions so far
 
@@ -48,8 +58,8 @@ Chosen after the feasibility round found that YouTube's compliance guide bans ap
 
 **YouTube rules**
 - No special permission from YouTube. The standard compliance audit is applied for before launch, and the app still works on default quota (100 searches/day).
-- The classifier is trained on non-YouTube text. Judging YouTube video titles with it stays **off** until the compliance audit allows it (see "Chosen architecture"); if allowed, it runs at request time with caches of 30 days or less.
-- Without labels, the light layer (YouTube's own fields, curated channels, user rules) and the deep layer carry the product.
+- No classifier judges YouTube videos. A video's type comes only from YouTube's own fields (updated 2026-09-29; see "How the product works"). Any model we train works on the user's own text (goals, searches), never on video titles.
+- The light layer (YouTube's own fields, curated channels, user rules) and the deep layer carry the product.
 - LLM: an open-weight model on a zero-retention host (Groq or Fireworks), moving to self-hosted as usage grows.
 - `safeSearch=strict`, and age-restricted, non-embeddable and region-blocked videos are removed everywhere.
 - Human-curated source lists are seed data for the four test fields. Automated lists sit on top, refreshed within 30 days. ⚠️ Feasibility (conflict C7) found that automated lists built by judging channels from API data hit the guide's "custom scores to channels" line; they should rest on our users' actions instead.
@@ -83,8 +93,9 @@ Chosen after the feasibility round found that YouTube's compliance guide bans ap
 
 | Risk | Who can resolve it |
 |---|---|
-| Runtime labels and automated source lists may count as "derived data" (YouTube policy III.E.4.h) | YouTube only; reduced by design |
-| Sending video titles to an LLM provider isn't clearly allowed or banned | YouTube policy; reduced by zero-retention host |
+| Automated source lists may count as "derived data" (YouTube policy III.E.4.h) | YouTube only; reduced by design (runtime labels dropped 2026-09-29) |
+| ~~Sending video titles to an LLM provider isn't clearly allowed or banned~~ | Avoided by design: the LLM never sees video titles (2026-09-29) |
+| Uploader-chosen YouTube categories can be wrong, so filtering by them over- or under-blocks | Curated teachers, user mutes and "Show"; measured in the tests |
 | Storing video IDs long-term (notes, bookmarks) | YouTube policy; reduced by re-fetching titles |
 | Quota audit may be slow or refused | YouTube; app must work without it |
 | Users can escape to YouTube via the player logo, and blocking it is not allowed. Player links must open in the YouTube app when it's installed (compliance guide) | Can't be fixed, only reduced |
@@ -111,8 +122,8 @@ Accessibility was researched only in round 1 (section 3) and hadn't been checked
 ## Only testing can answer
 
 - **Demand:** will people switch from YouTube to this app? (Answered by the one-week prototype test, not interviews.)
-- **Filter quality** per language (Hindi, English, Hinglish): how much is wrongly blocked and wrongly allowed, with no transcripts.
-- **Which model** handles Hinglish titles best: open models vs one closed benchmark model.
+- **Filter quality:** how often YouTube's own categories wrongly hide a lecture or let entertainment through.
+- **Which model** handles Hinglish goals and searches best: open models vs one closed benchmark model.
 - **Speed:** can results come back in 1–2 seconds?
 - **Goal parsing:** does "CMA Inter costing" map to the right paper, and how often is a clarifying tap needed?
 - **Cold start:** feed quality in niche fields (CS, CMA) and in AI, which has no syllabus; how many searches each new goal uses.

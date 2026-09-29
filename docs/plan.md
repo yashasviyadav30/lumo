@@ -8,9 +8,17 @@ Written 2026-09-27, revised the same day (two tests, timeline, stop rule, curato
 
 **After every stage, stop and wait for your confirmation before starting the next one.** At the end of a stage: tick its steps, run the compliance checklist (step 0.8), write a short note of what was done and what changed, then wait.
 
-## Google Cloud rule
+## How we work (set 2026-09-27)
 
-Set 2026-09-27. In Google Cloud, **never turn on billing, create anything that costs money, delete any project, or change permissions without asking first and stating the expected cost.** Free actions (creating a project, enabling the YouTube API, creating an API key) are fine without asking.
+- Claude does as much as possible; you only do what truly needs you (logins, approvals, choices).
+- Use each service's command-line tool with browser login where one exists (gcloud, Supabase CLI, wrangler), installing what's needed.
+- When you must act on a website, Claude opens the exact page and says in one or two lines what to click.
+- Claude generates passwords and secrets and writes them straight into `backend/.env` without showing them. You're never asked to copy or paste secrets.
+- The cost rule below applies to **every** service, not only Google Cloud.
+
+## Google Cloud rule (applies to every service)
+
+Set 2026-09-27. In Google Cloud **and every other service**, **never turn on billing, create anything that costs money, delete any project, or change permissions without asking first and stating the expected cost.** Free actions (creating a project, enabling the YouTube API, creating an API key) are fine without asking.
 
 ## Portability rule
 
@@ -36,6 +44,8 @@ A free PWA for adults (18+) in India that turns any learning goal into a focused
 - **Test 2:** the same group tries the full product (study tools, NPTEL deep layer, accessibility) for a week.
 - Then a public launch in India.
 
+**Where the value comes from** (recorded 2026-09-29; see "How the product works" in research-summary.md). YouTube is the primary layer: it decides what a video is. The app is the secondary layer on top, and its value is the **smart agent, which judges the user, not the video**: their goal, level, growth, and which distractions they're likely to follow. It writes excellent search queries, remembers progress, suggests the next step, and decides what to bring forward and what to keep away, so the user needs almost no effort. Learning from a user's habits is behaviour learning (18+, separate consent, can be switched off, Stage 11).
+
 ## Rules every step must follow
 
 These come from YouTube's Developer Policies and compliance guide, DPDP and your own decisions. Check each new feature against this list before calling it done.
@@ -44,7 +54,7 @@ These come from YouTube's Developer Policies and compliance guide, DPDP and your
 |---|---|---|
 | R1 | YouTube API data (titles, descriptions, thumbnails, fields) is stored **30 days at most**, in "limited amounts", then refreshed or deleted. | Policies III.E.4 |
 | R2 | A user's data is deleted **within 7 days** of their request or account deletion. | Policies III.E.4.g |
-| R3 | **No judging of YouTube videos by our own model, LLM or word-matching on titles** (no "learning/entertainment", no "on-topic", no "safe/unsafe" verdicts). Use only YouTube's own fields, curators' mappings and the user's own rules. Title-based judging stays off until the compliance audit allows it. | Compliance guide; chosen architecture |
+| R3 | **A video's type comes only from YouTube** (`categoryId`, `topicDetails`, `safeSearch`, age-restricted, embeddable). No judging of YouTube videos by our own model, LLM or word-matching on titles (no "learning/entertainment", no "on-topic", no "safe/unsafe" verdicts). Use only YouTube's own fields, curators' mappings and the user's own rules. | Compliance guide ("you may only use the content type returned by the YouTube API") |
 | R4 | The smart agent (LLM) sees only **the user's own text**: goal, search, mute words. Never video titles. The LLM runs on a zero-retention host. | Chosen architecture |
 | R5 | `safeSearch=strict` on every search. Age-restricted, non-embeddable and region-blocked videos are dropped **everywhere**, and counted in the hidden line. | research.md 17.7 |
 | R6 | Hidden results show **"N hidden by [App] · Why · Show"**, and "Show" reveals them in place. | Policies III.C |
@@ -199,12 +209,17 @@ Required before any real user, so it's all in Part A.
 - Done when: a search returns results on screen.
 
 **3.2 Fetch the fields.** (S)
-- One `videos.list` call for the result IDs: duration, `contentRating.ytRating`, `status.embeddable`, `status.madeForKids`, `regionRestriction`, `topicDetails`, `contentDetails.caption`.
+- One `videos.list` call for the result IDs: `snippet.categoryId`, duration, `contentRating.ytRating`, `status.embeddable`, `status.madeForKids`, `regionRestriction`, `topicDetails`, `contentDetails.caption`.
 - Done when: the fields are stored with `fetched_at` and used by the next step.
 
 **3.3 Drop rules.** (S)
 - Drop age-restricted, non-embeddable and region-blocked (for India) videos everywhere (R5). Count them.
 - Done when: a known age-restricted video never shows, and it's counted.
+
+**3.3b Hide by YouTube's own type.** (S) (added 2026-09-29)
+- Hide videos that **YouTube itself** types as entertainment: by `categoryId` (e.g. Music, Gaming, Comedy, Entertainment; confirm the IDs with `videoCategories.list` for India) and by `topicDetails.topicCategories` (e.g. Music, Gaming, Humor, Film, TV shows). The app adds no judgement of its own (R3).
+- Uploaders choose their own category, so it's sometimes wrong. Videos from curated channels (5.1) are never hidden by this rule, and "Why" says "YouTube lists this as Music", with "Show" one tap away.
+- Done when: a known music video is hidden and counted, and a curated lecture filed under "Entertainment" still shows.
 
 **3.4 The hidden line.** (M)
 - "N hidden by [App] · Why · Show". "Why" lists the reasons in plain words (e.g. "age-restricted by YouTube", "your mute: this channel"). "Show" reveals them in place (R6), except videos that can't play in an embed, which are listed with the reason.
@@ -394,6 +409,10 @@ What Test 1 answers: does goal → feed and filtered search help more than plain
 - Read-only YouTube comments, collapsed by default, never stored.
 - Done when: they open on tap and nothing is saved.
 
+**7.8 Live chat for live streams.** (S) (added 2026-09-29)
+- For live or premiere videos, show YouTube's own live chat next to the player, as on YouTube. ❓ First check that YouTube supports embedding live chat for this use and on which platforms; if it doesn't, link to it instead.
+- Done when: a live stream shows its chat, or the limit is written down.
+
 **7.7 Check against R8.** (S)
 - Done when: nothing in the study tools gives points, coins or streaks for watching.
 
@@ -499,6 +518,7 @@ What Test 2 answers: do the study tools and the NPTEL deep layer make the app wo
 
 **11.3 Reordering within allowed content.** (M)
 - Start with simple rules from our own signals (studied, notes, finished, "I need this", "useful?"), then a simple bandit to try new sources now and then. It only reorders what the light and deep layers already allow.
+- It also learns which channels or topics pull this user off-goal, keeps them lower, and offers a one-tap mute with the reason shown. Nothing is hidden silently; it all appears in the hidden line and can be undone.
 - Done when: turning it on changes the order, turning it off restores the plain order.
 
 ⏸ **Stop and wait for confirmation.**
@@ -536,7 +556,7 @@ Can start alongside Stage 11 because most of it is waiting on others.
 - Done when: the company exists and owns the Google Cloud project, domain and store accounts.
 
 **13.3 YouTube compliance audit and quota extension.** (M, then weeks of waiting)
-- Describe the app honestly (education app for adults, not analytics). Include the question: may we tag videos as learning/entertainment under the derived-metrics policy, section 3?
+- Describe the app honestly (education app for adults, not analytics). Say plainly that a video's type comes only from YouTube's own fields and that the app never tags videos itself.
 - Done when: the audit is submitted; the answer is recorded in `research-summary.md`.
 
 **13.4 Incident plan.** (S)
@@ -597,7 +617,6 @@ Needed before Stage 8; required before any paid tier.
 
 | Item | Trigger |
 |---|---|
-| Title-based judging layer (our classifier) | Only if the compliance audit allows it |
 | Native iPhone app with Capacitor | If the PWA's iPhone experience holds users back |
 | Parent-first family account for under-18s | Before accepting any under-18 users; DPDP children's duties start 13 May 2027. Decide verification then |
 | Indian Sign Language content, audio-focused mode | After v1 accessibility is proven |
@@ -606,7 +625,7 @@ Needed before Stage 8; required before any paid tier.
 
 ## Not in this plan
 
-- Anything that judges YouTube videos with our own model, an LLM or title matching before the audit allows it (R3).
+- Anything that judges YouTube videos with our own model, an LLM or title matching (R3). A video's type comes from YouTube.
 - Blocking or covering any part of the YouTube player, its ads or its links (R7).
 - Rewards for watching (R8).
 - Under-18 accounts before the family account exists (R10).
