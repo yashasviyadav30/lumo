@@ -285,3 +285,17 @@ Ask them without showing the answers you hope for. Better still, draw the study 
 5. **"Here are three things: notes beside the video, a personal notebook by paper, and daily questions from your notes. If you could have only one tomorrow, which? Which would make you open this instead of YouTube?"** (Forces a ranking; confirms or changes the build order.)
 
 Tip: ask 2–3 of her classmates the same five questions. One user's answers are a hint; five users' answers are a pattern.
+
+---
+
+# Round 2: deep ideation (started 2026-09-29)
+
+Goal: ideas so good that students leave YouTube for studying and open this app every day. Raw material from each step is saved in `docs/ideation/`; the results are summarised here.
+
+**Progress** (updated after each step):
+- [ ] 1. User research: pain points with sources (2 research agents running)
+- [ ] 2. Diverge: 6 viewpoints × 20+ ideas
+- [ ] 3. Converge: skeptic's verdicts
+- [ ] 4. The "only here" features and a day in my sister's life
+- [ ] 5. Screens and HTML mockups (`docs/mockups/`)
+- [ ] 6. Ranked top 10, build order, questions for real students
