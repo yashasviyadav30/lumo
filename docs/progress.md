@@ -13,7 +13,7 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 | 1.2 Watch page | ✅ | Official player, privacy-enhanced mode, no autoplay; checked in real Edge |
 | 1.3 iPhone Error 153 | 🟡 | Fix built in; needs a real iPhone |
 | 1.4 Player links | 🟡 | Needs Android and iPhone |
-| 1.5 First deploy | ⛔ | Frontend needs the Cloudflare login; backend is live on Render |
+| 1.5 First deploy | ✅ | Frontend https://focuslearn.focuslearn.workers.dev, backend on Render; `E2E_BASE=<url> npm run e2e` passes live |
 | 2.1–2.7 Accounts and data rules | ✅ | Sign-up with 18+ check, notice, privacy draft, delete my data, purge, clean logs |
 | 3.1–3.7 Light layer search | ✅ | Hidden line, cache, quota guard; cold ≈1.3 s, cached ≈60 ms |
 | 4.1, 4.2, 4.4, 4.5, 4.7a, 4.8 (4A) | ✅ | Goal parser 98% (hybrid) on 66 goals; Did-you-mean; topic chips; query builder on topic for 20/20 |
@@ -36,11 +36,10 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 ## Blocked on the user
 
 - **App name** (R9): "FocusLearn" is a placeholder.
-- ~~Render environment variables~~: done by the user 2026-09-29 ("Import from .env"); `/api/me` now answers 401 instead of 503. Still to add: `CORS_ORIGINS` with the frontend's address once it's on Cloudflare.
+- ~~Render environment variables~~: done by the user 2026-09-29 ("Import from .env"); `/api/me` now answers 401 instead of 503. The Cloudflare address is allowed through the backend's CORS default; setting `CORS_ORIGINS` on Render would override it.
 - **Rotate all secrets before Test 1** (plan step 6.7): an old screenshot showed them.
 - **Device checks (1.3, 1.4):** iPhone playback from the installed PWA; where player links go on Android and iPhone.
 
-- **Cloudflare login (step 1.5):** `wrangler whoami` says not authenticated. Needs `npx wrangler login` in a browser.
 
 ## Decisions and comparisons
 
@@ -51,6 +50,7 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Search cache: our own 24 h shared cache over YouTube ETags. As far as I know (not checked this session), a "not modified" answer still costs a search call, so ETags save no search quota.
 - Shorts rule: "≤ 3 min AND vertical (YouTube's embed size)" over "≤ 3 min only". Duration alone hid 17 of 25 results for a maths query, many of them short horizontal lessons; unknown shape → shown.
 - Entertainment by YouTube's type: its entertainment categories (incl. non-assignable ones like Movies, Trailers, Shows) + entertainment topics, but topics are ignored when YouTube itself says Education/Science/How-to. Documentary is never hidden. Curated and followed channels are exempt.
+- Frontend hosting: this wrangler version sends Pages commands to Workers, so the frontend is deployed as Workers static assets (no Worker code, same static build): portable. Account subdomain `focuslearn` registered.
 - App name: working name "FocusLearn" in `frontend/src/config.ts` until the user picks a real one.
 
 - Goal parser: rules (96%, ~3 ms) vs LLM-only vs hybrid (98%, LLM on 1 of 66 goals). LLM-only is refused by Groq's free tier (HTTP 429) because our catalogue prompt is ~5,500 tokens; hybrid falls back to rules when that happens. Picked hybrid.

@@ -2,7 +2,7 @@
 // Needs the backend on :8000 (with backend/.env) and `npm run dev` on :5173. Uses 1 search call at most. Run: npm run e2e
 import { chromium } from 'playwright'
 
-const BASE = 'http://localhost:5173'
+const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
 const shots = new URL('./screenshots/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
 await import('node:fs').then((fs) => fs.mkdirSync(shots, { recursive: true }))
 const email = `e2e-${Date.now()}@example.com`

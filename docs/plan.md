@@ -163,7 +163,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - Tap the YouTube logo and end-screen videos on each platform and note where they go. They must open YouTube (R7); record it, don't fight it.
 - Done when: behaviour per platform is written in `docs/`.
 
-**1.5 First deploy.** (S) ⛔ Waiting on the Cloudflare login (`npx wrangler login`)
+**1.5 First deploy.** (S) ✅ 2026-09-29: live at https://focuslearn.focuslearn.workers.dev (Cloudflare static assets, no Worker code; `wrangler.jsonc`). End-to-end test passes against it
 - Done when: the skeleton is live on the public URL and installs from there.
 
 ⏸ **Stop and wait for confirmation.**

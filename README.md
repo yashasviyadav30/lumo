@@ -13,7 +13,7 @@ Confirmed 2026-09-27 (plan step 0.1).
 | Backend | **Python + FastAPI** | The research tools and any later ML work are in Python |
 | Frontend | **TypeScript, React + Vite**, built as a PWA | One web app for Android, iPhone and laptops; installable |
 | Database | **Postgres** | One database for user data and the short-lived YouTube cache |
-| Hosting until launch | **Render Free, Singapore** (backend, in Docker), **Cloudflare Pages** (frontend), **Supabase Free, Mumbai** (Postgres only) | No card or billing needed; everything stays portable (see the portability rule in the plan) |
+| Hosting until launch | **Render Free, Singapore** (backend, in Docker), **Cloudflare** (frontend, static files), **Supabase Free, Mumbai** (Postgres only) | No card or billing needed; everything stays portable (see the portability rule in the plan) |
 | Hosting at launch | **Google Cloud Run, Mumbai (`asia-south1`)**, maybe Cloud SQL | Decided at plan step 13.0, when billing is decided |
 | LLM | **Groq or Fireworks, zero data retention on**, GPT-OSS or Qwen model | Fast, no data kept, and the same open model can be self-hosted later |
 
@@ -29,4 +29,4 @@ Confirmed 2026-09-27 (plan step 0.1).
 
 ## Current status
 
-Planning done. Building Stage 0 (setup) of [docs/plan.md](docs/plan.md).
+Stages 0–4A of [docs/plan.md](docs/plan.md) are built. Live app: https://focuslearn.focuslearn.workers.dev (backend on Render). Latest: [docs/session-report.md](docs/session-report.md).
