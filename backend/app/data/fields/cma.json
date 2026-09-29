@@ -1,0 +1,2410 @@
+{
+  "field": "cma",
+  "display_name": "CMA (Cost and Management Accountant), ICMAI",
+  "status": "draft, needs a quick human check",
+  "checked_on": "2026-09-29",
+  "aliases": [
+    "CMA",
+    "ICMAI",
+    "CMA India",
+    "Cost and Management Accountant",
+    "Cost Management Accounting",
+    "ICWA",
+    "ICWAI",
+    "CMA Foundation",
+    "CMA Inter",
+    "CMA Intermediate",
+    "CMA Final",
+    "costing",
+    "cost accounting",
+    "CMA inter costing",
+    "सीएमए",
+    "सीएमए इंटर",
+    "सीएमए फाइनल",
+    "सीएमए फाउंडेशन",
+    "कॉस्टिंग",
+    "कॉस्ट अकाउंटिंग",
+    "cma inter ki taiyari",
+    "cma ki padhai",
+    "cma final ki taiyari",
+    "costing ki class"
+  ],
+  "syllabus_source": {
+    "body": "The Institute of Cost Accountants of India (ICMAI)",
+    "url": "https://icmai.in/ClntStudents/CMASyllabus",
+    "version": "CMA Syllabus 2022 (per-paper PDFs at dwpivt501gtb6.cloudfront.net/upload/students/Syllabus2022/)",
+    "note": "Checked 2026-09-29; icmai.in still lists Syllabus 2022. News reports say ICMAI is preparing Syllabus 2026, expected to apply from the June 2027 term; re-check then. Topic names are our own short wording of each paper's sections/modules."
+  },
+  "levels": [
+    {
+      "id": "cma-foundation",
+      "name": "CMA Foundation"
+    },
+    {
+      "id": "cma-intermediate",
+      "name": "CMA Intermediate"
+    },
+    {
+      "id": "cma-final",
+      "name": "CMA Final"
+    }
+  ],
+  "topics": [
+    {
+      "id": "cma-fnd-p1-law-communication",
+      "name": "Paper 1: Business Laws and Business Communication",
+      "level": "cma-foundation",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma foundation business law",
+          "cma foundation paper 1"
+        ],
+        "hi": [
+          "cma foundation law in hindi",
+          "cma foundation law hinglish"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p1-law-basics",
+      "name": "Sources of law and the Indian court system",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p1-law-communication",
+      "search_terms": {
+        "en": [
+          "sources of law india",
+          "legislative process india"
+        ],
+        "hi": [
+          "law basics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p1-contract-act",
+      "name": "Indian Contract Act",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p1-law-communication",
+      "search_terms": {
+        "en": [
+          "indian contract act 1872",
+          "offer and acceptance"
+        ],
+        "hi": [
+          "contract act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p1-sale-of-goods",
+      "name": "Sale of Goods Act",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p1-law-communication",
+      "search_terms": {
+        "en": [
+          "sale of goods act 1930"
+        ],
+        "hi": [
+          "sale of goods act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p1-negotiable-instruments",
+      "name": "Negotiable Instruments Act",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p1-law-communication",
+      "search_terms": {
+        "en": [
+          "negotiable instruments act",
+          "cheque bill promissory note"
+        ],
+        "hi": [
+          "negotiable instrument act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p1-business-communication",
+      "name": "Business communication",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p1-law-communication",
+      "search_terms": {
+        "en": [
+          "business communication cma foundation"
+        ],
+        "hi": [
+          "business communication hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p2-accounting",
+      "name": "Paper 2: Financial and Cost Accounting basics",
+      "level": "cma-foundation",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma foundation accounts",
+          "cma foundation paper 2"
+        ],
+        "hi": [
+          "cma foundation accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p2-accounting-basics",
+      "name": "Accounting basics, journal to trial balance, depreciation",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p2-accounting",
+      "search_terms": {
+        "en": [
+          "journal ledger trial balance",
+          "bank reconciliation statement",
+          "depreciation methods"
+        ],
+        "hi": [
+          "journal entry hindi",
+          "trial balance hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p2-special-transactions",
+      "name": "Consignment, joint venture and bills of exchange",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p2-accounting",
+      "search_terms": {
+        "en": [
+          "consignment accounts",
+          "joint venture accounts",
+          "bills of exchange"
+        ],
+        "hi": [
+          "consignment hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p2-final-accounts",
+      "name": "Final accounts",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p2-accounting",
+      "search_terms": {
+        "en": [
+          "final accounts with adjustments",
+          "trading and profit and loss account"
+        ],
+        "hi": [
+          "final accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p2-cost-basics",
+      "name": "Cost accounting basics and cost sheet",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p2-accounting",
+      "search_terms": {
+        "en": [
+          "cost sheet",
+          "classification of cost"
+        ],
+        "hi": [
+          "cost sheet hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-maths-stats",
+      "name": "Paper 3: Business Mathematics and Statistics",
+      "level": "cma-foundation",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma foundation maths",
+          "cma foundation statistics"
+        ],
+        "hi": [
+          "cma foundation maths hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-arithmetic",
+      "name": "Ratios, proportions, progressions, interest",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "ratio and proportion",
+          "arithmetic progression geometric progression"
+        ],
+        "hi": [
+          "ratio proportion hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-algebra",
+      "name": "Sets, indices, logarithms, equations, matrices",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "logarithms",
+          "set theory venn diagram"
+        ],
+        "hi": [
+          "logarithm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-calculus",
+      "name": "Calculus for business",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "differentiation business maths",
+          "maxima minima"
+        ],
+        "hi": [
+          "calculus hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-data-presentation",
+      "name": "Presenting statistical data",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "frequency distribution",
+          "diagrams and graphs statistics"
+        ],
+        "hi": [
+          "statistics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-central-tendency",
+      "name": "Averages and dispersion",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "mean median mode",
+          "standard deviation"
+        ],
+        "hi": [
+          "mean median mode hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-correlation-regression",
+      "name": "Correlation and regression",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "correlation",
+          "regression lines"
+        ],
+        "hi": [
+          "correlation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-probability",
+      "name": "Probability",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "probability basics"
+        ],
+        "hi": [
+          "probability hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p3-index-time-series",
+      "name": "Index numbers and time series",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p3-maths-stats",
+      "search_terms": {
+        "en": [
+          "index numbers",
+          "time series"
+        ],
+        "hi": [
+          "index number hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-economics-management",
+      "name": "Paper 4: Business Economics and Management",
+      "level": "cma-foundation",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma foundation economics",
+          "cma foundation paper 4"
+        ],
+        "hi": [
+          "cma foundation economics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-economics-basics",
+      "name": "Demand, supply, production and cost",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p4-economics-management",
+      "search_terms": {
+        "en": [
+          "law of demand elasticity",
+          "theory of production"
+        ],
+        "hi": [
+          "demand supply hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-markets",
+      "name": "Forms of market",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p4-economics-management",
+      "search_terms": {
+        "en": [
+          "perfect competition monopoly",
+          "market forms"
+        ],
+        "hi": [
+          "market forms hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-money-banking",
+      "name": "Money and banking",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p4-economics-management",
+      "search_terms": {
+        "en": [
+          "money and banking",
+          "rbi monetary policy"
+        ],
+        "hi": [
+          "banking hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-business-environment",
+      "name": "Economic and business environment",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p4-economics-management",
+      "search_terms": {
+        "en": [
+          "business environment india"
+        ],
+        "hi": [
+          "business environment hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fnd-p4-management",
+      "name": "Basics of management",
+      "level": "cma-foundation",
+      "parent": "cma-fnd-p4-economics-management",
+      "search_terms": {
+        "en": [
+          "principles of management",
+          "planning organising staffing"
+        ],
+        "hi": [
+          "management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p5-law-ethics",
+      "name": "Paper 5: Business Laws and Ethics",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter law",
+          "cma inter paper 5"
+        ],
+        "hi": [
+          "cma inter law hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p5-commercial-laws",
+      "name": "Commercial laws: contract, sale of goods, NI, partnership, LLP",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p5-law-ethics",
+      "search_terms": {
+        "en": [
+          "partnership act 1932",
+          "llp act 2008"
+        ],
+        "hi": [
+          "llp act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p5-industrial-laws",
+      "name": "Industrial and labour laws",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p5-law-ethics",
+      "search_terms": {
+        "en": [
+          "factories act 1948",
+          "epf esi gratuity",
+          "code on wages"
+        ],
+        "hi": [
+          "labour law hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p5-companies-act",
+      "name": "Companies Act basics",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p5-law-ethics",
+      "search_terms": {
+        "en": [
+          "companies act 2013 cma inter"
+        ],
+        "hi": [
+          "companies act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p5-ethics",
+      "name": "Business ethics and emotional intelligence",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p5-law-ethics",
+      "search_terms": {
+        "en": [
+          "business ethics"
+        ],
+        "hi": [
+          "business ethics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-financial-accounting",
+      "name": "Paper 6: Financial Accounting",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter financial accounting",
+          "cma inter fa"
+        ],
+        "hi": [
+          "cma inter accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-fundamentals",
+      "name": "Accounting fundamentals",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "accounting fundamentals cma inter"
+        ],
+        "hi": [
+          "accounting basics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-special-transactions",
+      "name": "Bills, consignment and joint venture",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "consignment",
+          "joint venture"
+        ],
+        "hi": [
+          "consignment hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-final-accounts",
+      "name": "Final accounts, non-profit bodies, incomplete records",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "not for profit organisation accounts",
+          "single entry incomplete records"
+        ],
+        "hi": [
+          "npo accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-partnership",
+      "name": "Partnership accounts",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "admission retirement of partner",
+          "dissolution of partnership"
+        ],
+        "hi": [
+          "partnership accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-branch-lease-hp",
+      "name": "Branch, departmental, lease, hire purchase, insurance claims",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "branch accounts",
+          "hire purchase",
+          "insurance claim loss of stock"
+        ],
+        "hi": [
+          "branch accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p6-accounting-standards",
+      "name": "Accounting standards",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p6-financial-accounting",
+      "search_terms": {
+        "en": [
+          "accounting standards cma inter"
+        ],
+        "hi": [
+          "accounting standards hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-taxation",
+      "name": "Paper 7: Direct and Indirect Taxation",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter tax",
+          "cma inter ditx"
+        ],
+        "hi": [
+          "cma inter tax hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-income-tax-basics",
+      "name": "Income tax basics and residential status",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p7-taxation",
+      "search_terms": {
+        "en": [
+          "residential status income tax",
+          "agricultural income"
+        ],
+        "hi": [
+          "residential status hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-heads-of-income",
+      "name": "Heads of income",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p7-taxation",
+      "search_terms": {
+        "en": [
+          "income from salary",
+          "house property",
+          "capital gains",
+          "pgbp"
+        ],
+        "hi": [
+          "salary income tax hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-total-income",
+      "name": "Total income and tax of individuals and HUF",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p7-taxation",
+      "search_terms": {
+        "en": [
+          "deductions 80c",
+          "tax computation individual"
+        ],
+        "hi": [
+          "tax computation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-gst",
+      "name": "GST",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p7-taxation",
+      "search_terms": {
+        "en": [
+          "gst supply",
+          "input tax credit",
+          "gst registration"
+        ],
+        "hi": [
+          "gst hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p7-customs",
+      "name": "Customs",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p7-taxation",
+      "search_terms": {
+        "en": [
+          "customs act basics",
+          "customs valuation"
+        ],
+        "hi": [
+          "customs hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-cost-accounting",
+      "name": "Paper 8: Cost Accounting",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter costing",
+          "cma inter cost accounting",
+          "cma inter paper 8"
+        ],
+        "hi": [
+          "cma inter costing hindi",
+          "costing hinglish"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-intro-cost-sheet",
+      "name": "Basics of costing and the cost sheet",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "cost sheet",
+          "elements of cost",
+          "classification of cost"
+        ],
+        "hi": [
+          "cost sheet hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-material-employee",
+      "name": "Material and employee costs",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "eoq inventory control",
+          "fifo lifo stores ledger",
+          "labour turnover incentive schemes"
+        ],
+        "hi": [
+          "material costing hindi",
+          "labour cost hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-overheads",
+      "name": "Overheads",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "overhead apportionment",
+          "machine hour rate",
+          "under over absorption"
+        ],
+        "hi": [
+          "overheads hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-cas",
+      "name": "Cost Accounting Standards (CAS 1 to 24)",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "cost accounting standards cas"
+        ],
+        "hi": [
+          "cas hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-bookkeeping-reconciliation",
+      "name": "Cost bookkeeping and reconciliation",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "cost ledger accounts",
+          "reconciliation of cost and financial accounts",
+          "integrated accounts"
+        ],
+        "hi": [
+          "reconciliation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-methods-of-costing",
+      "name": "Methods of costing: job, batch, contract, process, operating",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "process costing equivalent production",
+          "contract costing",
+          "operating costing transport"
+        ],
+        "hi": [
+          "process costing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-marginal-costing",
+      "name": "Marginal costing and CVP",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "marginal costing",
+          "cvp analysis break even",
+          "margin of safety"
+        ],
+        "hi": [
+          "marginal costing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p8-standard-costing-budgets",
+      "name": "Standard costing (material and labour) and budgets",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p8-cost-accounting",
+      "search_terms": {
+        "en": [
+          "material variance",
+          "labour variance",
+          "flexible budget"
+        ],
+        "hi": [
+          "variance hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p9-omsm",
+      "name": "Paper 9: Operations and Strategic Management",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter omsm",
+          "cma inter operations management"
+        ],
+        "hi": [
+          "omsm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p9-operations-planning",
+      "name": "Operations planning and system design",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p9-omsm",
+      "search_terms": {
+        "en": [
+          "operations planning",
+          "capacity planning",
+          "plant layout"
+        ],
+        "hi": [
+          "operations management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p9-production-control",
+      "name": "Production planning, OR tools, productivity and quality",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p9-omsm",
+      "search_terms": {
+        "en": [
+          "production planning and control",
+          "total quality management",
+          "pert cpm"
+        ],
+        "hi": [
+          "pert cpm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p9-maintenance-projects",
+      "name": "Project, maintenance and spares management",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p9-omsm",
+      "search_terms": {
+        "en": [
+          "project management",
+          "maintenance management"
+        ],
+        "hi": [
+          "project management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p9-strategic-management",
+      "name": "Strategic management and digital strategy",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p9-omsm",
+      "search_terms": {
+        "en": [
+          "swot analysis",
+          "strategy formulation",
+          "bcg matrix"
+        ],
+        "hi": [
+          "strategic management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-corporate-accounting-audit",
+      "name": "Paper 10: Corporate Accounting and Auditing",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter caa",
+          "cma inter corporate accounting",
+          "cma inter audit"
+        ],
+        "hi": [
+          "corporate accounting hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-shares-debentures",
+      "name": "Shares and debentures",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p10-corporate-accounting-audit",
+      "search_terms": {
+        "en": [
+          "issue of shares forfeiture",
+          "redemption of preference shares",
+          "buy back of shares"
+        ],
+        "hi": [
+          "shares hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-company-accounts",
+      "name": "Company final accounts (Schedule III) and cash flow",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p10-corporate-accounting-audit",
+      "search_terms": {
+        "en": [
+          "schedule iii balance sheet",
+          "cash flow statement as 3"
+        ],
+        "hi": [
+          "cash flow statement hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-special-companies",
+      "name": "Banking, electricity and insurance company accounts",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p10-corporate-accounting-audit",
+      "search_terms": {
+        "en": [
+          "banking company accounts",
+          "insurance company accounts"
+        ],
+        "hi": [
+          "bank accounts hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-accounting-standards",
+      "name": "Accounting standards",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p10-corporate-accounting-audit",
+      "search_terms": {
+        "en": [
+          "accounting standards corporate"
+        ],
+        "hi": [
+          "as hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p10-auditing",
+      "name": "Auditing and company audit rules",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p10-corporate-accounting-audit",
+      "search_terms": {
+        "en": [
+          "basics of auditing",
+          "company audit companies act 2013"
+        ],
+        "hi": [
+          "audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-fm-data-analytics",
+      "name": "Paper 11: Financial Management and Business Data Analytics",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter fm",
+          "cma inter fmda"
+        ],
+        "hi": [
+          "cma inter fm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-fm-basics",
+      "name": "FM basics and time value of money",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "time value of money",
+          "objectives of financial management"
+        ],
+        "hi": [
+          "time value of money hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-markets",
+      "name": "Financial markets and instruments",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "money market capital market instruments"
+        ],
+        "hi": [
+          "financial markets hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-analysis-tools",
+      "name": "Ratio and fund flow analysis",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "ratio analysis",
+          "fund flow"
+        ],
+        "hi": [
+          "ratio analysis hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-cost-of-capital",
+      "name": "Sources of finance and cost of capital",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "cost of capital wacc",
+          "sources of finance"
+        ],
+        "hi": [
+          "cost of capital hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-capital-budgeting",
+      "name": "Capital budgeting",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "npv irr payback",
+          "capital budgeting"
+        ],
+        "hi": [
+          "capital budgeting hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-working-capital",
+      "name": "Working capital management",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "working capital management",
+          "receivables management"
+        ],
+        "hi": [
+          "working capital hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-financing-decisions",
+      "name": "Leverage, capital structure and dividends",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "leverage operating financial",
+          "capital structure theories",
+          "dividend decisions"
+        ],
+        "hi": [
+          "leverage hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p11-data-analytics",
+      "name": "Business data analytics",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p11-fm-data-analytics",
+      "search_terms": {
+        "en": [
+          "business data analytics",
+          "data visualisation basics"
+        ],
+        "hi": [
+          "data analytics hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-management-accounting",
+      "name": "Paper 12: Management Accounting",
+      "level": "cma-intermediate",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma inter management accounting",
+          "cma inter ma"
+        ],
+        "hi": [
+          "management accounting hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-intro",
+      "name": "Role of management accounting",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "management accounting introduction"
+        ],
+        "hi": [
+          "management accounting hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-abc",
+      "name": "Activity based costing",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "activity based costing"
+        ],
+        "hi": [
+          "abc costing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-marginal-decisions",
+      "name": "Marginal costing and short-term decisions",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "make or buy decision",
+          "key factor limiting factor",
+          "shut down decision"
+        ],
+        "hi": [
+          "decision making hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-transfer-pricing",
+      "name": "Transfer pricing",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "transfer pricing management accounting"
+        ],
+        "hi": [
+          "transfer pricing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-standard-costing",
+      "name": "Standard costing and variance analysis",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "overhead variance",
+          "sales variance"
+        ],
+        "hi": [
+          "variance analysis hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-budgeting",
+      "name": "Forecasting and budgetary control",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "budgetary control",
+          "zero base budgeting"
+        ],
+        "hi": [
+          "budget hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-int-p12-divisional-performance",
+      "name": "Divisional performance measurement",
+      "level": "cma-intermediate",
+      "parent": "cma-int-p12-management-accounting",
+      "search_terms": {
+        "en": [
+          "roi residual income eva",
+          "divisional performance"
+        ],
+        "hi": [
+          "divisional performance hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p13-corporate-economic-laws",
+      "name": "Paper 13: Corporate and Economic Laws",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final law",
+          "cma final cel"
+        ],
+        "hi": [
+          "cma final law hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p13-companies-act",
+      "name": "Companies Act 2013",
+      "level": "cma-final",
+      "parent": "cma-fin-p13-corporate-economic-laws",
+      "search_terms": {
+        "en": [
+          "companies act 2013 cma final",
+          "board meetings directors"
+        ],
+        "hi": [
+          "companies act hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p13-ibc",
+      "name": "Insolvency and Bankruptcy Code",
+      "level": "cma-final",
+      "parent": "cma-fin-p13-corporate-economic-laws",
+      "search_terms": {
+        "en": [
+          "insolvency and bankruptcy code 2016",
+          "cirp"
+        ],
+        "hi": [
+          "ibc hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p13-governance",
+      "name": "Corporate governance, CSR and sustainability",
+      "level": "cma-final",
+      "parent": "cma-fin-p13-corporate-economic-laws",
+      "search_terms": {
+        "en": [
+          "corporate governance",
+          "csr section 135"
+        ],
+        "hi": [
+          "csr hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p13-economic-laws",
+      "name": "SEBI, competition, FEMA and sector laws",
+      "level": "cma-final",
+      "parent": "cma-fin-p13-corporate-economic-laws",
+      "search_terms": {
+        "en": [
+          "sebi regulations",
+          "competition act 2002",
+          "fema 1999"
+        ],
+        "hi": [
+          "fema hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-sfm",
+      "name": "Paper 14: Strategic Financial Management",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final sfm",
+          "strategic financial management"
+        ],
+        "hi": [
+          "sfm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-investment-decisions",
+      "name": "Investment decisions, risk, leasing and securitisation",
+      "level": "cma-final",
+      "parent": "cma-fin-p14-sfm",
+      "search_terms": {
+        "en": [
+          "capital budgeting under risk",
+          "lease vs buy",
+          "securitization"
+        ],
+        "hi": [
+          "leasing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-portfolio",
+      "name": "Security analysis and portfolio management",
+      "level": "cma-final",
+      "parent": "cma-fin-p14-sfm",
+      "search_terms": {
+        "en": [
+          "bond valuation",
+          "capm portfolio theory",
+          "mutual funds nav"
+        ],
+        "hi": [
+          "portfolio management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-derivatives",
+      "name": "Financial risk and derivatives",
+      "level": "cma-final",
+      "parent": "cma-fin-p14-sfm",
+      "search_terms": {
+        "en": [
+          "futures and options",
+          "swaps",
+          "option pricing black scholes"
+        ],
+        "hi": [
+          "derivatives hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-forex",
+      "name": "International finance and forex risk",
+      "level": "cma-final",
+      "parent": "cma-fin-p14-sfm",
+      "search_terms": {
+        "en": [
+          "foreign exchange risk management",
+          "forex forward rates"
+        ],
+        "hi": [
+          "forex hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p14-digital-finance",
+      "name": "Digital finance",
+      "level": "cma-final",
+      "parent": "cma-fin-p14-sfm",
+      "search_terms": {
+        "en": [
+          "digital finance fintech"
+        ],
+        "hi": [
+          "digital finance hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p15-direct-tax-international",
+      "name": "Paper 15: Direct Tax Laws and International Taxation",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final dt",
+          "cma final direct tax"
+        ],
+        "hi": [
+          "cma final dt hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p15-assessment-entities",
+      "name": "Tax of individuals, companies, trusts and others",
+      "level": "cma-final",
+      "parent": "cma-fin-p15-direct-tax-international",
+      "search_terms": {
+        "en": [
+          "company taxation",
+          "mat amt",
+          "trust taxation"
+        ],
+        "hi": [
+          "company tax hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p15-procedures",
+      "name": "Returns, assessment, appeals and penalties",
+      "level": "cma-final",
+      "parent": "cma-fin-p15-direct-tax-international",
+      "search_terms": {
+        "en": [
+          "income tax assessment procedure",
+          "appeals and revision",
+          "penalties prosecution"
+        ],
+        "hi": [
+          "assessment hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p15-tax-planning",
+      "name": "Tax planning, business restructuring, ICDS, black money",
+      "level": "cma-final",
+      "parent": "cma-fin-p15-direct-tax-international",
+      "search_terms": {
+        "en": [
+          "tax planning",
+          "business reorganisation tax",
+          "icds"
+        ],
+        "hi": [
+          "tax planning hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p15-international-tax",
+      "name": "DTAA, transfer pricing and GAAR",
+      "level": "cma-final",
+      "parent": "cma-fin-p15-direct-tax-international",
+      "search_terms": {
+        "en": [
+          "dtaa",
+          "transfer pricing international tax",
+          "gaar"
+        ],
+        "hi": [
+          "international tax hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p16-scm",
+      "name": "Paper 16: Strategic Cost Management",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final scm",
+          "strategic cost management"
+        ],
+        "hi": [
+          "cma final scm hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p16-scm-concepts",
+      "name": "Strategic cost management and quality costs",
+      "level": "cma-final",
+      "parent": "cma-fin-p16-scm",
+      "search_terms": {
+        "en": [
+          "value chain analysis",
+          "cost of quality",
+          "target costing life cycle costing"
+        ],
+        "hi": [
+          "target costing hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p16-decision-techniques",
+      "name": "Decision making, ABM, JIT and performance",
+      "level": "cma-final",
+      "parent": "cma-fin-p16-scm",
+      "search_terms": {
+        "en": [
+          "relevant costing decisions",
+          "just in time",
+          "balanced scorecard"
+        ],
+        "hi": [
+          "decision making hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p16-quant-techniques",
+      "name": "Quantitative techniques: LP, transport, assignment, games, simulation, learning curve",
+      "level": "cma-final",
+      "parent": "cma-fin-p16-scm",
+      "search_terms": {
+        "en": [
+          "linear programming",
+          "transportation problem",
+          "assignment problem",
+          "learning curve"
+        ],
+        "hi": [
+          "linear programming hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p17-cost-management-audit",
+      "name": "Paper 17: Cost and Management Audit",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final cost audit",
+          "cma final cmad"
+        ],
+        "hi": [
+          "cost audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p17-cost-audit",
+      "name": "Cost audit, cost records rules and audit report",
+      "level": "cma-final",
+      "parent": "cma-fin-p17-cost-management-audit",
+      "search_terms": {
+        "en": [
+          "cost records and audit rules 2014",
+          "cost audit report form cra 3",
+          "cost auditing standards"
+        ],
+        "hi": [
+          "cost audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p17-management-audit",
+      "name": "Management audit",
+      "level": "cma-final",
+      "parent": "cma-fin-p17-cost-management-audit",
+      "search_terms": {
+        "en": [
+          "management audit"
+        ],
+        "hi": [
+          "management audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p17-internal-audit",
+      "name": "Internal control, internal and operational audit",
+      "level": "cma-final",
+      "parent": "cma-fin-p17-cost-management-audit",
+      "search_terms": {
+        "en": [
+          "internal audit",
+          "internal control"
+        ],
+        "hi": [
+          "internal audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p17-forensic-audit",
+      "name": "Forensic audit and anti-money laundering",
+      "level": "cma-final",
+      "parent": "cma-fin-p17-cost-management-audit",
+      "search_terms": {
+        "en": [
+          "forensic audit",
+          "anti money laundering"
+        ],
+        "hi": [
+          "forensic audit hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-cfr",
+      "name": "Paper 18: Corporate Financial Reporting",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final cfr",
+          "corporate financial reporting"
+        ],
+        "hi": [
+          "cfr hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-ind-as",
+      "name": "Indian Accounting Standards (Ind AS)",
+      "level": "cma-final",
+      "parent": "cma-fin-p18-cfr",
+      "search_terms": {
+        "en": [
+          "ind as",
+          "ind as 115 revenue"
+        ],
+        "hi": [
+          "ind as hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-valuation-instruments",
+      "name": "Share valuation and financial instruments",
+      "level": "cma-final",
+      "parent": "cma-fin-p18-cfr",
+      "search_terms": {
+        "en": [
+          "valuation of shares goodwill",
+          "ind as 109 financial instruments"
+        ],
+        "hi": [
+          "valuation of shares hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-business-combinations",
+      "name": "Business combinations and restructuring",
+      "level": "cma-final",
+      "parent": "cma-fin-p18-cfr",
+      "search_terms": {
+        "en": [
+          "amalgamation ind as 103",
+          "business combination"
+        ],
+        "hi": [
+          "amalgamation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-consolidation",
+      "name": "Consolidated financial statements",
+      "level": "cma-final",
+      "parent": "cma-fin-p18-cfr",
+      "search_terms": {
+        "en": [
+          "consolidated financial statements",
+          "holding company accounts"
+        ],
+        "hi": [
+          "consolidation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p18-govt-accounting",
+      "name": "Government accounting and recent developments",
+      "level": "cma-final",
+      "parent": "cma-fin-p18-cfr",
+      "search_terms": {
+        "en": [
+          "government accounting india",
+          "integrated reporting"
+        ],
+        "hi": [
+          "government accounting hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p19-indirect-tax",
+      "name": "Paper 19: Indirect Tax Laws and Practice",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final idt",
+          "cma final gst"
+        ],
+        "hi": [
+          "cma final gst hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p19-gst-advanced",
+      "name": "GST in depth: supply, ITC, refunds, returns, audit, disputes",
+      "level": "cma-final",
+      "parent": "cma-fin-p19-indirect-tax",
+      "search_terms": {
+        "en": [
+          "place of supply gst",
+          "gst refund",
+          "gst returns",
+          "e way bill"
+        ],
+        "hi": [
+          "gst hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p19-customs",
+      "name": "Customs law and procedures",
+      "level": "cma-final",
+      "parent": "cma-fin-p19-indirect-tax",
+      "search_terms": {
+        "en": [
+          "customs valuation",
+          "customs duty drawback"
+        ],
+        "hi": [
+          "customs hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20a-spmbv",
+      "name": "Paper 20A: Strategic Performance Management and Business Valuation (elective)",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final spmbv",
+          "business valuation"
+        ],
+        "hi": [
+          "business valuation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20a-performance-management",
+      "name": "Performance management and enterprise risk",
+      "level": "cma-final",
+      "parent": "cma-fin-p20a-spmbv",
+      "search_terms": {
+        "en": [
+          "performance management",
+          "enterprise risk management"
+        ],
+        "hi": [
+          "performance management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20a-business-valuation",
+      "name": "Business valuation methods and M&A",
+      "level": "cma-final",
+      "parent": "cma-fin-p20a-spmbv",
+      "search_terms": {
+        "en": [
+          "business valuation methods dcf",
+          "valuation in mergers"
+        ],
+        "hi": [
+          "valuation hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20b-rmbi",
+      "name": "Paper 20B: Risk Management in Banking and Insurance (elective)",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final rmbi",
+          "risk management banking insurance"
+        ],
+        "hi": [
+          "risk management hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20b-banking-risk",
+      "name": "Risk in banking: interest rate, market, credit, liquidity, operational",
+      "level": "cma-final",
+      "parent": "cma-fin-p20b-rmbi",
+      "search_terms": {
+        "en": [
+          "credit risk",
+          "interest rate risk",
+          "operational risk basel"
+        ],
+        "hi": [
+          "credit risk hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20b-insurance-risk",
+      "name": "Risk in insurance business",
+      "level": "cma-final",
+      "parent": "cma-fin-p20b-rmbi",
+      "search_terms": {
+        "en": [
+          "insurance business risk",
+          "life and general insurance"
+        ],
+        "hi": [
+          "insurance hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20c-entrepreneurship",
+      "name": "Paper 20C: Entrepreneurship and Startup (elective)",
+      "level": "cma-final",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "cma final entrepreneurship",
+          "entrepreneurship and startup"
+        ],
+        "hi": [
+          "startup hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20c-skills-ecosystem",
+      "name": "Entrepreneurial skills and ecosystem",
+      "level": "cma-final",
+      "parent": "cma-fin-p20c-entrepreneurship",
+      "search_terms": {
+        "en": [
+          "entrepreneurial skills",
+          "startup ecosystem india"
+        ],
+        "hi": [
+          "entrepreneurship hindi"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20c-idea-to-scale",
+      "name": "From idea to scale-up",
+      "level": "cma-final",
+      "parent": "cma-fin-p20c-entrepreneurship",
+      "search_terms": {
+        "en": [
+          "business idea to startup",
+          "scaling a startup"
+        ],
+        "hi": [
+          "startup kaise shuru kare"
+        ]
+      }
+    },
+    {
+      "id": "cma-fin-p20c-risk-leadership",
+      "name": "Risk, leadership and new-age businesses",
+      "level": "cma-final",
+      "parent": "cma-fin-p20c-entrepreneurship",
+      "search_terms": {
+        "en": [
+          "startup risk management",
+          "leadership skills"
+        ],
+        "hi": [
+          "leadership hindi"
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "kind": "channel",
+      "channel_id": "UCu6oT-LaHX7CFztFKAI6aqg",
+      "name": "Akash Agarwal Classes (CMA Foundation channel)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-foundation"
+      ],
+      "topics": [
+        "cma-fnd-p1-law-communication",
+        "cma-fnd-p2-accounting",
+        "cma-fnd-p3-maths-stats",
+        "cma-fnd-p4-economics-management"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for all four CMA Foundation papers",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.openpr.com/news/4619450/akash-agarwal-classes-launches-full-syllabus-free-youtube",
+          "says": "press release: full free CMA Foundation lecture series on YouTube",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Pune coaching institute; free playlists mirror its paid courses. The openpr item is the institute's own press release, so the second source is weak. Hinglish ❓"
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PL6BOecg3cC7XEjLkapLt6mb1MlKxXm53-",
+      "channel_id": null,
+      "name": "CMA Foundation- REGULAR COURSE Free Lectures | Akash Agarwal Classes",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-foundation"
+      ],
+      "topics": [
+        "cma-fnd-p1-law-communication",
+        "cma-fnd-p2-accounting",
+        "cma-fnd-p3-maths-stats",
+        "cma-fnd-p4-economics-management"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "Akash Agarwal Classes listed for all Foundation papers",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Playlist ID from a public YouTube URL found by web search. Owning channel not confirmed ❓"
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PL6BOecg3cC7Vw27RMSPEr6YVGWprGoyNm",
+      "channel_id": null,
+      "name": "CMA Inter- Regular Courses Free Lectures (Akash Agarwal Classes)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate"
+      ],
+      "topics": [
+        "cma-int-p5-law-ethics",
+        "cma-int-p6-financial-accounting",
+        "cma-int-p8-cost-accounting",
+        "cma-int-p10-corporate-accounting-audit",
+        "cma-int-p11-fm-data-analytics",
+        "cma-int-p12-management-accounting"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "Akash Agarwal Classes listed for CMA Inter law, FA, costing, CAA, FM and MA",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Owning channel not confirmed; may be a separate AAC Inter channel ❓. Topic list follows the Chartered Team table, not the playlist contents ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCnra_sSTg-oGAUqfXkiTYxQ",
+      "name": "CMA Foundation Grooming Education",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-foundation"
+      ],
+      "topics": [
+        "cma-fnd-p1-law-communication",
+        "cma-fnd-p2-accounting",
+        "cma-fnd-p3-maths-stats",
+        "cma-fnd-p4-economics-management"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed first for every CMA Foundation paper",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Grooming Education Academy (Chandan Poddar). Channel ID from the channel URL in web search results. Only one independent page ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCXtc-Sxz1rT7l4mNJoVRQPQ",
+      "name": "CMA Intermediate Grooming Education",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate"
+      ],
+      "topics": [
+        "cma-int-p8-cost-accounting",
+        "cma-int-p11-fm-data-analytics"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for CMA Inter Cost Accounting and FM & BDA",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Channel self-describes coverage of all eight Inter papers; we map only what the web page lists. One independent page ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCzqqr31HSE-B4HcM1Cw4RiQ",
+      "name": "Santosh Kumar - COC Education",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-foundation",
+        "cma-intermediate"
+      ],
+      "topics": [
+        "cma-fnd-p1-law-communication",
+        "cma-fnd-p2-accounting",
+        "cma-fnd-p3-maths-stats",
+        "cma-fnd-p4-economics-management",
+        "cma-int-p6-financial-accounting"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "COC Education listed for all Foundation papers; Santosh Kumar for Inter Financial Accounting",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.quora.com/What-is-the-best-YouTube-channel-for-CMA-India",
+          "says": "answer names 'Santosh kumar' and 'mepl classes' as very good for CMA aspirants (seen via search snippet; page blocked)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "CA/CMA Santosh Kumar, accounts teacher. Quora text read from search snippet only ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCzw9zbtGSGMN-Cp-_20fZDw",
+      "name": "MEPL CMA EXCLUSIVE (Mohit Agarwal)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p5-law-ethics",
+        "cma-int-p10-corporate-accounting-audit",
+        "cma-int-p11-fm-data-analytics",
+        "cma-int-p12-management-accounting",
+        "cma-fin-p13-corporate-economic-laws",
+        "cma-fin-p17-cost-management-audit",
+        "cma-fin-p18-cfr",
+        "cma-fin-p20a-spmbv"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "MEPL listed for Inter law, CAA, FM, MA and Final CEL, cost audit, CFR, SPMBV",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.quora.com/What-is-the-best-YouTube-channel-for-CMA-India",
+          "says": "'mepl classes' named as very good for CMA aspirants (search snippet)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "CMA-only channel of MEPL Classes; the main MEPL Classes channel is UCsFZTfk-d7uJeGuZWKj69jw (mixed CA/CS/CMA). Web pages say 'MEPL Classes', not which channel ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UClfDbwP3ACSKDKuAkbjq03w",
+      "name": "Deepak Classes",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p5-law-ethics",
+        "cma-int-p6-financial-accounting",
+        "cma-int-p8-cost-accounting",
+        "cma-int-p9-omsm",
+        "cma-int-p10-corporate-accounting-audit",
+        "cma-int-p12-management-accounting",
+        "cma-fin-p16-scm"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for six CMA Inter papers and Final SCM",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "CMA-focused; posts free CMA Inter fast-track and Final SCM classes. Only one independent page ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCfQ6cjvUO4fCOwKEsr86Z9Q",
+      "name": "CMA Junction",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p8-cost-accounting",
+        "cma-int-p9-omsm",
+        "cma-int-p10-corporate-accounting-audit",
+        "cma-fin-p14-sfm"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for Inter Cost, OMSM, CAA and Final SFM",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Run by CMA Palak Sharma. Also posts study plans and topper talks. One independent page ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UChjApHrYdDgxVKGOgMQ1KnA",
+      "name": "SJC Institute (CA Satish Jalan)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p8-cost-accounting",
+        "cma-fin-p16-scm",
+        "cma-fin-p17-cost-management-audit"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "SJC Institute listed for Final SCM and Cost & Management Audit",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.quora.com/Who-is-the-best-teacher-for-a-CMA-Inter-account-direct-tax-and-cost-accounting",
+          "says": "CA Satish Jalan (SJC Institute) named among top costing faculty (search snippet)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://s3.collegedunia.com/institute/3142-sjc-institute-kolkata/google-reviews",
+          "says": "student reviews call Satish Jalan the best for CMA Final SFM and SCM (search snippet)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Kolkata institute focused on CMA. A second channel 'Satish Jalan Classes' (@satishjalan-strategiccostm4407) exists; not mapped ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCjBv66pwZIbkLiryxW2_8gA",
+      "name": "CA Vijay Sarda",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p7-taxation",
+        "cma-int-p7-income-tax-basics",
+        "cma-int-p7-heads-of-income",
+        "cma-int-p7-total-income",
+        "cma-fin-p15-direct-tax-international"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for Inter direct tax and Final DT & international tax",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://zeroinfy.in/collections/cma-inter-paper-7-2022-ditx",
+          "says": "listed as a faculty for CMA Inter Paper 7 tax",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "CA teacher who also teaches CMA. Channel mixes CA and CMA tax plus motivation talks; filter by playlist later ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCjPOIw8shQjyLPNasWrsIDw",
+      "name": "CA Amit Mahajan",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-int-p7-taxation",
+        "cma-fin-p19-indirect-tax"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for Inter DT & IDT and Final indirect tax",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://zeroinfy.in/collections/cma-inter-paper-7-2022-ditx",
+          "says": "listed as a faculty for CMA Inter Paper 7 tax",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Tax teacher (ex-EY). Channel has CMA-labelled tax videos but also CA content ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCjRRmOlj6oYt6xIcMaZ9Qaw",
+      "name": "Purushottam Sir Costing Classes (CA Purushottam Aggarwal)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "cma-intermediate"
+      ],
+      "topics": [
+        "cma-int-p8-cost-accounting",
+        "cma-int-p12-management-accounting"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.quora.com/Who-is-the-best-teacher-for-a-CMA-Inter-account-direct-tax-and-cost-accounting",
+          "says": "Purushottam Aggarwal recommended for CMA Inter Cost Accounting (search snippet)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://smartlearningdestination.com/video-lecture/cma-inter-cost-accounting-regular-batch-by-ca-purushottam-aggarwal/",
+          "says": "sells his CMA Inter Cost Accounting batch; mentions well-regarded YouTube marathons",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Mainly a CA Inter costing teacher who also teaches CMA. Second page is a reseller, not neutral ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCWmdXmq6yN6D5WEGLn6LR4g",
+      "name": "ICMAI (The Institute of Cost Accountants of India)",
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "levels": [
+        "cma-foundation",
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://icmai.in/Home/webinarstudent",
+          "says": "official ICMAI site links @ICMAI-CMA in its footer",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Official body. Mostly events and webinars; its recorded coaching classes sit on the eicmai.in portal, not YouTube. No topic mapping until a curator checks its playlists ❓"
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UClK2wfqH9lTVQ-7R97KLrGA",
+      "name": "Amit Panigrahi",
+      "languages": [
+        "hi"
+      ],
+      "levels": [
+        "cma-intermediate",
+        "cma-final"
+      ],
+      "topics": [
+        "cma-fin-p13-corporate-economic-laws",
+        "cma-fin-p16-scm"
+      ],
+      "motivational": true,
+      "recommended_by": [
+        {
+          "url": "https://charteredteam.com/free-resources-for-cma-foundation-intermediate-and-final-preparation/",
+          "says": "listed for Final CEL and SCM",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "A CMA student's channel: study strategy, 'best YouTube channels' guides, notes, some free classes. Marked motivational/guidance. Hindi only ❓"
+    }
+  ]
+}
