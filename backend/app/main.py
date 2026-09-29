@@ -12,7 +12,7 @@ from app.config import get_settings
 from app.db import get_engine
 from app.purge import purge_loop
 from app.request_log import RequestLogMiddleware
-from app.routers import accounts, search
+from app.routers import accounts, goals, search
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
@@ -36,6 +36,7 @@ def create_app(run_background_jobs: bool = True) -> FastAPI:
     )
     app.include_router(accounts.router)
     app.include_router(search.router)
+    app.include_router(goals.router)
 
     @app.get("/health")
     def health() -> dict[str, str]:
