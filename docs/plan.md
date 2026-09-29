@@ -139,7 +139,7 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 - Copy R1–R14 into `docs/compliance-checklist.md` as a checklist used at the end of every stage.
 - Done when: the file exists and Stage 0 is ticked against it.
 
-**0.9 Start the curator work (runs in parallel).** (S to start)
+**0.9 Start the curator work (runs in parallel).** (S to start) ✅ Replaced 2026-09-29: draft curator sheets for all four fields researched from public web sources (`docs/curation/*.md`, `backend/app/data/fields/*.json`), each marked "draft, needs a quick human check".
 - Find one person who knows each test field and book their time for step 5.1. Curation takes calendar time, so start now.
 - Done when: a curator is lined up for each of the four fields.
 
@@ -147,23 +147,23 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 
 ## Stage 1. Skeleton
 
-**1.1 App shell.** (M)
+**1.1 App shell.** (M) ✅ 2026-09-29
 - Own name, logo, colours (R9). Home, Search, Library, Settings tabs. Installable PWA (manifest, service worker), works offline for the shell only.
 - Done when: the app installs on an Android phone and a laptop.
 
-**1.2 Watch page with the embedded player.** (M)
+**1.2 Watch page with the embedded player.** (M) ✅ 2026-09-29 (desktop Edge checked end to end; phones still to check)
 - YouTube IFrame player, standard controls, autoplay off. Nothing covers or changes the player (R7).
 - Done when: a video plays on Android Chrome, desktop Chrome and iPhone Safari.
 
-**1.3 Check the iPhone "Error 153" issue.** (S)
+**1.3 Check the iPhone "Error 153" issue.** (S) 🟡 Fix built in (page-wide referrer meta + origin); needs a real iPhone
 - Test playback from the installed PWA on an iPhone. If it fails, note it; the fix is a Referer/origin setup, and native iOS comes later with Capacitor.
 - Done when: iPhone playback works, or the problem is written down with a workaround.
 
-**1.4 Check player links.** (S)
+**1.4 Check player links.** (S) 🟡 Needs Android and iPhone devices
 - Tap the YouTube logo and end-screen videos on each platform and note where they go. They must open YouTube (R7); record it, don't fight it.
 - Done when: behaviour per platform is written in `docs/`.
 
-**1.5 First deploy.** (S)
+**1.5 First deploy.** (S) ⛔ Waiting on the Cloudflare login (`npx wrangler login`)
 - Done when: the skeleton is live on the public URL and installs from there.
 
 ⏸ **Stop and wait for confirmation.**
@@ -172,31 +172,31 @@ Rough estimate for **one developer working part-time (about 10–15 hours a week
 
 Required before any real user, so it's all in Part A.
 
-**2.1 Sign-in.** (M)
+**2.1 Sign-in.** (M) ✅ 2026-09-29 (email + password; Google sign-in later)
 - Email or Google sign-in (for identity only; no YouTube account access is needed).
 - Done when: a user can sign up, sign in and sign out.
 
-**2.2 18+ gate.** (S)
+**2.2 18+ gate.** (S) ✅ 2026-09-29
 - Date of birth at sign-up; under 18 gets a polite "not yet" screen (R10).
 - Done when: an under-18 date is refused and nothing about that person is stored.
 
-**2.3 Data model with two kinds of data.** (M)
+**2.3 Data model with two kinds of data.** (M) ✅ 2026-09-29
 - **Our data** (user, goals, mutes, settings, curator mappings, signals) is kept as long as the account lives. **YouTube data** (titles, descriptions, fields) sits in separate tables with a `fetched_at` date. Anything that points at a video stores **the video ID only**; titles are re-fetched when shown.
 - Done when: the schema is written and reviewed against R1 and R11.
 
-**2.4 30-day purge job.** (S)
+**2.4 30-day purge job.** (S) ✅ 2026-09-29
 - A daily job deletes YouTube data older than 30 days (R1).
 - Done when: a test row dated 31 days ago is gone after the job runs.
 
-**2.5 "Delete my data".** (M)
+**2.5 "Delete my data".** (M) ✅ 2026-09-29 (deletes at once)
 - A button in Settings deletes the account and all its data within 7 days (do it at once where possible). The message says this doesn't delete anything on YouTube (R2).
 - Done when: a test account is fully gone and the flow is tested.
 
-**2.6 Logging without API data.** (S)
+**2.6 Logging without API data.** (S) ✅ 2026-09-29
 - Logs hold a pseudonymous user ID, time, action and IP, never video IDs or titles (R11). Keep logs 1 year, in India.
 - Done when: a sample of logs from a test session shows no IDs or titles.
 
-**2.7 Consent and notices placeholder.** (S)
+**2.7 Consent and notices placeholder.** (S) ✅ 2026-09-29
 - A plain first-run screen saying what the app stores and why, and a draft privacy page. The lawyer's version replaces it in Stage 13.
 - Done when: a new user sees and accepts it before the first goal.
 
@@ -204,36 +204,36 @@ Required before any real user, so it's all in Part A.
 
 ## Stage 3. Light layer search
 
-**3.1 Search call.** (M)
+**3.1 Search call.** (M) ✅ 2026-09-29
 - `search.list` with `type=video`, `safeSearch=strict`, `relevanceLanguage` from the user's setting (R5). One call per search.
 - Done when: a search returns results on screen.
 
-**3.2 Fetch the fields.** (S)
+**3.2 Fetch the fields.** (S) ✅ 2026-09-29 (also `player` for the Shorts shape)
 - One `videos.list` call for the result IDs: `snippet.categoryId`, duration, `contentRating.ytRating`, `status.embeddable`, `status.madeForKids`, `regionRestriction`, `topicDetails`, `contentDetails.caption`.
 - Done when: the fields are stored with `fetched_at` and used by the next step.
 
-**3.3 Drop rules.** (S)
+**3.3 Drop rules.** (S) ✅ 2026-09-29
 - Drop age-restricted, non-embeddable and region-blocked (for India) videos everywhere (R5). Count them.
 - Done when: a known age-restricted video never shows, and it's counted.
 
-**3.3b Hide by YouTube's own type.** (S) (added 2026-09-29)
+**3.3b Hide by YouTube's own type.** (S) (added 2026-09-29) ✅ 2026-09-29
 - Hide videos that **YouTube itself** types as entertainment: by `categoryId` (e.g. Music, Gaming, Comedy, Entertainment; confirm the IDs with `videoCategories.list` for India) and by `topicDetails.topicCategories` (e.g. Music, Gaming, Humor, Film, TV shows). The app adds no judgement of its own (R3).
 - Uploaders choose their own category, so it's sometimes wrong. Videos from curated channels (5.1) are never hidden by this rule, and "Why" says "YouTube lists this as Music", with "Show" one tap away.
 - Done when: a known music video is hidden and counted, and a curated lecture filed under "Entertainment" still shows.
 
-**3.4 The hidden line.** (M)
+**3.4 The hidden line.** (M) ✅ 2026-09-29
 - "N hidden by [App] · Why · Show". "Why" lists the reasons in plain words (e.g. "age-restricted by YouTube", "your mute: this channel"). "Show" reveals them in place (R6), except videos that can't play in an embed, which are listed with the reason.
 - Done when: the line appears, and Why and Show both work.
 
-**3.5 Shared search cache.** (M)
+**3.5 Shared search cache.** (M) ✅ 2026-09-29 (24 h cache; ETags skipped, see progress.md)
 - Cache results by normalised query + language for hours to a few days, never past 30 days (R1). Refresh with ETags.
 - Done when: the same search twice uses one quota call.
 
-**3.6 Quota guard.** (S)
+**3.6 Quota guard.** (S) ✅ 2026-09-29
 - Count search calls per day. Near the limit, serve cache and curated feeds only, with a short note (R12).
 - Done when: with the counter forced to 100, the app still works and says so.
 
-**3.7 Measure speed.** (S)
+**3.7 Measure speed.** (S) ✅ 2026-09-29 (cold ≈1.3 s p50, cached ≈60 ms)
 - Log time for each step (search, fields, filtering). Target 1–2 s end to end.
 - Done when: p50 and p95 for 20 test searches are written down.
 
@@ -241,27 +241,27 @@ Required before any real user, so it's all in Part A.
 
 ## Stage 4A. Smart agent core
 
-**4.1 Goal schema.** (S)
+**4.1 Goal schema.** (S) ✅ 2026-09-29 (`docs/goal-schema.md`)
 - Fields: field (e.g. Company Secretary), exam body, level, paper or subject, topic, language preference, minor signals.
 - Done when: the schema and 10 example goals mapped by hand are in `docs/`.
 
-**4.2 Goal test set.** (S)
+**4.2 Goal test set.** (S) ✅ 2026-09-29 (66 goals)
 - 50–100 goals typed the way your testers would type them, in English, Hindi and Hinglish, with the correct answer for each. Include ambiguous ones ("CS", "AI").
 - Done when: the set is saved (it's our data, no YouTube text).
 
-**4.4 Goal parser.** (M)
+**4.4 Goal parser.** (M) ✅ 2026-09-29 (hybrid: 98% on the test set)
 - The starting model from 0.5 turns the typed goal into the schema. Only the user's text goes to the LLM (R4).
 - Done when: it gets most of the test set right, with the misses written down for 4.3 after Test 1.
 
-**4.5 "Did you mean" tap.** (S)
+**4.5 "Did you mean" tap.** (S) ✅ 2026-09-29
 - Only when the parser is truly unsure: one tap, two or three choices, never a form.
 - Done when: "CS" asks, "CS ESG paper" doesn't.
 
-**4.7a Minimal topic maps.** (M)
+**4.7a Minimal topic maps.** (M) ✅ 2026-09-29 (from the official syllabi; in `backend/app/data/fields/`)
 - For each test field, just the top level: papers or subjects and their main units, from the official syllabus (ICSI, ICMAI, NTA/NMC) or, for AI, a short outline. Our own words.
 - Done when: each field has a short topic list in the database that curators can map to in 5.1.
 
-**4.8 Query builder.** (M)
+**4.8 Query builder.** (M) ✅ 2026-09-29 (20 test goals on topic by eye)
 - Turn a goal + topic into one good YouTube search (English, Hindi or Hinglish as the user prefers). Works on the user's text only.
 - Done when: for 20 test goals the first page of results is on topic by eye.
 
@@ -276,6 +276,11 @@ Required before any real user, so it's all in Part A.
 **5.2 Feed from the curators' mapping.** (M)
 - The feed picks the playlists and channels the curators mapped to the user's goal topics, and pulls their items with `playlistItems.list` / `playlists.list` (1 unit each). Order comes from the playlist's own order, then upload date. **The app never reads titles to decide what fits** (R3).
 - Done when: a new user with a goal sees a feed built only from the mapping, without using search quota.
+
+**5.6 Follow your own teachers.** (S) (added 2026-09-29)
+- Everyone prefers different teachers. The user can follow any channel with one tap ("Follow teacher" on a video, or paste a channel link). Followed channels always feed their Home feed and are never hidden by YouTube's category. It's the user's own rule (R3), stored as channel IDs (our data).
+- Backend and the search-screen button are built (2026-09-29); the feed uses them in 5.2.
+- Done when: a followed teacher's new videos appear in the user's feed.
 
 ⏸ **Stop and wait for confirmation.**
 

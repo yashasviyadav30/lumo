@@ -41,3 +41,23 @@ Also every stage: **no secret in git** (keys only in `backend/.env`, which is ig
 | Secrets | ✅ | Scanned all commits and the GitHub repo (private): no Google, Groq or database secrets; the only env file tracked is `backend/.env.example` with empty keys. The Docker image contains no `.env`. |
 
 Data location note: the database is in Mumbai (Supabase `ap-south-1`); the backend runs in Singapore (Render) until launch (step 13.0).
+
+## Stages 1, 2, 3 and 4A (checked 2026-09-29)
+
+| Rule | Result | How it was checked |
+|---|---|---|
+| R1 | ✅ | YouTube rows (`yt_videos`, `yt_search_cache`) carry `fetched_at`; purge deletes >30 days (test); reads never show rows >30 days even before a purge (test). Search cache 24 h. |
+| R2 | ✅ | "Delete my data" deletes the account and every row at once (`ON DELETE CASCADE`; test + real Supabase run). |
+| R3 | ✅ | Filtering uses only YouTube's fields (`categoryId`, `topicDetails`, `ytRating`, `embeddable`, region, duration, embed shape) and the user's own mutes, follows and Shorts setting. No model reads titles. |
+| R4 | ✅ | The goal LLM gets only the user's text and our catalogue (test asserts the exact user message). Groq ZDR on. |
+| R5 | ✅ | `safeSearch=strict` on every search (test on the real request URL). Age-restricted, non-embeddable, blocked-in-India videos dropped and counted. Feed (Stage 5) must reuse the same rules. |
+| R6 | ✅ | "N hidden by FocusLearn · Why · Show" (unit tests + real Edge run). |
+| R7 | ✅ | Official IFrame player, controls on, autoplay off, nothing over it, links untouched, no background play. Nothing drawn over YouTube thumbnails; titles shown as given. |
+| R8 | ✅ | No points, coins, streaks or gating anywhere. |
+| R9 | ✅ | Own name and logo; "not made by YouTube or Google"; hidden reasons marked as ours, not YouTube's. |
+| R10 | ✅ | 18+ gate; under-18 refused with nothing stored (not even in the log). Minor signals in goals shown as a note; the re-check is step 4.6. |
+| R11 | ✅ | Real `app_log` holds only route templates (`/api/search`, `/api/goals`…); searches, goals and video IDs travel in request bodies; uvicorn access log off. |
+| R12 | ✅ | Quota guard: saved results or a clear note when searches run out (tests). |
+| R13 | ✅ | "We try to hide harmful content, but no filter is perfect." No screen calls a video safe (grep). |
+| R14 | ✅ | No viewing is tracked at all yet. When study tools arrive (Stage 7), skip tracking for `madeForKids` videos. |
+| Secrets | ✅ | All commits scanned: no keys or passwords; only `backend/.env.example` (empty) is tracked; Docker image has no `.env`. |
