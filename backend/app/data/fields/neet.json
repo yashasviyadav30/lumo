@@ -1,0 +1,1801 @@
+{
+  "field": "neet",
+  "display_name": "NEET UG (medical entrance)",
+  "status": "draft, needs a quick human check",
+  "checked_on": "2026-09-29",
+  "aliases": [
+    "NEET",
+    "NEET UG",
+    "NEET-UG",
+    "neet 2027",
+    "medical entrance",
+    "MBBS entrance",
+    "medical entrance exam",
+    "NTA NEET",
+    "neet dropper",
+    "neet repeater",
+    "neet ki taiyari",
+    "neet ki tayari",
+    "neet preparation hindi",
+    "doctor banne ka exam",
+    "नीट",
+    "नीट यूजी",
+    "मेडिकल प्रवेश परीक्षा"
+  ],
+  "syllabus_source": {
+    "body": "National Medical Commission (UGMEB), published by NTA",
+    "url": "https://www.nta.ac.in/Download/Notice/Notice_20260108180635.pdf",
+    "version": "Updated syllabus for NEET (UG) 2026: NMC letter U-14023/19/NEET (UG Exam)/UGMEB dated 22-12-2025, NTA notice dated 08-01-2026",
+    "note": "Physics 20 units, Chemistry 20 units, Biology 10 units. No 2027 syllabus found as of 2026-09-29; pages say 2027 follows this one ❓. nmc.org.in did not load cleanly, so I used NTA's copy of the NMC letter. Botany and Zoology are not split in the official syllabus; they are search terms on the Biology topic."
+  },
+  "levels": [
+    {
+      "id": "phy",
+      "name": "Physics"
+    },
+    {
+      "id": "chem",
+      "name": "Chemistry"
+    },
+    {
+      "id": "bio",
+      "name": "Biology (Botany and Zoology)"
+    }
+  ],
+  "topics": [
+    {
+      "id": "neet-phy-physics",
+      "name": "Physics (NEET)",
+      "level": "phy",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "neet physics",
+          "neet physics lectures",
+          "neet physics one shot"
+        ],
+        "hi": [
+          "neet physics hindi",
+          "neet physics class"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-measurement",
+      "name": "Units and measurement",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "units and measurement neet",
+          "dimensional analysis neet",
+          "errors in measurement"
+        ],
+        "hi": [
+          "units and measurement hindi",
+          "vimiya vishleshan"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-kinematics",
+      "name": "Kinematics",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "kinematics neet",
+          "motion in a plane neet",
+          "projectile motion neet"
+        ],
+        "hi": [
+          "kinematics hindi neet",
+          "gati neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-laws-of-motion",
+      "name": "Laws of motion",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "laws of motion neet",
+          "newton laws neet",
+          "friction neet"
+        ],
+        "hi": [
+          "laws of motion hindi",
+          "newton ke niyam"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-work-energy-power",
+      "name": "Work, energy and power",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "work energy power neet",
+          "collisions neet",
+          "work energy theorem"
+        ],
+        "hi": [
+          "work energy power hindi",
+          "karya urja shakti"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-rotation",
+      "name": "Rotational motion",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "rotational motion neet",
+          "moment of inertia neet",
+          "torque angular momentum"
+        ],
+        "hi": [
+          "rotational motion hindi neet",
+          "ghurni gati"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-gravitation",
+      "name": "Gravitation",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "gravitation neet",
+          "satellite motion neet",
+          "escape velocity"
+        ],
+        "hi": [
+          "gravitation hindi neet",
+          "gurutvakarshan"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-solids-liquids",
+      "name": "Properties of solids and liquids",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "mechanical properties of fluids neet",
+          "elasticity neet",
+          "surface tension viscosity"
+        ],
+        "hi": [
+          "properties of matter hindi",
+          "dravon ke gun"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-thermodynamics",
+      "name": "Thermodynamics",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "thermodynamics physics neet",
+          "laws of thermodynamics neet",
+          "heat engine carnot"
+        ],
+        "hi": [
+          "thermodynamics hindi neet",
+          "ushmagatiki"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-kinetic-theory",
+      "name": "Kinetic theory of gases",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "kinetic theory of gases neet",
+          "rms speed neet",
+          "degrees of freedom"
+        ],
+        "hi": [
+          "kinetic theory hindi",
+          "gason ka anugati siddhant"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-oscillations-waves",
+      "name": "Oscillations and waves",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "oscillations neet",
+          "simple harmonic motion neet",
+          "waves neet"
+        ],
+        "hi": [
+          "shm hindi neet",
+          "dolan aur tarange"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-electrostatics",
+      "name": "Electrostatics",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "electrostatics neet",
+          "electric field potential neet",
+          "capacitors neet"
+        ],
+        "hi": [
+          "electrostatics hindi neet",
+          "sthir vidyut"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-current-electricity",
+      "name": "Current electricity",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "current electricity neet",
+          "kirchhoff laws neet",
+          "wheatstone bridge"
+        ],
+        "hi": [
+          "current electricity hindi neet",
+          "vidyut dhara"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-magnetism",
+      "name": "Magnetic effects of current and magnetism",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "moving charges and magnetism neet",
+          "biot savart neet",
+          "magnetism and matter"
+        ],
+        "hi": [
+          "magnetic effect of current hindi",
+          "chumbakatva"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-emi-ac",
+      "name": "Electromagnetic induction and AC",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "electromagnetic induction neet",
+          "alternating current neet",
+          "lcr circuit"
+        ],
+        "hi": [
+          "emi hindi neet",
+          "pratyavarti dhara"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-em-waves",
+      "name": "Electromagnetic waves",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "electromagnetic waves neet",
+          "em spectrum neet"
+        ],
+        "hi": [
+          "em waves hindi",
+          "vidyut chumbakiya tarange"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-optics",
+      "name": "Optics",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "ray optics neet",
+          "wave optics neet",
+          "lens mirror formula neet"
+        ],
+        "hi": [
+          "ray optics hindi neet",
+          "prakashiki"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-dual-nature",
+      "name": "Dual nature of matter and radiation",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "dual nature of radiation neet",
+          "photoelectric effect neet",
+          "de broglie wavelength"
+        ],
+        "hi": [
+          "photoelectric effect hindi",
+          "dvaiti prakriti"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-atoms-nuclei",
+      "name": "Atoms and nuclei",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "atoms neet",
+          "nuclei neet",
+          "bohr model radioactivity"
+        ],
+        "hi": [
+          "atoms and nuclei hindi",
+          "parmanu nabhik"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-electronic-devices",
+      "name": "Semiconductor electronics",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "semiconductor electronics neet",
+          "logic gates neet",
+          "pn junction diode"
+        ],
+        "hi": [
+          "semiconductor hindi neet",
+          "ardhchalak"
+        ]
+      }
+    },
+    {
+      "id": "neet-phy-experimental-skills",
+      "name": "Experimental skills",
+      "level": "phy",
+      "parent": "neet-phy-physics",
+      "search_terms": {
+        "en": [
+          "neet physics practicals",
+          "vernier caliper screw gauge",
+          "experimental physics neet"
+        ],
+        "hi": [
+          "physics practical hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-chemistry",
+      "name": "Chemistry (NEET)",
+      "level": "chem",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "neet chemistry",
+          "neet chemistry lectures",
+          "neet chemistry one shot"
+        ],
+        "hi": [
+          "neet chemistry hindi",
+          "neet chemistry class"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-basic-concepts",
+      "name": "Basic concepts of chemistry (mole concept)",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "mole concept neet",
+          "some basic concepts of chemistry neet",
+          "stoichiometry neet"
+        ],
+        "hi": [
+          "mole concept hindi",
+          "mol sankalpana"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-atomic-structure",
+      "name": "Atomic structure",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "atomic structure neet",
+          "quantum numbers neet",
+          "bohr model chemistry"
+        ],
+        "hi": [
+          "atomic structure hindi neet",
+          "parmanu sanrachna"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-bonding",
+      "name": "Chemical bonding",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "chemical bonding neet",
+          "vsepr hybridisation neet",
+          "molecular orbital theory"
+        ],
+        "hi": [
+          "chemical bonding hindi neet",
+          "rasayanik aabandhan"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-thermodynamics",
+      "name": "Chemical thermodynamics",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "chemical thermodynamics neet",
+          "enthalpy entropy gibbs neet"
+        ],
+        "hi": [
+          "thermodynamics chemistry hindi",
+          "ushmagatiki rasayan"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-solutions",
+      "name": "Solutions",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "solutions chemistry neet",
+          "colligative properties neet",
+          "raoult law"
+        ],
+        "hi": [
+          "solutions chemistry hindi",
+          "vilayan"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-equilibrium",
+      "name": "Equilibrium",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "chemical equilibrium neet",
+          "ionic equilibrium neet",
+          "ph buffer neet"
+        ],
+        "hi": [
+          "equilibrium hindi neet",
+          "saamyavastha"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-redox-electrochem",
+      "name": "Redox reactions and electrochemistry",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "redox reactions neet",
+          "electrochemistry neet",
+          "nernst equation"
+        ],
+        "hi": [
+          "electrochemistry hindi neet",
+          "redox hindi"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-kinetics",
+      "name": "Chemical kinetics",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "chemical kinetics neet",
+          "rate law order of reaction neet",
+          "arrhenius equation"
+        ],
+        "hi": [
+          "chemical kinetics hindi",
+          "rasayanik balgatiki"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-periodicity",
+      "name": "Periodic table and periodicity",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "classification of elements neet",
+          "periodic properties neet",
+          "periodic trends"
+        ],
+        "hi": [
+          "periodic table hindi neet",
+          "aavart sarni"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-p-block",
+      "name": "p-block elements",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "p block elements neet",
+          "group 13 to 18 neet"
+        ],
+        "hi": [
+          "p block hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-d-f-block",
+      "name": "d- and f-block elements",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "d and f block elements neet",
+          "transition elements neet",
+          "lanthanoids"
+        ],
+        "hi": [
+          "d f block hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-coordination",
+      "name": "Coordination compounds",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "coordination compounds neet",
+          "werner theory cft neet",
+          "isomerism coordination"
+        ],
+        "hi": [
+          "coordination compound hindi neet",
+          "upsahsanyojak yogik"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-purification-organic",
+      "name": "Purification and analysis of organic compounds",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "purification of organic compounds neet",
+          "chromatography neet",
+          "lassaigne test"
+        ],
+        "hi": [
+          "organic purification hindi"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-goc",
+      "name": "Basic principles of organic chemistry (GOC)",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "goc neet",
+          "general organic chemistry neet",
+          "iupac nomenclature isomerism"
+        ],
+        "hi": [
+          "goc hindi neet",
+          "karbanik rasayan mool siddhant"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-hydrocarbons",
+      "name": "Hydrocarbons",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "hydrocarbons neet",
+          "alkanes alkenes alkynes neet",
+          "aromatic hydrocarbons"
+        ],
+        "hi": [
+          "hydrocarbons hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-haloalkanes",
+      "name": "Organic compounds with halogens",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "haloalkanes haloarenes neet",
+          "sn1 sn2 neet"
+        ],
+        "hi": [
+          "haloalkanes hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-oxygen-organic",
+      "name": "Organic compounds with oxygen",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "alcohols phenols ethers neet",
+          "aldehydes ketones neet",
+          "carboxylic acids neet"
+        ],
+        "hi": [
+          "alcohol phenol ether hindi",
+          "aldehyde ketone hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-nitrogen-organic",
+      "name": "Organic compounds with nitrogen",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "amines neet",
+          "diazonium salts neet"
+        ],
+        "hi": [
+          "amines hindi neet"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-biomolecules",
+      "name": "Biomolecules",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "biomolecules chemistry neet",
+          "carbohydrates proteins vitamins neet"
+        ],
+        "hi": [
+          "biomolecules hindi neet",
+          "jaiv anu"
+        ]
+      }
+    },
+    {
+      "id": "neet-chem-practical",
+      "name": "Practical chemistry",
+      "level": "chem",
+      "parent": "neet-chem-chemistry",
+      "search_terms": {
+        "en": [
+          "practical chemistry neet",
+          "salt analysis neet",
+          "titration neet"
+        ],
+        "hi": [
+          "practical chemistry hindi",
+          "lavan vishleshan"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-biology",
+      "name": "Biology (NEET, Botany and Zoology)",
+      "level": "bio",
+      "parent": null,
+      "search_terms": {
+        "en": [
+          "neet biology",
+          "neet botany",
+          "neet zoology",
+          "ncert biology line by line"
+        ],
+        "hi": [
+          "neet biology hindi",
+          "neet botany zoology hindi"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-diversity",
+      "name": "Diversity in the living world",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "living world neet",
+          "biological classification neet",
+          "plant kingdom animal kingdom neet"
+        ],
+        "hi": [
+          "biological classification hindi",
+          "jagat vargikaran"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-structural-org",
+      "name": "Structure of plants and animals",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "morphology of flowering plants neet",
+          "anatomy of flowering plants neet",
+          "structural organisation in animals"
+        ],
+        "hi": [
+          "morphology hindi neet",
+          "pushpi padapon ki aakariki"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-cell",
+      "name": "Cell structure and function",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "cell the unit of life neet",
+          "cell cycle and cell division neet",
+          "biomolecules biology neet"
+        ],
+        "hi": [
+          "cell hindi neet",
+          "koshika"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-plant-physiology",
+      "name": "Plant physiology",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "photosynthesis neet",
+          "respiration in plants neet",
+          "plant growth and development"
+        ],
+        "hi": [
+          "photosynthesis hindi neet",
+          "prakash sanshleshan"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-human-physiology",
+      "name": "Human physiology",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "human physiology neet",
+          "breathing and exchange of gases neet",
+          "neural control and coordination"
+        ],
+        "hi": [
+          "human physiology hindi neet",
+          "maanav shareer kriya vigyan"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-reproduction",
+      "name": "Reproduction",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "human reproduction neet",
+          "sexual reproduction in flowering plants neet",
+          "reproductive health neet"
+        ],
+        "hi": [
+          "reproduction hindi neet",
+          "maanav janan"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-genetics-evolution",
+      "name": "Genetics and evolution",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "principles of inheritance neet",
+          "molecular basis of inheritance neet",
+          "evolution neet"
+        ],
+        "hi": [
+          "genetics hindi neet",
+          "vanshagati"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-human-welfare",
+      "name": "Biology and human welfare",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "human health and disease neet",
+          "microbes in human welfare neet"
+        ],
+        "hi": [
+          "human health and disease hindi",
+          "manav swasthya aur rog"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-biotechnology",
+      "name": "Biotechnology",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "biotechnology principles and processes neet",
+          "biotechnology applications neet",
+          "recombinant dna"
+        ],
+        "hi": [
+          "biotechnology hindi neet",
+          "jaiv praudyogiki"
+        ]
+      }
+    },
+    {
+      "id": "neet-bio-ecology",
+      "name": "Ecology and environment",
+      "level": "bio",
+      "parent": "neet-bio-biology",
+      "search_terms": {
+        "en": [
+          "ecology neet",
+          "organisms and populations neet",
+          "biodiversity and conservation neet"
+        ],
+        "hi": [
+          "ecology hindi neet",
+          "paristhitiki"
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "kind": "channel",
+      "channel_id": "UCiGyWN6DEbnj2alu7iapuKQ",
+      "name": "Physics Wallah (Alakh Pandey)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://youtubedownload.minitool.com/news/best-youtube-channels-for-neet-preparation.html",
+          "says": "#1: clear concepts, Hindi-medium friendly, all three subjects",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://northeastbest.home.blog/2024/11/29/crack-neet-confidence-top-5-youtube-channels/",
+          "says": "#1 of top 5: trusted name among NEET aspirants",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "clear concept lectures and NEET problem practice",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://physicscatalyst.com/article/best-physics-teacher-on-youtube-for-neet/",
+          "says": "Alakh Pandey: whiteboard classes, conceptual depth",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-youtube-channel-for-neet-preparation",
+          "says": "student answer: Unacademy, Physics Wallah, Let's Crack NEET are the best",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Main PW channel mixes JEE, NEET and school content. PW's NEET-only channel is Competition Wallah (next row)."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCD16eo98AXl-9T61Xd711kQ",
+      "name": "Competition Wallah (PW NEET)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://youtubedownload.minitool.com/news/best-youtube-channels-for-neet-preparation.html",
+          "says": "recommends Physics Wallah for NEET (this is PW's NEET channel)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://northeastbest.home.blog/2024/11/29/crack-neet-confidence-top-5-youtube-channels/",
+          "says": "recommends Physics Wallah for NEET",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ No page names this channel directly; trust is carried over from PW. Handle @PW-NEETWallah. Confirm it is PW's main free NEET channel."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCdQwYksctqqiRwqp3PiJMWA",
+      "name": "Unacademy NEET",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://youtubedownload.minitool.com/news/best-youtube-channels-for-neet-preparation.html",
+          "says": "#2: live and recorded classes from top educators",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://northeastbest.home.blog/2024/11/29/crack-neet-confidence-top-5-youtube-channels/",
+          "says": "#3: live classes, mock tests, many teaching styles",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "live classes, recorded sessions, mock tests",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.syncstudy.in/blog/best-free-youtube-channels-for-jee-neet-2026",
+          "says": "NCERT reading sessions and mock tests",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-youtube-channel-for-neet-preparation",
+          "says": "named among the best channels",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Hosts many teachers (Seep Pahuja, Anupam Upadhyay, Akansha Karnwal and others)."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCqaq3Cwa7m_EsqlvfZh6uyw",
+      "name": "VEDANTU NEET MADE EJEE",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://youtubedownload.minitool.com/news/best-youtube-channels-for-neet-preparation.html",
+          "says": "#6: NEET channel with experienced online teachers",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-youtube-channel-for-neet-preparation",
+          "says": "student answer: check out the Vedantu Made Ejee channel",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-best-biology-teacher-for-neet-and-aiims-on-youtube-or-unacademy-suggesti-am-neet-dropper-so-please-suggest-according-to-my-time-as-a-droppe",
+          "says": "Vedantu biology teachers are good",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "lists Vedantu Biotonic for NEET (biology)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ 'Vedantu Biotonic for NEET' is recommended on several pages; I could not find it as a separate live channel, so it may have been merged into this one. Vedantu's own NEET pages were not counted."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCAPDuc6Kfpe1mKjMX367qmA",
+      "name": "Aakash NEET",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://northeastbest.home.blog/2024/11/29/crack-neet-confidence-top-5-youtube-channels/",
+          "says": "#2: Aakash BYJU'S NEET, subject lectures and mock tests",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://blog.mentoria.com/top-4-youtube-channels-to-help-you-ace-your-neet-exam/",
+          "says": "Aakash iTutor: free lectures on all NEET topics",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Pages call it 'Aakash BYJU'S NEET' or 'Aakash iTutor'; the live channel at @Aakash_NEET is titled 'Aakash NEET'. Check it is the same official channel."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UC4BjX3BqigeWAOp0kLkKSIA",
+      "name": "NEETprep Course: NCERT Based NEET Preparation",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://youtubedownload.minitool.com/news/best-youtube-channels-for-neet-preparation.html",
+          "says": "#5: NCERT line by line, every diagram and table",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "NCERT-based preparation",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-youtube-channel-for-neet-preparation",
+          "says": "student answer lists NEETprep Course",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Teaching language not confirmed; set to both."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCEg3PHVR0vt3azbs_Qk_6cw",
+      "name": "LearnoHub - Class 11, 12 (formerly ExamFear Education)",
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "levels": [
+        "phy",
+        "chem",
+        "bio"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-chem-chemistry",
+        "neet-bio-biology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.piceeducare.com/blog/top-10-youtube-channels-for-neet-preparation",
+          "says": "#1: thousands of lessons in Hindi and English",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "free lectures for Class 11-12 covering the NEET syllabus",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://physicscatalyst.com/article/best-physics-teacher-on-youtube-for-neet/",
+          "says": "LearnoHub (formerly ExamFear): free lectures on the whole NEET syllabus",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Run by Roshni Mukherjee. School-level concept videos: good for basics, lighter on NEET-level problems."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCYbFCdcMfA68ZvJO__zTUjg",
+      "name": "Biology at Ease",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.syncstudy.in/blog/best-free-youtube-channels-for-jee-neet-2026",
+          "says": "mnemonics and memory tricks for biology",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://northeastbest.home.blog/2024/11/29/crack-neet-confidence-top-5-youtube-channels/",
+          "says": "#4: concept lessons, mnemonics, quick revision",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-youtube-channel-for-neet-preparation",
+          "says": "student answer lists Biology at Ease",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "SyncStudy names the teacher as Dr. Renuka ❓."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UC-WHWhLDdRAiiT53kqDe3PA",
+      "name": "Neela Bakore Tutorials",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.careers360.com/question-best-biology-teacher-for-neet-and-aiims-on-youtube-or-unacademy-suggesti-am-neet-dropper-so-please-suggest-according-to-my-time-as-a-droppe",
+          "says": "good method, keeps the level needed for AIIMS (a dropper asked)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-who-is-the-best-teacher-of-biology-in-youtube",
+          "says": "listed among best biology channels",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.piceeducare.com/blog/top-10-youtube-channels-for-neet-preparation",
+          "says": "biology only; explains complex cycles simply",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Short concept videos with one playlist per chapter. English medium."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCwMNVCXcSWNMS0C8rcRCWxA",
+      "name": "Biomentors Classes Online (Dr. Geetendra Singh)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.careers360.com/question-who-is-the-best-teacher-of-biology-in-youtube",
+          "says": "several answers: Dr Geetendra Singh / Biomentors",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://coachingdaddy.com/best-youtube-channels-for-neet-preparation/",
+          "says": "detailed lectures on the whole NEET biology syllabus",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Channel also posts personal and drama-style videos, so a feed built from its uploads may pick up off-topic items."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCajIDGJs65YNvYLJdJKL2PA",
+      "name": "Seep Pahuja - Unacademy",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "#1 in a student poll for best biology teacher",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-who-is-the-best-teacher-of-biology-in-youtube",
+          "says": "answer lists Seep Pahuja (Unacademy NEET)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ A second channel 'Seep Pahuja Biology' (UC3TzWAGMwjhKqV9CISrvYIg) also exists; check which one she uses now."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCO40lEDai1uJ1doWYPbGQiA",
+      "name": "Garima Goel Biology",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.syncstudy.in/blog/best-free-youtube-channels-for-jee-neet-2026",
+          "says": "NCERT line by line and diagrams",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "#2 in a student poll for best biology teacher",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCTITeKeZCC2UaVTv2PghhBA",
+      "name": "Tarun Sir biology",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learntubeindia.in/blog/best-free-youtube-teachers-india-for-students-2026",
+          "says": "Tarun Kumar Sir: clear diagrams, slow NCERT line-by-line teaching",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "Tarun Kumar (TK Sir) #4 in a student poll",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Pages call him Tarun Kumar (earlier at PW); his NEET 2026 course playlist sits on Sankalp NEET Vedantu. Check this personal channel is the same teacher."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCLBo1sRUQzDdblEvsytdsig",
+      "name": "Tamanna Chaudhary",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-phy-measurement",
+        "neet-phy-kinematics",
+        "neet-phy-laws-of-motion",
+        "neet-phy-work-energy-power",
+        "neet-phy-rotation",
+        "neet-phy-gravitation",
+        "neet-phy-solids-liquids",
+        "neet-phy-thermodynamics",
+        "neet-phy-kinetic-theory",
+        "neet-phy-oscillations-waves",
+        "neet-phy-electrostatics",
+        "neet-phy-current-electricity",
+        "neet-phy-magnetism",
+        "neet-phy-emi-ac",
+        "neet-phy-em-waves",
+        "neet-phy-optics",
+        "neet-phy-dual-nature",
+        "neet-phy-atoms-nuclei",
+        "neet-phy-electronic-devices",
+        "neet-phy-experimental-skills"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.quora.com/Who-is-the-best-teacher-for-physics-on-big-educational-platforms-on-YouTube-for-the-NEET",
+          "says": "student answer: concept-first teaching (seen via search snippet)",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.quora.com/Who-is-the-better-teacher-of-Physics-in-NEET-UG-between-Prateek-Jain-sir-Tamanna-Chaudhary-mam-on-Unacademy-Kindly-refer-for-a-student-who-is-giving-an-year-drop",
+          "says": "dropper asks PJ Sir vs Tamanna; answers favour her (seen via search snippet)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Quora blocked direct reading; evidence is from search snippets only, and both are Quora."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCgBmfNILAlXmGv3CsJ8oFJA",
+      "name": "Physics Galaxy (Ashish Arora)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-phy-measurement",
+        "neet-phy-kinematics",
+        "neet-phy-laws-of-motion",
+        "neet-phy-work-energy-power",
+        "neet-phy-rotation",
+        "neet-phy-gravitation",
+        "neet-phy-solids-liquids",
+        "neet-phy-thermodynamics",
+        "neet-phy-kinetic-theory",
+        "neet-phy-oscillations-waves",
+        "neet-phy-electrostatics",
+        "neet-phy-current-electricity",
+        "neet-phy-magnetism",
+        "neet-phy-emi-ac",
+        "neet-phy-em-waves",
+        "neet-phy-optics",
+        "neet-phy-dual-nature",
+        "neet-phy-atoms-nuclei",
+        "neet-phy-electronic-devices",
+        "neet-phy-experimental-skills"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://physicscatalyst.com/article/best-physics-teacher-on-youtube-for-neet/",
+          "says": "full NEET physics coverage, NCERT short notes",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-best-you-tube-channel-for-physics-and-chemistry-for-neet",
+          "says": "two answers list Physics Galaxy for physics",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "JEE-heavy; many videos go beyond NEET level. ❓ language mix."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UC1-ZdFLBukC6fTZ8QRWvpDw",
+      "name": "Sachin Rana [IITB]",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "chem"
+      ],
+      "topics": [
+        "neet-chem-chemistry",
+        "neet-chem-goc",
+        "neet-chem-hydrocarbons",
+        "neet-chem-haloalkanes",
+        "neet-chem-oxygen-organic",
+        "neet-chem-nitrogen-organic"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.careers360.com/question-best-you-tube-channel-for-physics-and-chemistry-for-neet",
+          "says": "good problem-solving approach and organic chemistry",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-who-is-the-best-youtube-teacher-for-physical-chemistry-for-the-neet",
+          "says": "named among favourite chemistry teachers",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-which-is-the-best-organic-and-physical-chemistry-teacher-on-youtube-for-boards-and-neet",
+          "says": "named for organic chemistry",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Mostly organic chemistry, JEE and NEET. ❓ The careers360 answers are from 2020-21 and partly copy each other."
+    },
+    {
+      "kind": "channel",
+      "channel_id": "UCKbCWA4cFsZ2yIVCjxZlH1A",
+      "name": "Akansha Karnwal Unacademy",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "chem"
+      ],
+      "topics": [
+        "neet-chem-chemistry",
+        "neet-chem-basic-concepts",
+        "neet-chem-atomic-structure",
+        "neet-chem-bonding",
+        "neet-chem-thermodynamics",
+        "neet-chem-solutions",
+        "neet-chem-equilibrium",
+        "neet-chem-redox-electrochem",
+        "neet-chem-kinetics",
+        "neet-chem-periodicity",
+        "neet-chem-p-block",
+        "neet-chem-d-f-block",
+        "neet-chem-coordination",
+        "neet-chem-purification-organic",
+        "neet-chem-goc",
+        "neet-chem-hydrocarbons",
+        "neet-chem-haloalkanes",
+        "neet-chem-oxygen-organic",
+        "neet-chem-nitrogen-organic",
+        "neet-chem-biomolecules",
+        "neet-chem-practical"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://shitiguglani.quora.com/Best-Chemistry-Teacher-On-unacademy-for-Neet-Akansha-Karnwal-maam-is-the-best-and-one-of-my-favourite-educators-She-h",
+          "says": "Quora post: best chemistry teacher on Unacademy for NEET",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "listed #5 in a student poll (the poll was for biology teachers ❓)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "❓ Second source is weak (she teaches chemistry but appears in a biology poll)."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLsgHooHkqhhMzPpkBAkZozA8SH1uXwCg4",
+      "channel_id": "UCdQwYksctqqiRwqp3PiJMWA",
+      "name": "Complete Biology for NEET by Seep Pahuja",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "Seep Pahuja #1 in biology poll",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.careers360.com/question-who-is-the-best-teacher-of-biology-in-youtube",
+          "says": "Seep Pahuja listed among the best",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Full-syllabus course on Unacademy NEET. ❓ Year of recording not checked."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLqQOiO8M4ZTjEKYSSaKhxI7ajfGVScW8t",
+      "channel_id": "UCWFXoexcMI1jQrHH2N-SJzQ",
+      "name": "NEET 2026 - Complete Biology By Tarun Sir",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-biology",
+        "neet-bio-diversity",
+        "neet-bio-structural-org",
+        "neet-bio-cell",
+        "neet-bio-plant-physiology",
+        "neet-bio-human-physiology",
+        "neet-bio-reproduction",
+        "neet-bio-genetics-evolution",
+        "neet-bio-human-welfare",
+        "neet-bio-biotechnology",
+        "neet-bio-ecology"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://learntubeindia.in/blog/best-free-youtube-teachers-india-for-students-2026",
+          "says": "Tarun Kumar Sir recommended for biology",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://rankwale.com/en/topic/who-is-the-best-biology-teacher-in-india-2506",
+          "says": "Tarun Kumar #4 in biology poll",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "On the Sankalp NEET Vedantu channel. ❓ Same teacher the pages mean."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLSmRC4W4cwRv4z2SoN2dWTwvD-LQjsiQQ",
+      "channel_id": "UCLBo1sRUQzDdblEvsytdsig",
+      "name": "NEET Physics PYQs and Detailed Revision (Tamanna Chaudhary)",
+      "languages": [
+        "hi",
+        "en"
+      ],
+      "levels": [
+        "phy"
+      ],
+      "topics": [
+        "neet-phy-physics",
+        "neet-phy-measurement",
+        "neet-phy-kinematics",
+        "neet-phy-laws-of-motion",
+        "neet-phy-work-energy-power",
+        "neet-phy-rotation",
+        "neet-phy-gravitation",
+        "neet-phy-solids-liquids",
+        "neet-phy-thermodynamics",
+        "neet-phy-kinetic-theory",
+        "neet-phy-oscillations-waves",
+        "neet-phy-electrostatics",
+        "neet-phy-current-electricity",
+        "neet-phy-magnetism",
+        "neet-phy-emi-ac",
+        "neet-phy-em-waves",
+        "neet-phy-optics",
+        "neet-phy-dual-nature",
+        "neet-phy-atoms-nuclei",
+        "neet-phy-electronic-devices",
+        "neet-phy-experimental-skills"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.quora.com/Who-is-the-best-teacher-for-physics-on-big-educational-platforms-on-YouTube-for-the-NEET",
+          "says": "Tamanna Chaudhary recommended for NEET physics (search snippet)",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "Previous-year questions with revision notes; made for NEET 2024."
+    },
+    {
+      "kind": "playlist",
+      "playlist_id": "PLKlDmF-iIyAnA3rhbRF8JwphbbQegKj4G",
+      "channel_id": "UC-WHWhLDdRAiiT53kqDe3PA",
+      "name": "Chapter 2 - Biological Classification (Neela Bakore Tutorials)",
+      "languages": [
+        "en"
+      ],
+      "levels": [
+        "bio"
+      ],
+      "topics": [
+        "neet-bio-diversity"
+      ],
+      "motivational": false,
+      "recommended_by": [
+        {
+          "url": "https://www.careers360.com/question-best-biology-teacher-for-neet-and-aiims-on-youtube-or-unacademy-suggesti-am-neet-dropper-so-please-suggest-according-to-my-time-as-a-droppe",
+          "says": "Neela Bakore recommended for NEET/AIIMS biology",
+          "seen": "2026-09-29"
+        },
+        {
+          "url": "https://www.piceeducare.com/blog/top-10-youtube-channels-for-neet-preparation",
+          "says": "Neela Bakore Tutorials: explains complex topics simply",
+          "seen": "2026-09-29"
+        }
+      ],
+      "notes": "One chapter; her channel has one playlist per chapter, so a curator can add the rest."
+    }
+  ]
+}
