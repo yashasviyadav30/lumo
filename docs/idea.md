@@ -293,9 +293,40 @@ Tip: ask 2–3 of her classmates the same five questions. One user's answers are
 Goal: ideas so good that students leave YouTube for studying and open this app every day. Raw material from each step is saved in `docs/ideation/`; the results are summarised here.
 
 **Progress** (updated after each step):
-- [ ] 1. User research: pain points with sources (2 research agents running)
+- [x] 1. User research: pain points with sources
 - [ ] 2. Diverge: 6 viewpoints × 20+ ideas
 - [ ] 3. Converge: skeptic's verdicts
 - [ ] 4. The "only here" features and a day in my sister's life
 - [ ] 5. Screens and HTML mockups (`docs/mockups/`)
 - [ ] 6. Ranked top 10, build order, questions for real students
+
+## 1. Pain points (user research)
+
+Full tables with 66 pain points, every quote and its source URL: [research-aspirants.md](ideation/research-aspirants.md) (CS, CMA, CA, NEET, JEE, UPSC) and [research-apps-college.md](ideation/research-apps-college.md) (college students and app reviews). Reddit, Quora and Medium refused automated access, so quotes come mainly from Careers360, Play Store reviews, blogs and search snippets (labelled ✅ read / 🟡 snippet in those files). First-person CS and CMA complaints are rare online, so my sister and her classmates are the best source for those two.
+
+### What students say
+
+| # | Pain | Example quote | Groups |
+|---|---|---|---|
+| 1 | **The phone is both classroom and trap.** Many have no laptop. | "I need my phone to study but it also distracts me" | All |
+| 2 | **Watching feels like studying but doesn't stick.** | "I forget all the concepts and formulae the next day" | All |
+| 3 | **Too many teachers, batches and playlists to choose from.** | "a lot of videos of PW of different batches of the same teacher so I'm always confused" | NEET, JEE, CA, CMA, UPSC |
+| 4 | **Notes from video are slow.** | "how to write notes faster while watching lectures???" | All |
+| 5 | **Loneliness and guilt, often at night.** | "How do I take out my emotions when I have nobody to talk to?" | All |
+| 6 | **Long lectures pile into backlogs; marathons and one-shots are the escape.** | "Can I clear the CA inter by only marathon lectures?" | CA, CS, CMA, NEET, JEE |
+| 7 | **Doubts have nowhere to go.** | "It is not always possible to clear doubts in class." · "nobody … bothers to respond to the questions asked!" | All |
+| 8 | **Outdated lectures** after law amendments or syllabus cuts. | "my module is not the latest one" | CA, CS, CMA, NEET |
+| 9 | **Lectures but no course:** no practice, no plan. | "I have no any source to do practice" | JEE, NEET, UPSC |
+| 10 | **Money pushes students to YouTube; Telegram fills gaps**, often with pirated batches. | "financially very weak" | All |
+| 11 | **Timestamps in long lectures are a daily need.** | "Comment section is very important for time stamps in a 7 hour long video." | College, CA, CS |
+| 12 | **Losing study records makes people furious.** | "I cant just lose it all" (YPT review, 821 upvotes) | All |
+| 13 | **Many want to study on a laptop, not a phone.** | "cant study for long hours on a mobile phone" | College, CA |
+| 14 | **Studying with others helps; paying for it is resented.** | "how can mere students afford to pay inorder to not be alone while studying?" | All |
+
+### What this changes
+
+- **A competitor already does "notes beside any YouTube lecture".** PW's **Pi Lens** (100,000+ installs, 4.58★): "No need to switch tabs anymore." My sister's idea is validated but not new. Its loved features (summaries and quizzes "auto-generated from the video") are exactly what our rules forbid (R4). So our edge has to be **what the student herself writes and does**: her notes, doubts, mistakes, revision, and the people she studies with.
+- **SyncStudy** is the closest twin (playlist → course, timestamp notes); its free tier stops at 3 playlists, and it has no CS or CMA.
+- **Hiding distractions is not a pitch.** Unhook does it free, and StudyTube's ad-free playback can't be copied under our rules.
+- **Choice overload (pain 3) can't be solved by our AI judging videos (R3).** Help has to come from people (teachers, peers, toppers, the user's own lists).
+- Pains that fit our rules best: **2 (doesn't stick), 4 (notes are slow), 5 (lonely), 7 (doubts), 11 (timestamps), 12 (never lose records)**.
