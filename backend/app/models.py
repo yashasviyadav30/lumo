@@ -1,0 +1,184 @@
+"""Tables. Two kinds of data (plan 2.3):
+
+- Our data (users, goals, mutes, follows, settings, logs): kept while the account lives.
+- YouTube data (yt_* tables): every row has fetched_at and is purged after 30 days (R1).
+  Anything of ours that points at a video stores the video ID only.
+"""
+
+import uuid
+from datetime import date, datetime, timezone
+
+from sqlalchemy import (
+    JSON,
+    BigInteger,
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    Uuid,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db import Base
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _user_fk() -> Mapped[uuid.UUID]:
+    return mapped_column(Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+
+
+# ---------- Our data ----------
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    # We store only that the user confirmed being 18+, not their date of birth (data minimisation).
+    adult_confirmed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    sessions: Mapped[list["AuthSession"]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    consents: Mapped[list["Consent"]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    goals: Mapped[list["Goal"]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    mutes: Mapped[list["Mute"]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    follows: Mapped[list["Follow"]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    settings: Mapped["UserSettings | None"] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True, uselist=False
+    )
+
+
+class AuthSession(Base):
+    __tablename__ = "sessions"
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    # SHA-256 of the token; the token itself is never stored.
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class Consent(Base):
+    __tablename__ = "consents"
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    kind: Mapped[str] = mapped_column(String(40))  # "notice" now; "behaviour" in Stage 11
+    version: Mapped[str] = mapped_column(String(20))
+    granted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Goal(Base):
+    __tablename__ = "goals"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    raw_text: Mapped[str] = mapped_column(Text)
+    parsed: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Mute(Base):
+    """A user's own rule (R3): a channel ID or a phrase they chose."""
+
+    __tablename__ = "mutes"
+    __table_args__ = (UniqueConstraint("user_id", "kind", "value"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    kind: Mapped[str] = mapped_column(String(20))  # "channel" | "phrase"
+    value: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Follow(Base):
+    """A teacher the user chose to follow. Their channel is always in the user's feed."""
+
+    __tablename__ = "follows"
+    __table_args__ = (UniqueConstraint("user_id", "channel_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    channel_id: Mapped[str] = mapped_column(String(40))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class UserSettings(Base):
+    __tablename__ = "user_settings"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    shorts_enabled: Mapped[bool] = mapped_column(Boolean, default=False)  # off by default for everyone
+    shorts_daily_limit_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    search_language: Mapped[str] = mapped_column(String(8), default="en")
+
+
+class AppLog(Base):
+    """Request log kept in India for 1 year. Never holds video IDs or titles (R11)."""
+
+    __tablename__ = "app_log"
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    actor: Mapped[str | None] = mapped_column(String(32), nullable=True)  # pseudonym, not the user ID
+    method: Mapped[str] = mapped_column(String(8))
+    route: Mapped[str] = mapped_column(String(120))  # route template, e.g. /api/me
+    status: Mapped[int] = mapped_column(Integer)
+    ms: Mapped[int] = mapped_column(Integer)
+    ip_prefix: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    action: Mapped[str | None] = mapped_column(String(60), nullable=True)
+
+
+class QuotaUsage(Base):
+    """YouTube API calls per Pacific day and bucket (R12)."""
+
+    __tablename__ = "quota_usage"
+
+    day: Mapped[date] = mapped_column(Date, primary_key=True)
+    bucket: Mapped[str] = mapped_column(String(20), primary_key=True)  # "search" | "general"
+    count: Mapped[int] = mapped_column(Integer, default=0)
+
+
+# ---------- YouTube data (purged after 30 days, R1) ----------
+
+
+class YtVideo(Base):
+    __tablename__ = "yt_videos"
+
+    video_id: Mapped[str] = mapped_column(String(11), primary_key=True)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    channel_id: Mapped[str] = mapped_column(String(40), index=True)
+    channel_title: Mapped[str] = mapped_column(String(200), default="")
+    title: Mapped[str] = mapped_column(String(300), default="")
+    description: Mapped[str] = mapped_column(Text, default="")  # displayed and parsed for chapters only
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    thumbnail_url: Mapped[str] = mapped_column(String(300), default="")
+    duration_s: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    category_id: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    topic_categories: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    age_restricted: Mapped[bool] = mapped_column(Boolean, default=False)
+    embeddable: Mapped[bool] = mapped_column(Boolean, default=True)
+    made_for_kids: Mapped[bool] = mapped_column(Boolean, default=False)
+    blocked_in_india: Mapped[bool] = mapped_column(Boolean, default=False)
+    has_captions: Mapped[bool] = mapped_column(Boolean, default=False)
+    live: Mapped[str] = mapped_column(String(12), default="none")  # none | live | upcoming
+
+
+class YtSearchCache(Base):
+    __tablename__ = "yt_search_cache"
+
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)  # hash of normalised query + language
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    video_ids: Mapped[list] = mapped_column(JSON)
+    etag: Mapped[str | None] = mapped_column(String(120), nullable=True)

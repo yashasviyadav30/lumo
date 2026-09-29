@@ -1,0 +1,40 @@
+"""Settings from environment variables (portability rule). Locally they come from backend/.env."""
+
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=ENV_FILE, env_file_encoding="utf-8", extra="ignore")
+
+    database_url: str = ""
+    secret_key: str = ""
+    youtube_api_key: str = ""
+    groq_api_key: str = ""
+    groq_model: str = "openai/gpt-oss-20b"
+    # Comma-separated list of frontend origins allowed to call the API.
+    cors_origins: str = "http://localhost:5173,http://localhost:4173"
+    # Search quota for the whole app per Pacific day (R12). Keep a margin below YouTube's 100.
+    search_quota_per_day: int = 95
+
+    @property
+    def sqlalchemy_url(self) -> str:
+        """Supabase gives postgresql://…; SQLAlchemy needs the psycopg 3 driver named."""
+        url = self.database_url
+        for prefix in ("postgresql://", "postgres://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg://" + url[len(prefix):]
+        return url
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

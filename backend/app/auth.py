@@ -1,0 +1,41 @@
+"""Who is calling: bearer token → user."""
+
+from datetime import datetime, timezone
+
+from fastapi import Depends, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.db import get_db
+from app.models import AuthSession, User
+from app.security import hash_token, pseudonym
+
+bearer = HTTPBearer(auto_error=False)
+
+
+def current_session(
+    request: Request,
+    creds: HTTPAuthorizationCredentials | None = Depends(bearer),
+    db: Session = Depends(get_db),
+) -> AuthSession:
+    if creds is None:
+        raise HTTPException(status_code=401, detail="not_signed_in")
+    session = db.scalar(select(AuthSession).where(AuthSession.token_hash == hash_token(creds.credentials)))
+    now = datetime.now(timezone.utc)
+    if session is None or _aware(session.expires_at) <= now:
+        raise HTTPException(status_code=401, detail="not_signed_in")
+    request.state.actor = pseudonym(session.user_id)
+    return session
+
+
+def current_user(session: AuthSession = Depends(current_session), db: Session = Depends(get_db)) -> User:
+    user = db.get(User, session.user_id)
+    if user is None:
+        raise HTTPException(status_code=401, detail="not_signed_in")
+    return user
+
+
+def _aware(dt: datetime) -> datetime:
+    # SQLite returns naive datetimes; Postgres returns aware ones.
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)

@@ -1,10 +1,46 @@
-"""FastAPI app. Stage 0: a health check only."""
+"""FastAPI app."""
+
+import asyncio
+import contextlib
+import logging
+from collections.abc import AsyncIterator
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Focus backend")
+from app.config import get_settings
+from app.db import get_engine
+from app.purge import purge_loop
+from app.request_log import RequestLogMiddleware
+from app.routers import accounts
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+@contextlib.asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    task = asyncio.create_task(purge_loop()) if get_engine() is not None else None
+    yield
+    if task:
+        task.cancel()
+
+
+def create_app(run_background_jobs: bool = True) -> FastAPI:
+    app = FastAPI(title="FocusLearn backend", lifespan=lifespan if run_background_jobs else None)
+    app.add_middleware(RequestLogMiddleware)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=get_settings().cors_origin_list,
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
+    app.include_router(accounts.router)
+
+    @app.get("/health")
+    def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return app
+
+
+app = create_app()

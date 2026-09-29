@@ -11,8 +11,11 @@ COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --frozen --no-dev --no-install-project
 
 COPY app ./app
+COPY migrations ./migrations
+COPY alembic.ini start.sh ./
+RUN chmod +x start.sh
 
 # Render and Cloud Run both pass the port in $PORT.
 ENV PORT=8000
 EXPOSE 8000
-CMD ["sh", "-c", "exec /app/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["./start.sh"]
