@@ -1,0 +1,11 @@
+// Cloudflare hosting for the frontend: static files only, no Worker code (portability rule).
+// Deploy: npm run build && npx wrangler deploy
+{
+  "name": "focuslearn",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths (e.g. /watch/abc) get index.html so the app's own router handles them.
+    "not_found_handling": "single-page-application"
+  }
+}

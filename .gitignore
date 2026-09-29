@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.example
+# Public build setting (the backend's address), not a secret:
+!frontend/.env.production
 
 # Python
 .venv/

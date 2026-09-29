@@ -16,8 +16,9 @@ class Settings(BaseSettings):
     youtube_api_key: str = ""
     groq_api_key: str = ""
     groq_model: str = "openai/gpt-oss-20b"
-    # Comma-separated list of frontend origins allowed to call the API.
-    cors_origins: str = "http://localhost:5173,http://localhost:4173"
+    # Comma-separated list of frontend origins allowed to call the API. Setting CORS_ORIGINS on the host
+    # overrides this default (the Cloudflare address is here so the live app works before that's set).
+    cors_origins: str = "https://focuslearn.focuslearn.workers.dev,http://localhost:5173,http://localhost:4173"
     # Search quota for the whole app per Pacific day (R12). Keep a margin below YouTube's 100.
     search_quota_per_day: int = 95
 
