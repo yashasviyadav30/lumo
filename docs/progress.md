@@ -14,14 +14,14 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 | 1.3 iPhone Error 153 | 🟡 fix built, needs a device | Referrer meta + origin set; test on a real iPhone |
 | 1.4 Player links | 🟡 needs devices | Tap logo/end screen on Android + iPhone and note where they go |
 | 1.5 First deploy | ⛔ blocked | Needs Cloudflare login |
-| 2.1–2.7 Accounts and data rules | 🔄 started | Backend libraries added (SQLAlchemy, Alembic, psycopg, argon2, httpx); no code yet |
+| 2.1–2.7 Accounts and data rules | 🔄 backend ✅, frontend next | 18 tests pass; migration applied to Supabase; end-to-end checked in the container (commit 84a7eea) |
 | 3.1–3.7 Light layer search | ⏳ | |
 | 4.1–4.8 (4A) Smart agent core | ⏳ | |
 
 ## Next
 
-1. Commit the four field research outputs when the agents finish (`backend/app/data/fields/*.json`, `docs/curation/*.md`); validate the JSON.
-2. Stage 2 backend, design already chosen:
+1. Stage 2 frontend: sign-up/in, first-run notice, 18+ refusal screen, Settings → Delete my data, draft privacy page.
+2. (Done) Stage 2 backend, as designed:
    - `app/config.py` (pydantic-settings), `app/db.py` (SQLAlchemy; SQLite in tests), Alembic migrations run against Supabase.
    - Our data: users (no DOB stored, only `adult_confirmed_at`), sessions (opaque tokens, stored hashed), consents, goals, mutes, follows (user's own teachers), settings, app_log, quota_usage. YouTube data: yt_videos, yt_search_cache, each with `fetched_at`.
    - Purge >30 days at startup + every 6 h; app_log kept 1 year.
