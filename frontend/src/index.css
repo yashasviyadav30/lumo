@@ -281,3 +281,127 @@ h2 {
   font-size: 1.15rem;
   margin-top: 1.5em;
 }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.search-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.search-form input {
+  flex: 1;
+}
+.video-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 720px) {
+  .video-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.video-link {
+  display: flex;
+  gap: 12px;
+  color: var(--text);
+  text-decoration: none;
+  min-height: var(--tap);
+}
+.video-link.disabled {
+  opacity: 0.6;
+}
+.thumb {
+  position: relative;
+  flex: 0 0 168px;
+  aspect-ratio: 16 / 9;
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.duration {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.duration.live {
+  left: 4px;
+  right: auto;
+  background: #b3261e;
+}
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.meta .title {
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.meta .channel {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.video.revealed {
+  border-left: 3px solid var(--accent);
+  padding-left: 8px;
+}
+.hidden-reason {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 4px 0 0;
+}
+.video-actions {
+  display: flex;
+  gap: 16px;
+}
+button.link {
+  background: none;
+  border: none;
+  color: var(--brand);
+  padding: 0 4px;
+  min-height: var(--tap);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.hidden-line {
+  margin-top: 16px;
+  padding: 8px 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+}
+.hidden-line p {
+  margin: 0;
+}
+.why {
+  margin: 4px 0 8px;
+}
+.notice-line {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 8px 12px;
+}
