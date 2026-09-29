@@ -10,18 +10,18 @@ type Props = {
   onFollow?: (channelId: string) => void
 }
 
-// YouTube's thumbnail and title are shown exactly as YouTube gives them (never altered).
+// YouTube's thumbnail and title are shown exactly as YouTube gives them: nothing is drawn over the thumbnail.
 export default function VideoItem({ video, hiddenBecause, playable = true, onMute, onFollow }: Props) {
   const body = (
     <>
       <div className="thumb">
         {video.thumbnail_url && <img src={video.thumbnail_url} alt="" loading="lazy" />}
-        {video.duration_s != null && <span className="duration">{formatDuration(video.duration_s)}</span>}
-        {video.live === 'live' && <span className="duration live">LIVE</span>}
       </div>
       <div className="meta">
         <span className="title">{video.title}</span>
-        <span className="channel">{video.channel_title}</span>
+        <span className="channel">
+          {[video.live === 'live' ? 'LIVE' : formatDuration(video.duration_s), video.channel_title].filter(Boolean).join(' · ')}
+        </span>
       </div>
     </>
   )

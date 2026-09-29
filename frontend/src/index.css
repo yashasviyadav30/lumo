@@ -253,7 +253,7 @@ label {
   width: 22px;
   min-height: 22px;
 }
-form button[type='submit'] {
+.narrow form button[type='submit'] {
   margin-top: 16px;
   width: 100%;
 }
@@ -297,6 +297,10 @@ h2 {
 }
 .search-form input {
   flex: 1;
+  min-width: 0;
+}
+.search-form button {
+  flex: 0 0 auto;
 }
 .video-list {
   list-style: none;
