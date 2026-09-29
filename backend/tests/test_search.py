@@ -1,0 +1,201 @@
+from datetime import datetime, timedelta, timezone
+
+import pytest
+from sqlalchemy import select
+
+from app.config import get_settings
+from app.filters import UserRules, judge, youtube_type_reason
+from app.models import AppLog, YtSearchCache, YtVideo
+from app.routers.search import get_youtube
+from app.youtube import blocked_in, parse_duration, parse_video
+from tests.fake_youtube import FakeYouTube, video
+
+TEACHER = "UC" + "a" * 22
+SINGER = "UC" + "b" * 22
+
+
+@pytest.fixture()
+def yt(signed_in):
+    fake = FakeYouTube(
+        results={
+            "cost accounting": ["lecture0001", "musicvid001", "agerestrict", "noembed0001", "shortvid001", "blockedIN01"],
+        },
+        videos={
+            "lecture0001": video("lecture0001"),
+            "musicvid001": video("musicvid001", channel_id=SINGER, category_id="10", title="New song"),
+            "agerestrict": video("agerestrict", age_restricted=True),
+            "noembed0001": video("noembed0001", embeddable=False),
+            "shortvid001": video("shortvid001", duration_s=45),
+            "blockedIN01": video("blockedIN01", blocked_in_india=True),
+        },
+    )
+    signed_in.app.dependency_overrides[get_youtube] = lambda: fake
+    return fake
+
+
+# ---------- parsing YouTube's fields ----------
+
+
+def test_parse_duration():
+    assert parse_duration("PT1H2M3S") == 3723
+    assert parse_duration("PT45S") == 45
+    assert parse_duration("P1DT1M") == 86460
+    assert parse_duration("P0D") == 0
+    assert parse_duration(None) is None
+
+
+def test_region_restriction():
+    assert blocked_in({"blocked": ["IN", "PK"]})
+    assert not blocked_in({"blocked": ["US"]})
+    assert blocked_in({"allowed": ["US"]})
+    assert not blocked_in({"allowed": ["IN"]})
+    assert not blocked_in(None)
+
+
+def test_parse_video_reads_only_youtube_fields():
+    v = parse_video({
+        "id": "abcdefghijk",
+        "snippet": {"channelId": TEACHER, "title": "T", "categoryId": "27", "liveBroadcastContent": "none",
+                    "thumbnails": {"medium": {"url": "https://i.ytimg.com/m.jpg"}}},
+        "contentDetails": {"duration": "PT10M", "contentRating": {"ytRating": "ytAgeRestricted"},
+                           "regionRestriction": {"blocked": ["IN"]}, "caption": "true"},
+        "status": {"embeddable": False, "madeForKids": True},
+        "topicDetails": {"topicCategories": ["https://en.wikipedia.org/wiki/Music"]},
+    })
+    assert (v.duration_s, v.age_restricted, v.embeddable, v.made_for_kids, v.blocked_in_india, v.has_captions) == (600, True, False, True, True, True)
+    assert v.category_id == "27" and v.topic_categories == ["https://en.wikipedia.org/wiki/Music"]
+
+
+# ---------- filter rules ----------
+
+
+def test_youtube_type_reason():
+    assert youtube_type_reason("10", []) == "YouTube lists this as Music"
+    assert youtube_type_reason("24", []) == "YouTube lists this as Entertainment"
+    assert youtube_type_reason("27", ["https://en.wikipedia.org/wiki/Music"]) is None  # Education wins
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Pop_music"]) == "YouTube tags this as Music"
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Film"]) == "YouTube tags this as Films"
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Knowledge"]) is None
+    assert youtube_type_reason("35", []) is None  # documentaries stay
+
+
+def test_trusted_channels_are_never_hidden_by_youtube_type():
+    lecture_in_entertainment = video("x" * 11, category_id="24")
+    assert not judge(lecture_in_entertainment, UserRules()).visible
+    assert judge(lecture_in_entertainment, UserRules(trusted_channels={TEACHER})).visible
+
+
+def test_drop_rules_beat_trust():
+    v = video("x" * 11, age_restricted=True)
+    verdict = judge(v, UserRules(trusted_channels={TEACHER}))
+    assert not verdict.visible and not verdict.playable
+
+
+def test_phrase_mute_and_shorts_setting():
+    v = video("x" * 11, title="Bigg Boss highlights", duration_s=60)
+    verdict = judge(v, UserRules(muted_phrases=["bigg boss"]))
+    assert "Your mute: “bigg boss”" in verdict.reasons
+    assert any("Shorts setting is off" in r for r in verdict.reasons)
+    assert judge(video("y" * 11, duration_s=60), UserRules(shorts_enabled=True)).visible
+
+
+# ---------- the search endpoint ----------
+
+
+def test_search_shows_learning_and_explains_every_hidden_video(yt, signed_in):
+    r = signed_in.post("/api/search", json={"q": "cost accounting"})
+    assert r.status_code == 200
+    body = r.json()
+    assert [v["video_id"] for v in body["results"]] == ["lecture0001"]
+    hidden = {h["video_id"]: h for h in body["hidden"]}
+    assert body["hidden_count"] == 5
+    assert hidden["musicvid001"]["reasons"] == ["YouTube lists this as Music"] and hidden["musicvid001"]["playable"]
+    assert hidden["agerestrict"]["reasons"] == ["Age-restricted by YouTube"] and not hidden["agerestrict"]["playable"]
+    assert not hidden["noembed0001"]["playable"]
+    assert not hidden["blockedIN01"]["playable"]
+    assert hidden["shortvid001"]["playable"]
+    assert body["mode"] == "live" and body["searches_left"] == get_settings().search_quota_per_day - 1
+
+
+def test_same_search_twice_uses_one_quota_call(yt, signed_in):
+    signed_in.post("/api/search", json={"q": "cost accounting"})
+    r = signed_in.post("/api/search", json={"q": "  Cost   ACCOUNTING "})
+    assert r.json()["mode"] == "cache"
+    assert len(yt.search_calls) == 1
+    assert len(yt.video_calls) == 1  # details reused too
+
+
+def test_safe_search_is_always_strict():
+    import httpx
+    import respx
+
+    from app.youtube import YouTubeClient
+
+    with respx.mock(assert_all_called=True) as mock:
+        route = mock.get("https://www.googleapis.com/youtube/v3/search").respond(200, json={"items": []})
+        YouTubeClient("k", httpx.Client()).search("anything", "en")
+        assert route.calls.last.request.url.params["safeSearch"] == "strict"
+        assert route.calls.last.request.url.params["type"] == "video"
+
+
+def test_quota_guard_serves_saved_results(yt, signed_in, db, monkeypatch):
+    signed_in.post("/api/search", json={"q": "cost accounting"})
+    # Make the saved search a day old (stale but under 30 days) and use up the day's quota.
+    row = db.scalar(select(YtSearchCache))
+    row.fetched_at = datetime.now(timezone.utc) - timedelta(days=2)
+    db.commit()
+    monkeypatch.setattr(get_settings(), "search_quota_per_day", 1)
+    r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
+    assert r["mode"] == "cache_stale" and r["searches_left"] == 0
+    assert "limit is used up" in r["note"]
+    assert [v["video_id"] for v in r["results"]] == ["lecture0001"]
+    assert len(yt.search_calls) == 1
+
+
+def test_quota_guard_with_nothing_saved_still_answers(yt, signed_in, monkeypatch):
+    monkeypatch.setattr(get_settings(), "search_quota_per_day", 0)
+    r = signed_in.post("/api/search", json={"q": "brand new topic"})
+    assert r.status_code == 200
+    assert r.json()["mode"] == "quota_exhausted" and r.json()["results"] == []
+    assert yt.search_calls == []
+
+
+def test_youtube_data_older_than_30_days_is_never_shown(yt, signed_in, db):
+    signed_in.post("/api/search", json={"q": "cost accounting"})
+    old = datetime.now(timezone.utc) - timedelta(days=31)
+    for v in db.scalars(select(YtVideo)):
+        v.fetched_at = old
+    db.scalar(select(YtSearchCache)).fetched_at = old
+    db.commit()
+    yt.quota_exceeded = True  # can't refresh, so nothing old may be shown
+    r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
+    assert r["results"] == [] and r["mode"] == "quota_exhausted"
+
+
+def test_search_text_and_video_ids_never_reach_the_log(yt, signed_in, db):
+    signed_in.post("/api/search", json={"q": "cost accounting"})
+    for row in db.scalars(select(AppLog)):
+        text = f"{row.route} {row.action}"
+        assert "cost" not in text and "lecture0001" not in text
+
+
+def test_mutes_and_follows_change_results(yt, signed_in):
+    assert signed_in.post("/api/mutes", json={"kind": "channel", "value": TEACHER}).status_code == 201
+    r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
+    assert "lecture0001" in {h["video_id"] for h in r["hidden"]}
+    assert signed_in.post("/api/mutes/remove", json={"kind": "channel", "value": TEACHER}).status_code == 204
+
+    # Following the singer's channel means YouTube's "Music" label no longer hides it (the user's own choice).
+    assert signed_in.post("/api/follows", json={"channel_id": SINGER}).status_code == 201
+    r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
+    assert "musicvid001" in {v["video_id"] for v in r["results"]}
+    assert signed_in.get("/api/follows").json() == [SINGER]
+
+
+def test_bad_channel_ids_are_refused(signed_in):
+    assert signed_in.post("/api/follows", json={"channel_id": "not-a-channel"}).status_code == 422
+    assert signed_in.post("/api/mutes", json={"kind": "channel", "value": "nope nope"}).status_code == 422
+
+
+def test_search_needs_an_account(client):
+    assert client.post("/api/search", json={"q": "x"}).status_code == 401
