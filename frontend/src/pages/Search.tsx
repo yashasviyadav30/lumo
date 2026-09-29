@@ -1,10 +1,13 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { useLocation } from 'react-router'
 import HiddenLine from '../components/HiddenLine'
 import VideoItem from '../components/VideoItem'
 import { followChannel, muteChannel, searchVideos, type SearchResponse } from '../lib/search'
 
 export default function Search() {
-  const [query, setQuery] = useState('')
+  const location = useLocation()
+  const handedOver = (location.state as { q?: string } | null)?.q ?? ''
+  const [query, setQuery] = useState(handedOver)
   const [data, setData] = useState<SearchResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -25,6 +28,12 @@ export default function Search() {
       setBusy(false)
     }
   }
+
+  // A topic tapped on Home arrives in memory (not in the URL) and runs straight away.
+  useEffect(() => {
+    if (handedOver) run(handedOver)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handedOver])
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()

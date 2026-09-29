@@ -405,3 +405,35 @@ button.link {
   border-left: 3px solid var(--accent);
   padding: 8px 12px;
 }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 16px;
+}
+.chip {
+  background: var(--surface);
+  color: var(--brand);
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  font-weight: 600;
+  text-align: left;
+}
+@media (prefers-color-scheme: dark) {
+  .chip {
+    color: var(--brand);
+  }
+}
+.goal-line {
+  font-size: 1.05rem;
+}
+.goal-label {
+  color: var(--muted);
+}
+.primary-wide {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  margin: 8px 0;
+}

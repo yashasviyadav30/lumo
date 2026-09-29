@@ -22,7 +22,7 @@ export function mockApi(handlers: Record<string, Handler>) {
     const handler = handlers[`${method} ${path}`]
     if (!handler) throw new Error(`Unexpected API call: ${method} ${path}`)
     const { status, body } = handler({ ...init, url })
-    return new Response(status === 204 ? null : JSON.stringify(body ?? {}), {
+    return new Response(status === 204 ? null : JSON.stringify(body === undefined ? {} : body), {
       status,
       headers: { 'Content-Type': 'application/json' },
     })
