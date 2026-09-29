@@ -21,6 +21,7 @@ def video(video_id: str, **over) -> VideoFields:
         blocked_in_india=False,
         has_captions=True,
         live="none",
+        vertical=False,
     )
     base.update(over)
     return VideoFields(**base)

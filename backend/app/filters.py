@@ -99,6 +99,17 @@ def youtube_type_reason(category_id: str | None, topics: list[str] | None) -> st
     return None
 
 
+def is_short(video) -> bool:
+    """Shorts rule on YouTube's own fields: 3 minutes or less AND vertical. Unknown shape → not a Short,
+    because short horizontal lessons (worked examples) must not be hidden (over-blocking is the bigger failure)."""
+    return (
+        video.duration_s is not None
+        and video.duration_s <= SHORTS_MAX_SECONDS
+        and video.vertical is True
+        and video.live == "none"
+    )
+
+
 def judge(video, rules: UserRules) -> Verdict:
     """video: anything with the YtVideo fields."""
     reasons: list[str] = []
@@ -118,8 +129,8 @@ def judge(video, rules: UserRules) -> Verdict:
         if phrase and phrase.casefold() in title:
             reasons.append(f"Your mute: “{phrase}”")
             break
-    if not rules.shorts_enabled and video.duration_s is not None and video.duration_s <= SHORTS_MAX_SECONDS and video.live == "none":
-        reasons.append("Short video, and your Shorts setting is off")
+    if not rules.shorts_enabled and is_short(video):
+        reasons.append("Short vertical video, and your Shorts setting is off")
     if video.channel_id not in rules.trusted_channels:
         type_reason = youtube_type_reason(video.category_id, video.topic_categories)
         if type_reason:

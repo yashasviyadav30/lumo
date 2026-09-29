@@ -18,14 +18,15 @@ SINGER = "UC" + "b" * 22
 def yt(signed_in):
     fake = FakeYouTube(
         results={
-            "cost accounting": ["lecture0001", "musicvid001", "agerestrict", "noembed0001", "shortvid001", "blockedIN01"],
+            "cost accounting": ["lecture0001", "musicvid001", "agerestrict", "noembed0001", "shortvid001", "blockedIN01", "shortlesson"],
         },
         videos={
             "lecture0001": video("lecture0001"),
             "musicvid001": video("musicvid001", channel_id=SINGER, category_id="10", title="New song"),
             "agerestrict": video("agerestrict", age_restricted=True),
             "noembed0001": video("noembed0001", embeddable=False),
-            "shortvid001": video("shortvid001", duration_s=45),
+            "shortvid001": video("shortvid001", duration_s=45, vertical=True),
+            "shortlesson": video("shortlesson", duration_s=120, vertical=False),
             "blockedIN01": video("blockedIN01", blocked_in_india=True),
         },
     )
@@ -60,10 +61,12 @@ def test_parse_video_reads_only_youtube_fields():
         "contentDetails": {"duration": "PT10M", "contentRating": {"ytRating": "ytAgeRestricted"},
                            "regionRestriction": {"blocked": ["IN"]}, "caption": "true"},
         "status": {"embeddable": False, "madeForKids": True},
+        "player": {"embedWidth": "405", "embedHeight": "720"},
         "topicDetails": {"topicCategories": ["https://en.wikipedia.org/wiki/Music"]},
     })
     assert (v.duration_s, v.age_restricted, v.embeddable, v.made_for_kids, v.blocked_in_india, v.has_captions) == (600, True, False, True, True, True)
     assert v.category_id == "27" and v.topic_categories == ["https://en.wikipedia.org/wiki/Music"]
+    assert v.vertical is True
 
 
 # ---------- filter rules ----------
@@ -92,11 +95,13 @@ def test_drop_rules_beat_trust():
 
 
 def test_phrase_mute_and_shorts_setting():
-    v = video("x" * 11, title="Bigg Boss highlights", duration_s=60)
+    v = video("x" * 11, title="Bigg Boss highlights", duration_s=60, vertical=True)
     verdict = judge(v, UserRules(muted_phrases=["bigg boss"]))
     assert "Your mute: “bigg boss”" in verdict.reasons
     assert any("Shorts setting is off" in r for r in verdict.reasons)
-    assert judge(video("y" * 11, duration_s=60), UserRules(shorts_enabled=True)).visible
+    assert judge(video("y" * 11, duration_s=60, vertical=True), UserRules(shorts_enabled=True)).visible
+    assert judge(video("z" * 11, duration_s=60, vertical=False), UserRules()).visible  # short lesson, not a Short
+    assert judge(video("w" * 11, duration_s=60, vertical=None), UserRules()).visible  # unknown shape: show
 
 
 # ---------- the search endpoint ----------
@@ -106,7 +111,7 @@ def test_search_shows_learning_and_explains_every_hidden_video(yt, signed_in):
     r = signed_in.post("/api/search", json={"q": "cost accounting"})
     assert r.status_code == 200
     body = r.json()
-    assert [v["video_id"] for v in body["results"]] == ["lecture0001"]
+    assert [v["video_id"] for v in body["results"]] == ["lecture0001", "shortlesson"]  # a short horizontal lesson stays
     hidden = {h["video_id"]: h for h in body["hidden"]}
     assert body["hidden_count"] == 5
     assert hidden["musicvid001"]["reasons"] == ["YouTube lists this as Music"] and hidden["musicvid001"]["playable"]
@@ -148,7 +153,7 @@ def test_quota_guard_serves_saved_results(yt, signed_in, db, monkeypatch):
     r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
     assert r["mode"] == "cache_stale" and r["searches_left"] == 0
     assert "limit is used up" in r["note"]
-    assert [v["video_id"] for v in r["results"]] == ["lecture0001"]
+    assert [v["video_id"] for v in r["results"]] == ["lecture0001", "shortlesson"]
     assert len(yt.search_calls) == 1
 
 

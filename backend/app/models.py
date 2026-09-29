@@ -173,6 +173,7 @@ class YtVideo(Base):
     blocked_in_india: Mapped[bool] = mapped_column(Boolean, default=False)
     has_captions: Mapped[bool] = mapped_column(Boolean, default=False)
     live: Mapped[str] = mapped_column(String(12), default="none")  # none | live | upcoming
+    vertical: Mapped[bool | None] = mapped_column(Boolean, nullable=True)  # from YouTube's embed size
 
 
 class YtSearchCache(Base):

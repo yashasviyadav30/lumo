@@ -93,7 +93,7 @@ def _details(db: Session, yt: YouTubeClient, ids: list[str], now: datetime) -> d
         fetched = yt.videos(stale)
         quota.record(db, "general", math.ceil(len(stale) / 50))
         for f in fetched:
-            row = rows.get(f.video_id) or db.get(YtVideo, f.video_id)
+            row = rows.get(f.video_id)  # already loaded above; no extra round trip per video
             values = asdict(f)
             if row is None:
                 row = YtVideo(**values, fetched_at=now)

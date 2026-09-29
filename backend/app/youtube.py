@@ -11,7 +11,7 @@ import httpx
 
 API = "https://www.googleapis.com/youtube/v3"
 INDIA = "IN"
-DETAIL_PARTS = "snippet,contentDetails,status,topicDetails"
+DETAIL_PARTS = "snippet,contentDetails,status,topicDetails,player"
 
 _DURATION = re.compile(r"P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?")
 
@@ -64,6 +64,7 @@ class VideoFields:
     blocked_in_india: bool
     has_captions: bool
     live: str
+    vertical: bool | None
 
 
 def parse_video(item: dict) -> VideoFields:
@@ -89,7 +90,17 @@ def parse_video(item: dict) -> VideoFields:
         blocked_in_india=blocked_in(cd.get("regionRestriction")),
         has_captions=cd.get("caption") == "true",
         live=sn.get("liveBroadcastContent", "none"),
+        vertical=_is_vertical(item.get("player", {})),
     )
+
+
+def _is_vertical(player: dict) -> bool | None:
+    """YouTube's own embed size: Shorts are taller than wide. None when YouTube doesn't say."""
+    try:
+        w, h = int(player["embedWidth"]), int(player["embedHeight"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    return h > w
 
 
 class YouTubeClient:
@@ -126,7 +137,11 @@ class YouTubeClient:
         out: list[VideoFields] = []
         for start in range(0, len(ids), 50):
             chunk = ids[start : start + 50]
-            data = self._get("videos", {"part": DETAIL_PARTS, "id": ",".join(chunk), "maxResults": 50})
+            data = self._get(
+                "videos",
+                # maxHeight makes YouTube return the embed width and height (used for the Shorts shape).
+                {"part": DETAIL_PARTS, "id": ",".join(chunk), "maxResults": 50, "maxHeight": 720},
+            )
             out.extend(parse_video(item) for item in data.get("items", []))
         return out
 
