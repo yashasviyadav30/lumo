@@ -296,7 +296,7 @@ Goal: ideas so good that students leave YouTube for studying and open this app e
 - [x] 1. User research: pain points with sources
 - [x] 2. Diverge: 6 viewpoints × 20+ ideas (156 ideas)
 - [x] 3. Converge: skeptic's verdicts
-- [ ] 4. The "only here" features and a day in my sister's life
+- [x] 4. The "only here" features and a day in my sister's life
 - [ ] 5. Screens and HTML mockups (`docs/mockups/`)
 - [ ] 6. Ranked top 10, build order, questions for real students
 
@@ -413,3 +413,50 @@ A separate skeptic tested every idea against five questions: would a real studen
 4. **Social features die without people.** A pod of strangers needs hundreds of users on the same paper. Start with friends she already has, or don't build it.
 5. **The biggest growth lever is a teacher, and none has been asked.** One conversation with a mid-size CS/CMA teacher is worth more than a month of code.
 6. **The evidence is thin.** One real user, no Reddit, almost no first-person CS/CMA quotes, and the personas graded their own ideas. Pilot before building.
+
+## 4. The "only here" features
+
+The skeptic is right that nothing makes her *leave* YouTube: the lectures, the ads and the player's links stay YouTube's. So the target is narrower and more honest: **the place she goes before and after a lecture, and the place she can't revise without.** Three features, together, do what no other app does.
+
+### Only here #1: Lectures that come back to you ("Watch once. Remember it.")
+
+**What it is.** While she watches, one thumb bar under the player: **Mark · Doubt · ★ · −10s**. Marks are one tap and empty; at a pause she fills them in (the app replays 10 seconds around each). Long-pressing a word in a note turns it into a card. Every card remembers the second it came from. At night she swipes through her own cards, Shorts-style. **If she forgets one, "Watch this bit" replays only that 90 seconds of the lecture**, then asks the card again. Before re-watching a whole lecture, the app offers "60 seconds first: what do you remember?" and then replays only the parts she missed.
+
+**Why only here.** It needs two things at once: *her* timestamped notes (our data) and the lecture in the same app.
+- **YouTube** can only replay the whole video, and has no notes.
+- **Anki** has cards but no lecture to go back to.
+- **SyncStudy** has notes beside videos but no recall.
+- **Pi Lens** makes flashcards from the video by AI (which our rules ban), so they're the AI's idea of important, not hers, and it can't send her back to the moment she herself marked.
+
+**Merged ideas:** M-01, M-02, M-03, M-04, M-10. Switch power: the daily reason to open the app even on days she watches nothing.
+
+### Only here #2: Doubts that get answered, at the exact second
+
+**What it is.** "Doubt" saves the second and one line, says "Parked, keep going", and the lecture continues. Her Doubts board lists open and solved ones. Any doubt becomes a WhatsApp link: her friend opens a page that plays the official player **at that exact second** with a box to answer. The answer lands on her doubt. Later, her accountability pod (3–5 friends on the same paper) sees a one-line nightly check-in, and a teacher who joins sees the most-asked doubts per lecture.
+
+**Why only here.** YouTube comments bury questions and have no timestamp link back to your own list. WhatsApp has the friends but not the moment in the lecture or a board. Nobody links a doubt to a second, a friend and a to-do list.
+
+**Merged ideas:** M-05, M-12, later M-16 and M-17. Switch power: it brings people; every shared doubt brings a classmate into the app.
+
+### Only here #3: Made for my attempt (CS, CMA, CA)
+
+**What it is.** Her paper's official topics as a tracker: R1/R2/R3 ticks with dates, red/amber/green after each revision, and a pace line ("R2 needs 4 chapters a week; you did 2"). An **amendment list for her attempt** (Dec 2026), each item linked to the official notice; a lecture uploaded before a cut-off date says so plainly ("uploaded before the Mar 2025 amendment; check the list"). A **past-paper writing drill**: a real ICSI question, a timer, she writes on paper, snaps it, and sees her own notes on that chapter beside her answer. In the last month, Home switches to exam mode (T-30, T-15, T-3, T-1).
+
+**Why only here.** YouTube never tells her a lecture predates the law she'll be tested on. SyncStudy and Pi Lens cover JEE, NEET and school, not CS or CMA. Coaching test series cost money.
+
+**Merged ideas:** M-07, M-08, M-09, M-15. Switch power: trust. "This app knows my exam."
+
+### A day in my sister's life (CS Professional, December 2026 attempt)
+
+- **7:50 am.** One notification: *"Which companies must spend 2% on CSR?"* It's one of her own cards, from ESG lecture 4. She answers from the lock screen. 10 seconds.
+- **4:00 pm.** She opens the app. Home doesn't show a search bar. It shows one thing: **"Resume ESG · Lecture 6 at 42:10"**, and below it "5 cards due · Riya answered your doubt".
+- **4:05–5:10 pm.** She watches lecture 6. The player looks and works exactly like YouTube's (it *is* YouTube's). She taps **Mark** six times and **Doubt** once, without pausing. At the break, a tray asks *"6 marks: fill them in?"* Each replays 10 seconds; she types a line ("Sec 135(5): 2% of avg net profit, 3 yrs"). She long-presses "2%" to make a card.
+- **5:12 pm.** Her doubt ("Is a Section 8 company covered?") goes to her pod's WhatsApp group as a link. Riya taps it, the lecture opens at 51:30, and she types the answer. It lands on the doubt.
+- **9:30 pm.** The pod's check-in: *"What did you study today?"* She writes one line; she sees two friends done, one "rest". Nobody is ranked.
+- **11:40 pm.** Too tired for a lecture. Home offers **"Too tired? 5 cards instead."** She swipes. She forgets one card, taps **"Watch this bit"**, and the lecture plays 42:10–43:40 (90 seconds, not 2 hours). The card comes back; she gets it.
+- **Sunday.** The tracker shows ESG chapters 1–4: R1 done, two green, two amber. The amendment list has two new MCA notifications for her attempt; a 2024 lecture she saved says *"uploaded before the Mar 2025 amendment."* She does one past-paper question: Dec 2025, Q3, 5 marks, written by hand in 9 minutes, then compared with her own notes.
+- **November (T-15).** Home switches to "reds only": her amber and red chapters, her mistakes and her hardest cards. The day before the exam, a one-page hall sheet per paper, built from her ★ notes.
+
+**Why she can't study without it by November:** six months of her own marks, cards and doubts, each tied to the second she learned it. That's the switching cost no competitor can copy, and it only exists because she built it here.
+
+**What stays YouTube's:** finding new lectures, the lectures themselves, ads and recommendations. That's fine; we're the notebook and the revision, not the TV.
