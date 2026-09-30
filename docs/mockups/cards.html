@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup · My cards</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="page">
+<div class="caption">
+  <a class="back" href="index.html">← All screens</a>
+  <h1>3. Swipe my own cards, replay only the miss</h1>
+  <p>A full-screen, Shorts-style feed, but it's her own ESG notes. She answers in her head, then taps how it went.</p>
+  <ul>
+    <li><b>Forgot</b> → "Watch this bit": the lecture plays only 42:10–43:40, then the card comes back.</li>
+    <li>Cards return after 1 day, 3 days, a week, a month. A card she knows 3 times retires.</li>
+    <li>No streaks, no points. It ends after 5 cards: "Done. Sleep well."</li>
+  </ul>
+  <p class="muted">Only her text goes into cards (rules R3, R4). Replays use the player's own start and end times from her tap (R7).</p>
+</div>
+
+<div class="phone">
+  <div class="status"><span>11:41</span><span>●●● 4G</span></div>
+  <div class="top"><a href="home.html" style="text-decoration:none;color:var(--brand);font-weight:700">←</a><b>ESG cards</b><span class="right">2 of 5</span></div>
+  <div class="body">
+    <div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+    <div class="swipe">
+      <span class="pill">Paper 1 · CSR · from Lecture 6</span>
+      <div class="q">CSR spend = <span class="blank"></span> of average net profit of the last <span class="blank"></span> years.</div>
+      <div class="muted">Say it in your head, then reveal.</div>
+      <div class="answer">
+        <b>2%</b> · <b>3 years</b> <span class="muted">(Sec 135(5))</span>
+        <div class="row" style="margin-top:10px"><a class="btn small ghost" href="#replay">▶ Watch this bit · 42:10 (1:30)</a></div>
+      </div>
+      <div class="grades"><a class="g1" href="#replay">Forgot</a><a class="g2" href="#">Not sure</a><a class="g3" href="#">Knew it</a></div>
+    </div>
+  </div>
+  <div class="tabs"><a href="home.html">Home</a><a href="#">Search</a><a href="#">Library</a><a class="on" href="personal.html">Personal</a></div>
+</div>
+
+<div class="phone" id="replay">
+  <div class="status"><span>11:42</span><span>●●● 4G</span></div>
+  <div class="top"><b>Watch this bit</b><span class="right">42:10 → 43:40</span></div>
+  <div class="body">
+    <div class="player"><b>YouTube's own player</b>starts at 42:10, stops at 43:40<br>(just the part you forgot)</div>
+    <div class="card" style="margin-top:12px">
+      <div class="muted">Your note at 42:10</div>
+      <div>CSR spend = 2% of average net profit of last 3 years</div>
+    </div>
+    <div class="card">
+      <b>Got it now?</b>
+      <div class="muted">The card comes back once more before you finish.</div>
+      <div class="row" style="margin-top:10px"><a class="btn small" href="#">Ask me again</a><a class="btn small ghost" href="#">Next card</a></div>
+    </div>
+    <div class="section-title">Why this works</div>
+    <div class="muted">Testing yourself beats re-watching (Roediger &amp; Karpicke 2006). You re-watch 90 seconds, not the whole 2-hour lecture.</div>
+  </div>
+  <div class="tabs"><a href="home.html">Home</a><a href="#">Search</a><a href="#">Library</a><a class="on" href="personal.html">Personal</a></div>
+</div>
+</div></body></html>

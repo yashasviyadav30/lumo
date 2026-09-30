@@ -297,8 +297,8 @@ Goal: ideas so good that students leave YouTube for studying and open this app e
 - [x] 2. Diverge: 6 viewpoints × 20+ ideas (156 ideas)
 - [x] 3. Converge: skeptic's verdicts
 - [x] 4. The "only here" features and a day in my sister's life
-- [ ] 5. Screens and HTML mockups (`docs/mockups/`)
-- [ ] 6. Ranked top 10, build order, questions for real students
+- [x] 5. Screens and HTML mockups (`docs/mockups/`)
+- [x] 6. Ranked top 10, build order, questions for real students
 
 ## 1. Pain points (user research)
 
@@ -460,3 +460,86 @@ The skeptic is right that nothing makes her *leave* YouTube: the lectures, the a
 **Why she can't study without it by November:** six months of her own marks, cards and doubts, each tied to the second she learned it. That's the switching cost no competitor can copy, and it only exists because she built it here.
 
 **What stays YouTube's:** finding new lectures, the lectures themselves, ads and recommendations. That's fine; we're the notebook and the revision, not the TV.
+
+## 5. Screens (with mockups)
+
+Open **`docs/mockups/index.html`** in a browser (double-click it). Six phone-sized screens, clickable between each other. The dark box stands for YouTube's own player, which we never change. All study content in the mockups (CSR rules, amendment names, questions, "Riya") is sample text and hasn't been checked.
+
+| Screen | Mockup | What she sees | What she taps |
+|---|---|---|---|
+| **1. Home** | [home.html](mockups/home.html) | One big card: "Resume ESG · Lecture 6 at 42:10". Below: "5 cards due · 2 min", "Riya answered your doubt", tonight's pod (3 of 4 checked in), and "Too tired? Just 5 cards instead". Exam countdown in the top bar. | Resume → study page at 42:10. 5 cards → swipe. Doubt → the answer. |
+| **2. Study page** | [study.html](mockups/study.html) | YouTube's player on top. Under it: **Mark · Doubt · ★ · −10s**. A tray: "6 marks to fill in". Her notes on this lecture, each with its time and type (Sec, Def, PYQ, Doubt), plus links (ICSI material). | Mark while listening; Fill now replays 10 s per mark; long-press a word to make a card; tap a time to jump back. |
+| **3. My cards** | [cards.html](mockups/cards.html) | A full-screen card from her own note: "CSR spend = ___ of average net profit of the last ___ years." After reveal: the answer and "▶ Watch this bit · 42:10 (1:30)". | Forgot / Not sure / Knew it. Forgot → the player plays only 42:10–43:40, then "Ask me again". |
+| **4. Doubts** | [doubts.html](mockups/doubts.html) | Her doubts: open (red) and answered (green), each with its lecture second. A second phone shows what her friend sees from WhatsApp: the lecture at 51:30 and an answer box with an 18+ tick. | Ask friends on WhatsApp · ▶ 51:30 · Mark solved · Make a card. |
+| **5. Personal** | [personal.html](mockups/personal.html) | Search my notes. ESG tracker: R1/R2 pills per chapter, "R2 needs 4 chapters a week; you did 2". Amendments for Dec 2026 with official links, and a warning that 2 saved lectures were uploaded before a cut-off. Notebook by paper with counts. | A paper → its notes; Past-paper drill; Export PDF. |
+| **6. Past-paper drill** | [drill.html](mockups/drill.html) | A real past question (Dec 2025, Q3(b), 5 marks) with a link to the official paper, a timer, the photo of her own answer sheet, her own notes on that chapter, and a 4-point checklist. | Save to mistake book · ▶ Replay 58:45. |
+
+---
+
+## 6. Ranked top 10
+
+Ranked by how likely it is to make her open the app every day, against the effort for one developer. Scores come from the skeptic, adjusted for what the "only here" features need. Low = days, Medium = 1–3 weeks, High = a month or more (or sales work).
+
+| Rank | Idea | Why she'd switch | Effort |
+|---|---|---|---|
+| 1 | **Swipe my own cards** (M-02) | At 11 pm her thumb wants to swipe; this gives the swipe to her own ESG notes, 5 minutes, and it ends. The reason to open the app on days she watches nothing. | Medium |
+| 2 | **Replay only the miss** (M-03) | Forgetting a card replays 90 seconds of the lecture, not 2 hours. Nothing else can do this. | Low (after 1 and 3) |
+| 3 | **One-tap capture bar** (M-01) | Faster than pausing to write; everything else runs on it. | Medium |
+| 4 | **Home opens on one thing** (M-10) | The first screen is where she stopped, not a search bar: the direct fix for "it doesn't feel different". | Low |
+| 5 | **Doubts pinned to the second, answered by a friend** (M-05) | Her doubt reaches the three people who'll answer, at the exact moment. Spreads the app. | Low–Medium |
+| 6 | **Past-paper answer-writing drill** (M-07) | CS theory papers are won by writing; YouTube gives zero practice. | Medium, plus typing in questions |
+| 7 | **Personal notebook** (M-25) | Her own request; after a month of notes, it's why she stays. | Medium |
+| 8 | **Pod with a nightly check-in** (M-12) | Someone notices if she skips tonight. Only works with friends she already has. | Medium (test by hand first) |
+| 9 | **Amendment tracker for her attempt** (M-15) | YouTube never says a lecture predates the law she'll be tested on. | Low code, plus curation each attempt |
+| 10 | **R1/R2/R3 revision tracker** (M-08) | The page every aspirant draws by hand, ready-made from our syllabus maps. | Medium |
+
+**Just outside the 10:**
+- **Teacher class kit** (M-16): the biggest lever of all if a teacher says yes. It's sales, not code.
+- **Share from the YouTube app** (M-18): Android only.
+- **Mistake book** (M-06): useful once mocks start.
+- **A daily card by push notification** (M-04): weak on iPhone.
+- **Backup and export** (M-19): not a pull, but build it early for trust.
+
+## Build order
+
+**Before any code (this week), about ₹0:**
+1. **Show the mockups** to my sister and 4 classmates. Ask the questions below.
+2. **Test note-taking first** (the skeptic's truth #3). Ask 5 students to mark moments on paper during 3 lectures ("42:10 CSR 2%"). If they won't, the revision features have nothing to run on.
+3. **Talk to one mid-size CS or CMA teacher** about the class kit (M-16).
+4. **Start the hand-run pilot** (M-26): one Telegram group, 15–20 CS/CMA students, a nightly check-in and a daily past-paper question, for 4 weeks. Build only what they still use in week 4.
+
+**Then, as new versions of the app** (each ends with students using it, not a feature checklist):
+
+| Version | What's in it | Rough effort | Success looks like |
+|---|---|---|---|
+| **v2.0 Study companion** | 4 tabs (Home · Search · Library · Personal); Home opens on one thing; the capture bar and fill-in tray; notes list per lecture; a basic Personal notebook with search; backup and export | 3–4 weeks | Most lectures she watches get 3+ marks |
+| **v2.1 Revision loop** | Cards from her notes (long-press); swipe feed; spaced schedule; "Watch this bit" replay; test-before-rewatch | 2–3 weeks | She opens the app on days she watches nothing |
+| **v2.2 People** | Doubts board; WhatsApp answer page; pods only if the pilot showed use | 2 weeks | Doubts get answered within a day |
+| **v2.3 My attempt** | R1/R2/R3 tracker; amendment list (curated by a CS student, perhaps my sister); past-paper drill and mistake book; exam countdown | 3 weeks | She uses the tracker weekly; one drill a week |
+| **Later** | Teacher class kit and feedback (when a teacher says yes); share-to-study; push cards; Hindi and Hinglish UI | — | A teacher shares a link |
+
+What to measure (not watch time): days she opens the app to revise, marks per lecture, cards reviewed per week, doubts answered, and whether she still uses it in week 4.
+
+This changes the order in `plan.md` (study tools before Stage 5's feed, and before Test 1). That's a planning decision for later; this file only proposes it.
+
+## Questions to test with real students
+
+Ask 5 students (my sister plus 4 classmates), one at a time. Ask about what they *did*, not what they *would* do, and don't explain the idea first. Show the mockups only after question 4.
+
+**Before the mockups:**
+1. "Show me your notes from the last lecture you watched. How did you take them, and when did you last look at them?"
+2. "Last time you forgot something you'd watched, what did you do? How long did it take?"
+3. "When you have a doubt while studying alone, who do you ask? What happened the last time?"
+4. "How do you know a lecture is up to date for your attempt? Has an old lecture ever caught you out?"
+
+**With the mockups:**
+5. (Study page) "Would you tap Mark while listening, or pause and write? What would stop you from filling the marks in later?"
+6. (Cards) "At 11 pm, would you swipe 5 of your own cards instead of Shorts? What would make you stop after a week?"
+7. (Doubts) "Name the friends you'd send a doubt to. Would they answer from a WhatsApp link?"
+8. (Drill) "How often do you write full answers before the exam? What stops you now?"
+9. **The forced choice:** "If only one of these existed tomorrow (the study page, your cards, doubts to friends, or the tracker and amendments), which would you use? Which would make you open this instead of YouTube?"
+10. "What would make you delete this app after a week?"
+
+**For a teacher (one conversation):** "Would you paste your chapter times and notes PDF for a playlist if students got them free inside the app? Which would make you mention it in a video: seeing where students get confused, fewer 'timestamp please' comments, or protection from Telegram piracy?"
+
+Write each student's answers in their own words under "User interviews" in `research-summary.md`.
