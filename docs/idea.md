@@ -294,7 +294,7 @@ Goal: ideas so good that students leave YouTube for studying and open this app e
 
 **Progress** (updated after each step):
 - [x] 1. User research: pain points with sources
-- [ ] 2. Diverge: 6 viewpoints × 20+ ideas
+- [x] 2. Diverge: 6 viewpoints × 20+ ideas (163 ideas)
 - [ ] 3. Converge: skeptic's verdicts
 - [ ] 4. The "only here" features and a day in my sister's life
 - [ ] 5. Screens and HTML mockups (`docs/mockups/`)
@@ -330,3 +330,30 @@ Full tables with 66 pain points, every quote and its source URL: [research-aspir
 - **Hiding distractions is not a pitch.** Unhook does it free, and StudyTube's ad-free playback can't be copied under our rules.
 - **Choice overload (pain 3) can't be solved by our AI judging videos (R3).** Help has to come from people (teachers, peers, toppers, the user's own lists).
 - Pains that fit our rules best: **2 (doesn't stick), 4 (notes are slow), 5 (lonely), 7 (doubts), 11 (timestamps), 12 (never lose records)**.
+
+## 2. All ideas (diverge)
+
+Six viewpoints, 163 raw ideas in total. Each file has every idea with what it is, the pain it solves, why she'd switch, effort and a rule check.
+
+| Viewpoint | Ideas | File | Their top 3 |
+|---|---|---|---|
+| Struggling aspirant alone at night | 25 | [ideas-night-aspirant.md](ideation/ideas-night-aspirant.md) | Swipe her own notes Shorts-style (NIGHT-07) · "Tonight's one step" with an energy check (01, 02) · Park the doubt in a silent night room with other CS aspirants (15, 11) |
+| Topper with a strong system | 26 | [ideas-topper.md](ideation/ideas-topper.md) | R1-R2-R3 revision tracker with colours and a countdown (02, 12, 17) · Mistakes notebook with re-attempt dates (03) · A 21-day bootcamp that installs the system (19) |
+| Teacher on YouTube | 25 | [ideas-teacher.md](ideation/ideas-teacher.md) | Amendment pins and the teacher's own timestamp map (05, 01) · Doubt heatmap and a weekly answer loop (08, 09) · "Open in FocusLearn" link with the notes PDF (14, 02) |
+| Cognitive scientist | 29 | [ideas-cognitive-scientist.md](ideation/ideas-cognitive-scientist.md) | A lecture that asks you back: predict, checkpoints, "you were away, rewind?" (01, 02, 18) · Test before you rewatch, then replay only the miss (05, 04) · Cards that retire, and a "known, not watched" meter (07, 27) |
+| Product designer | 26 | [ideas-designer.md](ideation/ideas-designer.md) | Study Stories (05) · Doubt card for WhatsApp (07) · Thumb bar, mark now and write later (03, 04) |
+| Contrarian | 32 | [ideas-contrarian.md](ideation/ideas-contrarian.md) | Nightly check-in in a pod of five (01, 02) · A daily previous-year question written by hand (04) · Share-to-study from the YouTube app (03) |
+
+**Most surprising ideas, one per viewpoint:**
+- A weekly progress card she can send her family on WhatsApp, turning "on the phone all night" into proof of study (NIGHT-13).
+- A capture inbox that deletes what she hoards after 14 days, replacing Telegram Saved Messages (TOPPER-09).
+- Notes PDFs stamped with each student's name, so teachers trust us with notes they keep off Telegram (TEACH-16).
+- "Bedtime 5, morning 5": sleeping between two short reviews halved the practice needed to relearn (Mazza et al. 2016) (SCI-20).
+- Build nothing for a month: run the check-in and daily question by hand in a Telegram group, and code only what students still use in week four (CONTRA-24).
+
+**Where viewpoints agree without being told to** (a strong signal):
+- **Swiping through your own material** instead of Shorts: night aspirant, designer, cognitive scientist.
+- **Doubts pinned to the exact second, shared with a friend or teacher:** night aspirant, teacher, designer.
+- **Accountability and company rather than more content:** night aspirant, contrarian, topper.
+- **Testing yourself before rewatching:** cognitive scientist, topper.
+- **Working alongside YouTube** (share a video into the app) rather than replacing it: contrarian, and round 1's companion idea.
