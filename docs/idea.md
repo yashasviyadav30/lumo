@@ -294,8 +294,8 @@ Goal: ideas so good that students leave YouTube for studying and open this app e
 
 **Progress** (updated after each step):
 - [x] 1. User research: pain points with sources
-- [x] 2. Diverge: 6 viewpoints × 20+ ideas (163 ideas)
-- [ ] 3. Converge: skeptic's verdicts
+- [x] 2. Diverge: 6 viewpoints × 20+ ideas (156 ideas)
+- [x] 3. Converge: skeptic's verdicts
 - [ ] 4. The "only here" features and a day in my sister's life
 - [ ] 5. Screens and HTML mockups (`docs/mockups/`)
 - [ ] 6. Ranked top 10, build order, questions for real students
@@ -333,7 +333,7 @@ Full tables with 66 pain points, every quote and its source URL: [research-aspir
 
 ## 2. All ideas (diverge)
 
-Six viewpoints, 163 raw ideas in total. Each file has every idea with what it is, the pain it solves, why she'd switch, effort and a rule check.
+Six viewpoints, 156 raw ideas in total (plus the contrarian's 7 critiques of the current app, which the skeptic also judged). Each file has every idea with what it is, the pain it solves, why she'd switch, effort and a rule check.
 
 | Viewpoint | Ideas | File | Their top 3 |
 |---|---|---|---|
@@ -342,7 +342,7 @@ Six viewpoints, 163 raw ideas in total. Each file has every idea with what it is
 | Teacher on YouTube | 25 | [ideas-teacher.md](ideation/ideas-teacher.md) | Amendment pins and the teacher's own timestamp map (05, 01) · Doubt heatmap and a weekly answer loop (08, 09) · "Open in FocusLearn" link with the notes PDF (14, 02) |
 | Cognitive scientist | 29 | [ideas-cognitive-scientist.md](ideation/ideas-cognitive-scientist.md) | A lecture that asks you back: predict, checkpoints, "you were away, rewind?" (01, 02, 18) · Test before you rewatch, then replay only the miss (05, 04) · Cards that retire, and a "known, not watched" meter (07, 27) |
 | Product designer | 26 | [ideas-designer.md](ideation/ideas-designer.md) | Study Stories (05) · Doubt card for WhatsApp (07) · Thumb bar, mark now and write later (03, 04) |
-| Contrarian | 32 | [ideas-contrarian.md](ideation/ideas-contrarian.md) | Nightly check-in in a pod of five (01, 02) · A daily previous-year question written by hand (04) · Share-to-study from the YouTube app (03) |
+| Contrarian | 25 ideas + 7 critiques | [ideas-contrarian.md](ideation/ideas-contrarian.md) | Nightly check-in in a pod of five (01, 02) · A daily previous-year question written by hand (04) · Share-to-study from the YouTube app (03) |
 
 **Most surprising ideas, one per viewpoint:**
 - A weekly progress card she can send her family on WhatsApp, turning "on the phone all night" into proof of study (NIGHT-13).
@@ -357,3 +357,59 @@ Six viewpoints, 163 raw ideas in total. Each file has every idea with what it is
 - **Accountability and company rather than more content:** night aspirant, contrarian, topper.
 - **Testing yourself before rewatching:** cognitive scientist, topper.
 - **Working alongside YouTube** (share a video into the app) rather than replacing it: contrarian, and round 1's companion idea.
+
+## 3. The skeptic's verdicts (converge)
+
+A separate skeptic tested every idea against five questions: would a real student switch for it, is it just a nicer YouTube, does another app already do it, does it break a rule, can one developer build it? Full table (all 163 rows, merged ideas, rule traps): [skeptic-verdicts.md](ideation/skeptic-verdicts.md).
+
+**Result:** 32 ideas killed, the rest merged into **28 ideas (M-01 to M-28)**. Switch score is the skeptic's judgement (5 = she'd open it daily and nothing else does it).
+
+| Merged idea | What it is | Switch | Effort |
+|---|---|---|---|
+| M-01 One-tap capture bar | Mark · Doubt · ★ · −10 s under the player; fill in the marks later | 3 | Medium |
+| M-02 Swipe my own cards | Shorts-style feed of cards made from *her* notes, with "watch this bit" | 4 | Medium |
+| M-03 Test before rewatch, replay only the miss | 60 s recall first; a missed card replays just that stretch of the lecture | 3 (4 near exams) | Low after M-01, M-02 |
+| M-04 One card a day at her hour | A daily push holding one of her cards | 3 | Medium |
+| M-05 Doubts pinned to the second, answered by a friend | Doubt → WhatsApp link → friend answers at that moment | 3 | Low–Medium |
+| M-06 Mistake book | Log each wrong answer; it comes back at 3, 10, 30 days | 3 | Low–Medium |
+| M-07 PYQ answer-writing drill | Timed past-paper question, written on paper, checked against her notes | 4 | Medium + content |
+| M-08 Revision tracker on the syllabus | R1/R2/R3 per official topic, red/amber/green, pace line | 3 | Medium |
+| M-09 Exam countdown mode | Home changes at T-30, T-15, T-3, T-1 | 3 | Medium |
+| M-10 Home opens on one thing to do | "Resume Sec 135 at 42:10" or "4 cards · 2 min"; restart after a gap, no guilt | 3 | Low |
+| M-11 Backlog triage by swipe | Must watch / 2x / skip, then "11 days at your pace" | 3 | Medium |
+| M-12 Accountability pod | 3–5 friends on the same paper, one-line nightly check-in | 4 with friends, 1 empty | Medium |
+| M-13 Silent study room | "23 CS aspirants studying now" | 2 | Medium |
+| M-14 Weekly share card | Edited summary she can forward to family or pod | 2 | Low |
+| M-15 Amendment tracker (CS, CMA, CA) | Amendments that apply to her attempt; lectures "uploaded before" a cut-off | 3 | Low code, ongoing curation |
+| M-16 Teacher class kit | A teacher shares one link: ordered lectures, chapter times, notes PDF, questions | 5 if her teacher does it | High (mostly sales) |
+| M-17 Teacher feedback loop | Aggregated doubts per lecture for the teacher | 2 | Medium |
+| M-18 Share-to-study from the YouTube app | Share a lecture from YouTube into our inbox (Android) | 3 | Low–Medium |
+| M-19 Records you can't lose | Sync tick, backup time, export to PDF/Markdown/CSV | 2 | Low–Medium |
+| M-20 Lite and offline | Cards and notes work with no data | 2 | Medium |
+| M-21 Sunday mirror | One weekly screen of what she did | 2 | Low–Medium |
+| M-22 A lecture that asks you back | Predict button, checkpoints (parked: adds effort to the easy part) | 1 | Low |
+| M-23 Explain it back | LLM compares her explanation with her notes | 2 | Medium |
+| M-24 Hinglish and Hindi UI | "Samajh nahi aaya", "Phir se" | 2 | Low–Medium |
+| M-25 Personal notebook and shelf | The Personal tab she asked for | 3 | Medium |
+| M-26 Hand-run pilot | 4 weeks in a Telegram group before more code | n/a | Low code |
+| M-27 My course: one playlist per paper | Paste a playlist, get a course | 2 | Medium |
+| M-28 Chapter map for long lectures | Teacher's, hers, and agreed student maps | 2 | Medium |
+
+**Rule traps the personas missed** (14 found; the worst):
+- **Timed auto-pauses** by our code look like changing playback (R7). Use the embed's `start`/`end` for replay windows; everything else starts from her tap.
+- **Channel-scoped search** burns the 100 daily searches. Use a teacher's playlist (`playlistItems`, cheap).
+- **Bot and server logs would capture pasted YouTube links** (R11). Strip URLs before logging.
+- **Suggesting a topic from a shared video's title** is judging a video (R3). She picks the topic.
+- **An open answer page** stores text from people who never ticked 18+ (R10). Tick before storing.
+- **A live count of people watching one lecture** is a derived metric about YouTube content ❓. Count per paper, never per video.
+- **A recall card during the ad** pulls attention from YouTube's ad. Killed.
+- **Chrome's speech-to-text sends audio to Google** 🟡. Voice is optional, off by default, and in the privacy notice.
+
+### The uncomfortable truths
+
+1. **Nothing makes her *leave* YouTube.** The lectures stay on YouTube, ads play, and the player's links open YouTube. The honest goal is to be where she goes **before and after** a lecture: revision, doubts, check-ins. Measure daily revision opens, not "switched from YouTube".
+2. **"Notes beside the video" is table stakes.** Pi Lens and SyncStudy have it, and Pi Lens fills its panel from the video, which we can't. Our defensible edges are slow: months of her own notes, CS/CMA specifics, and people.
+3. **Almost everything depends on her writing notes, and slow notes are a top pain.** No notes, no cards, no replay, no doubts board. Test with 5 students before building the revision stack.
+4. **Social features die without people.** A pod of strangers needs hundreds of users on the same paper. Start with friends she already has, or don't build it.
+5. **The biggest growth lever is a teacher, and none has been asked.** One conversation with a mid-size CS/CMA teacher is worth more than a month of code.
+6. **The evidence is thin.** One real user, no Reddit, almost no first-person CS/CMA quotes, and the personas graded their own ideas. Pilot before building.
