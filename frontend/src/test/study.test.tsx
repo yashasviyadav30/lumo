@@ -155,12 +155,17 @@ describe('cards review', () => {
 describe('home and personal', () => {
   it('opens Home on one thing to do: resume the lecture', async () => {
     signInForTest({
-      'GET /api/home/summary': () => ({ status: 200, body: { resume: { video_id: VID, position_s: 2530, video: VIDEO }, cards_due: 3, doubts_open: 1, marks_to_fill: 0 } }),
+      'GET /api/home/summary': () => ({ status: 200, body: { resume: { video_id: VID, position_s: 2530, video: VIDEO }, cards_due: 3, doubts_open: 1, marks_to_fill: 0, week: { reviews: 32, notes: 5 }, totals: { notes: 9, lectures: 2, cards: 4 } } }),
       'GET /api/goals/active': () => ({ status: 200, body: null }),
     })
     renderAt('/')
     expect(await screen.findByRole('link', { name: /ESG Lecture 6/ })).toHaveAttribute('href', `/watch/${VID}`)
     expect(screen.getByRole('link', { name: 'Review 3 cards due' })).toHaveAttribute('href', '/cards')
+    expect(screen.getByLabelText('This week')).toHaveTextContent('32cards reviewed this week')
+    // Every study tool is visible from Home.
+    for (const tool of ['Smart search', 'Notes on the lecture', 'Revision cards', 'Doubts', 'Notebook', 'Study with friends']) {
+      expect(screen.getByRole('heading', { name: tool })).toBeInTheDocument()
+    }
   })
 
   it('searches her notes and filters doubts, all in the request body', async () => {

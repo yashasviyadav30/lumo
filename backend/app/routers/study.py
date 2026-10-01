@@ -5,7 +5,7 @@ Notes, progress and cards store the video ID and seconds only; titles are fetche
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
-from app.models import Card, LectureProgress, Note, User
+from app.models import Card, CardReview, LectureProgress, Note, User
 from app.search import _details, video_card
 from app.study import card_front, now, replay_window, schedule, word_in
 from app.youtube import YouTubeClient, YouTubeError
@@ -196,7 +196,19 @@ def home_summary(user: User = Depends(current_user), db: Session = Depends(get_d
         resume = {"video_id": last.video_id, "position_s": last.position_s, "video": info}
     doubts_open = db.scalar(select(func.count()).select_from(Note).where(Note.user_id == user.id, Note.kind == "doubt", Note.solved_at.is_(None))) or 0
     empty_marks = db.scalar(select(func.count()).select_from(Note).where(Note.user_id == user.id, Note.kind == "note", Note.text == "")) or 0
-    return {"resume": resume, "cards_due": _due_count(db, user), "doubts_open": doubts_open, "marks_to_fill": empty_marks}
+    week_ago = now() - timedelta(days=7)
+    count = lambda q: db.scalar(q) or 0  # noqa: E731
+    week = {
+        "reviews": count(select(func.count()).select_from(CardReview).where(CardReview.user_id == user.id, CardReview.at >= week_ago)),
+        "notes": count(select(func.count()).select_from(Note).where(Note.user_id == user.id, Note.created_at >= week_ago)),
+    }
+    totals = {
+        "notes": count(select(func.count()).select_from(Note).where(Note.user_id == user.id)),
+        "lectures": count(select(func.count(func.distinct(Note.video_id))).where(Note.user_id == user.id)),
+        "cards": count(select(func.count()).select_from(Card).where(Card.user_id == user.id, Card.retired.is_(False))),
+    }
+    return {"resume": resume, "cards_due": _due_count(db, user), "doubts_open": doubts_open, "marks_to_fill": empty_marks,
+            "week": week, "totals": totals}
 
 
 class NotebookIn(BaseModel):
@@ -297,6 +309,7 @@ def grade_card(body: GradeIn, request: Request, user: User = Depends(current_use
     note = db.get(Note, card.note_id)
     card.step, card.due_at, card.retired = schedule(card.step, body.grade, now())
     card.reviews += 1
+    db.add(CardReview(user_id=user.id))
     db.commit()
     return {"retired": card.retired, "due_at": card.due_at.isoformat(), "replay": replay_window(note.t_seconds) if body.grade == "forgot" else None}
 

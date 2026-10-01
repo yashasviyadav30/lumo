@@ -1,3 +1,4 @@
+import { Library as LibraryIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { lectureTitle, notebook, type Notebook } from '../lib/study'
@@ -15,13 +16,25 @@ export default function Library() {
 
   return (
     <section>
-      <h1>Library</h1>
+      <div className="page-head">
+        <h1>Library</h1>
+        <p>Every lecture you have taken notes on.</p>
+      </div>
       {error && <p className="error">Couldn’t load your lectures.</p>}
-      {!book && !error && <p aria-busy="true">Loading…</p>}
+      {!book && !error && <div className="skeleton" style={{ height: 180 }} aria-busy="true" />}
       {book && book.lectures.length === 0 && (
-        <p className="help">
-          Lectures you take notes on show up here. <Link to="/search">Find a lecture</Link>
-        </p>
+        <div className="card empty">
+          <span className="icon-circle">
+            <LibraryIcon size={22} aria-hidden="true" />
+          </span>
+          <h3>Your shelf is empty</h3>
+          <p className="help">Lectures you take notes on show up here.</p>
+          <div className="actions">
+            <Link to="/search" className="button">
+              Find a lecture
+            </Link>
+          </div>
+        </div>
       )}
       <ul className="video-list">
         {book?.lectures.map((l) => {
@@ -29,17 +42,19 @@ export default function Library() {
           return (
             <li key={l.video_id} className="video">
               <Link to={`/watch/${l.video_id}`} className="video-link">
-                {l.video?.thumbnail_url && (
-                  <span className="thumb">
-                    <img src={l.video.thumbnail_url} alt="" loading="lazy" />
-                  </span>
-                )}
+                <span className="thumb">{l.video?.thumbnail_url && <img src={l.video.thumbnail_url} alt="" loading="lazy" />}</span>
                 <span className="meta">
                   <span className="title">{lectureTitle(l.video, l.video_id)}</span>
                   {l.video && <span className="channel">{l.video.channel_title}</span>}
-                  <span className="channel">
-                    {l.notes.length} note{l.notes.length === 1 ? '' : 's'}
-                    {doubts ? ` · ${doubts} open doubt${doubts === 1 ? '' : 's'}` : ''}
+                  <span className="counts">
+                    <span className="badge violet">
+                      {l.notes.length} note{l.notes.length === 1 ? '' : 's'}
+                    </span>
+                    {doubts > 0 && (
+                      <span className="badge bad">
+                        {doubts} open doubt{doubts === 1 ? '' : 's'}
+                      </span>
+                    )}
                   </span>
                 </span>
               </Link>

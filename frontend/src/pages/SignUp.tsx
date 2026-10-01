@@ -36,7 +36,7 @@ export default function SignUp() {
   }
 
   return (
-    <section className="narrow">
+    <section className="auth card">
       <h1>Create your {APP_NAME} account</h1>
       <Notice />
       <form onSubmit={onSubmit} noValidate={false}>

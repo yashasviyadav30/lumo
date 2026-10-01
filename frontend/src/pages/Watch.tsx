@@ -1,5 +1,6 @@
+import { Check, CircleHelp, Layers, MapPin, NotebookPen, Pencil, RotateCcw, Star, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import Player from '../components/Player'
 import { VIDEO_ID, type YTPlayer } from '../lib/youtube'
 import {
@@ -42,16 +43,19 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [toast, setToast] = useState<string | null>(null)
   const [doubtFor, setDoubtFor] = useState<Note | null>(null)
   const [cardFor, setCardFor] = useState<Note | null>(null)
+  // A time tapped in the notebook opens the lecture at that note.
+  const noteAt = (useLocation().state as { t?: number } | null)?.t
 
   useEffect(() => {
     openLecture(videoId)
       .then((d) => {
         setData(d)
         setNotes(d.notes)
-        setStart(d.position_s > 15 ? d.position_s : undefined)
+        setStart(noteAt !== undefined ? Math.max(0, noteAt - 5) : d.position_s > 15 ? d.position_s : undefined)
       })
       .catch(() => setData({ video: null, position_s: 0, notes: [] }))
       .finally(() => setReady(true))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per lecture
   }, [videoId])
 
   const onReady = useCallback((p: YTPlayer) => {
@@ -127,96 +131,136 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   return (
     <section className="study">
-      {ready ? (
-        <Player videoId={videoId} start={start} onReady={onReady} />
-      ) : (
-        <div className="player-frame" aria-busy="true" />
-      )}
-      {start && (
-        <p className="help">
-          Starting where you stopped ({clock(start)}).{' '}
-          <button className="link" onClick={() => setStart(undefined)}>
-            Start from the beginning
-          </button>
-        </p>
-      )}
-
-      <div className="capture" role="toolbar" aria-label="Capture while you watch">
-        <button onClick={() => mark()} aria-keyshortcuts="N">
-          <span aria-hidden="true">📍</span>Mark
-        </button>
-        <button className="doubt" onClick={doubt} aria-keyshortcuts="D">
-          <span aria-hidden="true">❓</span>Doubt
-        </button>
-        <button onClick={() => mark(true)} aria-keyshortcuts="S">
-          <span aria-hidden="true">★</span>Star
-        </button>
-        <button onClick={back10}>
-          <span aria-hidden="true">↺</span>−10s
-        </button>
-      </div>
-      {toast && (
-        <p className="toast" role="status">
-          {toast}
-        </p>
-      )}
-
-      {doubtFor && <DoubtLine note={doubtFor} onSaved={(n) => { upsert(n); setDoubtFor(null) }} onClose={() => setDoubtFor(null)} />}
-
-      {empty.length > 0 && (
-        <div className="tray">
-          <p>
-            <b>
-              {empty.length} mark{empty.length > 1 ? 's' : ''} to fill in
-            </b>{' '}
-            <span className="help">Play each one again, then write one line.</span>
+      <div className="study-main">
+        {ready ? (
+          <Player videoId={videoId} start={start} onReady={onReady} />
+        ) : (
+          <div className="player-frame" aria-busy="true" />
+        )}
+        {start && (
+          <p className="resume-line">
+            {noteAt !== undefined
+              ? `Opening at your note (${clock(noteAt)}).`
+              : `Starting where you stopped (${clock(start)}).`}{' '}
+            <button className="link" onClick={() => setStart(undefined)}>
+              Start from the beginning
+            </button>
           </p>
-          {empty.map((n) => (
-            <FillMark key={n.id} note={n} onPlay={() => jump(n.t_seconds - 5)} onSaved={upsert} />
-          ))}
+        )}
+
+        <div className="capture" role="toolbar" aria-label="Capture while you watch">
+          <button className="mark" onClick={() => mark()} aria-keyshortcuts="N">
+            <span className="ic" aria-hidden="true">
+              <MapPin size={19} />
+            </span>
+            Mark
+          </button>
+          <button className="doubt" onClick={doubt} aria-keyshortcuts="D">
+            <span className="ic" aria-hidden="true">
+              <CircleHelp size={19} />
+            </span>
+            Doubt
+          </button>
+          <button className="star-btn" onClick={() => mark(true)} aria-keyshortcuts="S">
+            <span className="ic" aria-hidden="true">
+              <Star size={19} />
+            </span>
+            Star
+          </button>
+          <button className="back" onClick={back10}>
+            <span className="ic" aria-hidden="true">
+              <RotateCcw size={19} />
+            </span>
+            −10s
+          </button>
         </div>
-      )}
+        <p className="capture-hint">Mark saves this second. Write the note at the next pause.</p>
+        {toast && (
+          <p className="toast" role="status">
+            <Check size={16} aria-hidden="true" /> {toast}
+          </p>
+        )}
+        <h1 className="lecture-title">{title}</h1>
+        {data?.video?.channel_title && <p className="lecture-channel">{data.video.channel_title}</p>}
+      </div>
 
-      <h2 className="lecture-title">{title}</h2>
-      <p className="help">Your notes on this lecture. Tap a time to jump back to it.</p>
-      {notes.filter((n) => n.text || n.kind === 'doubt').length === 0 && (
-        <p className="help">Nothing yet. Tap Mark while you listen; fill it in at the next pause.</p>
-      )}
-      <ul className="notes">
-        {notes
-          .filter((n) => n.text || n.kind === 'doubt')
-          .map((n) => (
-            <NoteRow
-              key={n.id}
-              note={n}
-              onJump={() => jump(n.t_seconds)}
-              onChange={upsert}
-              onDelete={async () => {
-                await deleteNote(n.id)
-                setNotes((all) => all.filter((x) => x.id !== n.id))
-              }}
-              onMakeCard={() => setCardFor(n)}
-            />
-          ))}
-      </ul>
+      <div className="study-side">
+        {doubtFor && (
+          <DoubtLine
+            note={doubtFor}
+            onSaved={(n) => {
+              upsert(n)
+              setDoubtFor(null)
+            }}
+            onClose={() => setDoubtFor(null)}
+          />
+        )}
 
-      {cardFor && (
-        <CardMaker
-          note={cardFor}
-          onClose={() => setCardFor(null)}
-          onMade={() => {
-            upsert({ ...cardFor, cards: cardFor.cards + 1 })
-            setCardFor(null)
-            flash('Card made. It will come back for review.')
-          }}
-        />
-      )}
-      <p className="attribution">
-        Video plays from YouTube.{' '}
-        <a href={`https://www.youtube.com/watch?v=${videoId}`} rel="noopener">
-          Watch on YouTube
-        </a>
-      </p>
+        {empty.length > 0 && (
+          <div className="tray">
+            <p className="tray-head">
+              <MapPin size={18} aria-hidden="true" />
+              <b>
+                {empty.length} mark{empty.length > 1 ? 's' : ''} to fill in
+              </b>
+            </p>
+            <p className="help">Play each one again, then write one line.</p>
+            {empty.map((n) => (
+              <FillMark key={n.id} note={n} onPlay={() => jump(n.t_seconds - 5)} onSaved={upsert} />
+            ))}
+          </div>
+        )}
+
+        <div className="notes-head">
+          <h2>Your notes</h2>
+          <span className="badge violet">{notes.filter((n) => n.text || n.kind === 'doubt').length}</span>
+        </div>
+        <p className="help">Tap a time to jump back to it.</p>
+        {notes.filter((n) => n.text || n.kind === 'doubt').length === 0 && (
+          <div className="card empty">
+            <span className="icon-circle">
+              <NotebookPen size={22} aria-hidden="true" />
+            </span>
+            <h3>No notes yet</h3>
+            <p className="help">Tap Mark while you listen. Fill it in at the next pause.</p>
+          </div>
+        )}
+        <ul className="notes">
+          {notes
+            .filter((n) => n.text || n.kind === 'doubt')
+            .map((n) => (
+              <NoteRow
+                key={n.id}
+                note={n}
+                onJump={() => jump(n.t_seconds)}
+                onChange={upsert}
+                onDelete={async () => {
+                  await deleteNote(n.id)
+                  setNotes((all) => all.filter((x) => x.id !== n.id))
+                }}
+                onMakeCard={() => setCardFor(n)}
+              />
+            ))}
+        </ul>
+
+        {cardFor && (
+          <CardMaker
+            note={cardFor}
+            onClose={() => setCardFor(null)}
+            onMade={() => {
+              upsert({ ...cardFor, cards: cardFor.cards + 1 })
+              setCardFor(null)
+              flash('Card made. It will come back for review.')
+            }}
+          />
+        )}
+        <p className="attribution">
+          Video plays from YouTube.{' '}
+          <a href={`https://www.youtube.com/watch?v=${videoId}`} rel="noopener">
+            Watch on YouTube
+          </a>
+        </p>
+      </div>
     </section>
   )
 }
@@ -225,7 +269,12 @@ function TagPicker({ value, onPick }: { value: Tag | null; onPick: (t: Tag | nul
   return (
     <div className="tags" role="group" aria-label="Type">
       {TAGS.map((t) => (
-        <button key={t.id} className={`tag-btn${value === t.id ? ' on' : ''}`} aria-pressed={value === t.id} onClick={() => onPick(value === t.id ? null : t.id)}>
+        <button
+          key={t.id}
+          className={`tag-btn${value === t.id ? ' on' : ''}`}
+          aria-pressed={value === t.id}
+          onClick={() => onPick(value === t.id ? null : t.id)}
+        >
           {t.label}
         </button>
       ))}
@@ -243,10 +292,21 @@ function FillMark({ note, onPlay, onSaved }: { note: Note; onPlay: () => void; o
   return (
     <div className="fill">
       <div className="row">
-        <button className="time-chip" onClick={onPlay} aria-label={`Play again from ${clock(Math.max(0, note.t_seconds - 5))}`}>
+        <button
+          className="time-chip"
+          style={{ alignSelf: 'center' }}
+          onClick={onPlay}
+          aria-label={`Play again from ${clock(Math.max(0, note.t_seconds - 5))}`}
+        >
           ▶ {clock(note.t_seconds)}
         </button>
-        <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && save()} placeholder="One line: what was this?" aria-label={`Note at ${clock(note.t_seconds)}`} />
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && save()}
+          placeholder="One line: what was this?"
+          aria-label={`Note at ${clock(note.t_seconds)}`}
+        />
       </div>
       <div className="row">
         <TagPicker value={tag} onPick={setTag} />
@@ -266,8 +326,17 @@ function DoubtLine({ note, onSaved, onClose }: { note: Note; onSaved: (n: Note) 
         Doubt at {clock(note.t_seconds)}: what didn’t make sense? <span className="help">(optional)</span>
       </label>
       <div className="row">
-        <input id="doubt-text" value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. Is a Section 8 company covered?" />
-        <button className="small" onClick={async () => onSaved(await updateNote({ id: note.id, text }))} disabled={!text.trim()}>
+        <input
+          id="doubt-text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="e.g. Is a Section 8 company covered?"
+        />
+        <button
+          className="small"
+          onClick={async () => onSaved(await updateNote({ id: note.id, text }))}
+          disabled={!text.trim()}
+        >
           Save
         </button>
         <button className="link" onClick={onClose}>
@@ -278,7 +347,13 @@ function DoubtLine({ note, onSaved, onClose }: { note: Note; onSaved: (n: Note) 
   )
 }
 
-function NoteRow({ note, onJump, onChange, onDelete, onMakeCard }: {
+function NoteRow({
+  note,
+  onJump,
+  onChange,
+  onDelete,
+  onMakeCard,
+}: {
   note: Note
   onJump: () => void
   onChange: (n: Note) => void
@@ -296,16 +371,29 @@ function NoteRow({ note, onJump, onChange, onDelete, onMakeCard }: {
       </button>
       <div className="note-body">
         <div className="note-head">
-          {isDoubt && <span className={`badge ${note.solved ? 'good' : 'bad'}`}>{note.solved ? 'Doubt · solved' : 'Doubt'}</span>}
+          {isDoubt && (
+            <span className={`badge ${note.solved ? 'good' : 'bad'}`}>{note.solved ? 'Doubt · solved' : 'Doubt'}</span>
+          )}
           {note.tag && <span className="badge">{note.tag.toUpperCase()}</span>}
-          <button className={`star${note.starred ? ' on' : ''}`} aria-pressed={note.starred} aria-label="Star" onClick={async () => onChange(await updateNote({ id: note.id, starred: !note.starred }))}>
-            ★
+          <button
+            className={`star${note.starred ? ' on' : ''}`}
+            aria-pressed={note.starred}
+            aria-label="Star"
+            onClick={async () => onChange(await updateNote({ id: note.id, starred: !note.starred }))}
+          >
+            <Star size={18} fill={note.starred ? 'currentColor' : 'none'} aria-hidden="true" />
           </button>
         </div>
         {editing ? (
           <div className="row">
             <input value={text} onChange={(e) => setText(e.target.value)} aria-label="Edit note" />
-            <button className="small" onClick={async () => { onChange(await updateNote({ id: note.id, text })); setEditing(false) }}>
+            <button
+              className="small"
+              onClick={async () => {
+                onChange(await updateNote({ id: note.id, text }))
+                setEditing(false)
+              }}
+            >
               Save
             </button>
           </div>
@@ -315,22 +403,33 @@ function NoteRow({ note, onJump, onChange, onDelete, onMakeCard }: {
         {isDoubt && note.answer && <p className="answer">Answer: {note.answer}</p>}
         {isDoubt && !note.solved && (
           <div className="row">
-            <input value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="Found the answer? Write it here" aria-label="Doubt answer" />
-            <button className="small" onClick={async () => onChange(await updateNote({ id: note.id, solved: true, answer }))}>
+            <input
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Found the answer? Write it here"
+              aria-label="Doubt answer"
+            />
+            <button
+              className="small"
+              onClick={async () => onChange(await updateNote({ id: note.id, solved: true, answer }))}
+            >
               Solved
             </button>
           </div>
         )}
         <div className="note-actions">
           {note.text && !isDoubt && (
-            <button className="link" onClick={onMakeCard}>
+            <button className="make" onClick={onMakeCard}>
+              <Layers size={14} aria-hidden="true" />
               {note.cards ? `Make another card (${note.cards})` : 'Make a card'}
             </button>
           )}
-          <button className="link" onClick={() => setEditing(!editing)}>
+          <button onClick={() => setEditing(!editing)}>
+            <Pencil size={14} aria-hidden="true" />
             {editing ? 'Cancel' : 'Edit'}
           </button>
-          <button className="link danger-link" onClick={onDelete}>
+          <button className="del" onClick={onDelete}>
+            <Trash2 size={14} aria-hidden="true" />
             Delete
           </button>
         </div>
@@ -344,7 +443,8 @@ export function CardMaker({ note, onClose, onMade }: { note: Note; onClose: () =
   const words = note.text.split(/\s+/).filter(Boolean)
   const [picked, setPicked] = useState<number[]>([])
   const [error, setError] = useState<string | null>(null)
-  const toggle = (i: number) => setPicked((p) => (p.includes(i) ? p.filter((x) => x !== i) : p.length < 5 ? [...p, i] : p))
+  const toggle = (i: number) =>
+    setPicked((p) => (p.includes(i) ? p.filter((x) => x !== i) : p.length < 5 ? [...p, i] : p))
   const clean = (w: string) => w.replace(/^[^\p{L}\p{N}₹%]+|[^\p{L}\p{N}%]+$/gu, '')
   const save = async () => {
     try {
@@ -361,7 +461,12 @@ export function CardMaker({ note, onClose, onMade }: { note: Note; onClose: () =
         <p className="help">Tap the words to hide. You’ll try to recall them later.</p>
         <p className="word-pick">
           {words.map((w, i) => (
-            <button key={i} className={`word${picked.includes(i) ? ' on' : ''}`} aria-pressed={picked.includes(i)} onClick={() => toggle(i)}>
+            <button
+              key={i}
+              className={`word${picked.includes(i) ? ' on' : ''}`}
+              aria-pressed={picked.includes(i)}
+              onClick={() => toggle(i)}
+            >
               {picked.includes(i) ? '_____' : w}
             </button>
           ))}

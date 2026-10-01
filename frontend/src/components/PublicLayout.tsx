@@ -7,7 +7,7 @@ export default function PublicLayout() {
     <div className="app">
       <header className="topbar">
         <Link to="/welcome" className="brand-link">
-          <Logo size={28} />
+          <Logo size={32} />
           <span className="brand">{APP_NAME}</span>
         </Link>
       </header>

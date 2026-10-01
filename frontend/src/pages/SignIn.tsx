@@ -24,7 +24,7 @@ export default function SignIn() {
   }
 
   return (
-    <section className="narrow">
+    <section className="auth card">
       <h1>Sign in</h1>
       <form onSubmit={onSubmit}>
         <label htmlFor="email">Email</label>

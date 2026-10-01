@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import func, select
 
-from app.models import AppLog, Card, LectureProgress, Note
+from app.models import AppLog, Card, CardReview, LectureProgress, Note
 from app.routers.study import youtube_optional
 from app.study import card_front, replay_window, schedule
 from tests.conftest import ADULT
@@ -128,6 +128,9 @@ def test_card_from_her_note_and_replay_on_forgot(yt, signed_in):
     graded = signed_in.post("/api/cards/grade", json={"id": due[0]["id"], "grade": "forgot"}).json()
     assert graded["replay"] == {"start": 2500, "end": 2590} and not graded["retired"]
     assert signed_in.get("/api/cards/due").json()["cards"] == []  # comes back in 10 minutes
+    home = signed_in.get("/api/home/summary").json()
+    assert home["week"] == {"reviews": 1, "notes": 1}
+    assert home["totals"] == {"notes": 1, "lectures": 1, "cards": 1}
 
 
 def test_card_words_must_be_in_her_note(yt, signed_in):
@@ -160,8 +163,9 @@ def test_delete_my_data_removes_notes_cards_and_progress(yt, signed_in, db):
     note = add(signed_in, text="CSR spend = 2%")
     signed_in.post("/api/cards", json={"note_id": note["id"], "blanks": ["2%"]})
     signed_in.post("/api/progress", json={"video_id": LECTURE, "position_s": 10})
+    signed_in.post("/api/cards/grade", json={"id": str(db.scalar(select(Card)).id), "grade": "knew"})
     signed_in.delete("/api/me")
-    for model in (Note, Card, LectureProgress):
+    for model in (Note, Card, CardReview, LectureProgress):
         assert db.scalar(select(func.count()).select_from(model)) == 0, model.__name__
 
 

@@ -1,6 +1,8 @@
+import { ChevronRight, Download, Layers, Search, Settings, ShieldCheck, Star, NotebookPen } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation } from 'react-router'
-import { clock, lectureTitle, notebook, notebookMarkdown, type Notebook } from '../lib/study'
+import { useSession } from '../lib/session'
+import { clock, homeSummary, lectureTitle, notebook, notebookMarkdown, type HomeSummary, type Notebook } from '../lib/study'
 
 type Filter = 'all' | 'doubts' | 'starred'
 const FILTERS: Array<{ id: Filter; label: string }> = [
@@ -11,7 +13,9 @@ const FILTERS: Array<{ id: Filter; label: string }> = [
 
 // Her own space: every note she has made, by lecture. Nothing here comes from other people.
 export default function Personal() {
+  const { me } = useSession()
   const [book, setBook] = useState<Notebook | null>(null)
+  const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [q, setQ] = useState('')
   const start = (useLocation().state as { only?: Filter } | null)?.only ?? 'all'
   const [filter, setFilter] = useState<Filter>(start)
@@ -28,6 +32,9 @@ export default function Personal() {
 
   useEffect(() => {
     load('', start)
+    homeSummary()
+      .then(setSummary)
+      .catch(() => setSummary(null))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- load once, on open
   }, [])
 
@@ -53,24 +60,82 @@ export default function Personal() {
 
   return (
     <section>
-      <div className="title-row">
-        <h1>Personal</h1>
-        <Link to="/settings" className="link" aria-label="Settings">
-          ⚙ Settings
+      <div className="card profile">
+        <span className="avatar big" aria-hidden="true">
+          {me?.email?.[0] ?? '·'}
+        </span>
+        <div style={{ minWidth: 0 }}>
+          <p className="email">{me?.email}</p>
+          <p className="help">Your private space. Only you see this.</p>
+        </div>
+      </div>
+
+      {summary?.week && summary.totals && (
+        <div className="stats">
+          <div className="stat">
+            <b>{summary.totals.notes}</b>
+            <span>notes</span>
+          </div>
+          <div className="stat">
+            <b>{summary.totals.lectures}</b>
+            <span>lectures</span>
+          </div>
+          <div className="stat">
+            <b>{summary.totals.cards}</b>
+            <span>cards</span>
+          </div>
+        </div>
+      )}
+
+      <div className="card list-card" style={{ marginTop: 14 }}>
+        <Link to="/cards" className="list-row">
+          <span className="icon-circle green">
+            <Layers size={18} aria-hidden="true" />
+          </span>
+          <span className="grow">Revision cards</span>
+          {summary && summary.cards_due > 0 && <span className="badge violet">{summary.cards_due} due</span>}
+          <ChevronRight size={18} aria-hidden="true" />
+        </Link>
+        <button className="list-row" onClick={exportMd}>
+          <span className="icon-circle amber">
+            <Download size={18} aria-hidden="true" />
+          </span>
+          <span className="grow">Export my notes (.md)</span>
+          <ChevronRight size={18} aria-hidden="true" />
+        </button>
+        <Link to="/settings" className="list-row">
+          <span className="icon-circle gray">
+            <Settings size={18} aria-hidden="true" />
+          </span>
+          <span className="grow">Settings</span>
+          <ChevronRight size={18} aria-hidden="true" />
+        </Link>
+        <Link to="/privacy" className="list-row">
+          <span className="icon-circle gray">
+            <ShieldCheck size={18} aria-hidden="true" />
+          </span>
+          <span className="grow">Privacy</span>
+          <ChevronRight size={18} aria-hidden="true" />
         </Link>
       </div>
-      <p className="help">Only you see this.</p>
 
+      <div className="section-head">
+        <h2>Notebook</h2>
+        {book && <span className="help">{book.total} shown</span>}
+      </div>
       <form className="search-form" onSubmit={onSearch} role="search">
         <label htmlFor="note-q" className="visually-hidden">
           Search your notes
         </label>
-        <input id="note-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your notes" autoComplete="off" />
+        <div className="search-box">
+          <Search size={20} aria-hidden="true" />
+          <input id="note-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your notes" autoComplete="off" />
+        </div>
         <button type="submit">Search</button>
       </form>
-      <div className="chips" role="group" aria-label="Show">
+      <div className="segmented" role="group" aria-label="Show">
         {FILTERS.map((f) => (
-          <button key={f.id} className={`chip${filter === f.id ? ' on' : ''}`} aria-pressed={filter === f.id} onClick={() => pick(f.id)}>
+          <button key={f.id} className={filter === f.id ? 'on' : ''} aria-pressed={filter === f.id} onClick={() => pick(f.id)}>
             {f.label}
           </button>
         ))}
@@ -78,28 +143,35 @@ export default function Personal() {
 
       {error && <p className="error">{error}</p>}
       {book && book.total === 0 && (
-        <p className="help">
-          {q || filter !== 'all'
-            ? 'Nothing matches.'
-            : 'No notes yet. Open any lecture and tap Mark while you listen.'}
-        </p>
+        <div className="card empty">
+          <span className="icon-circle">
+            <NotebookPen size={22} aria-hidden="true" />
+          </span>
+          <h3>{q || filter !== 'all' ? 'Nothing matches' : 'No notes yet'}</h3>
+          <p className="help">
+            {q || filter !== 'all' ? 'Try other words or another filter.' : 'Open any lecture and tap Mark while you listen.'}
+          </p>
+        </div>
       )}
       {book?.lectures.map((l) => (
         <div key={l.video_id} className="lecture-block">
-          <h2>
+          <h3>
             <Link to={`/watch/${l.video_id}`}>{lectureTitle(l.video, l.video_id)}</Link>
-          </h2>
+          </h3>
           {l.video && <p className="help">{l.video.channel_title}</p>}
-          <ul className="notes compact">
+          <ul className="notes">
             {l.notes.map((n) => (
               <li key={n.id} className={`note${n.kind === 'doubt' ? ' is-doubt' : ''}`}>
-                <span className="time-chip static">{clock(n.t_seconds)}</span>
+                <Link to={`/watch/${l.video_id}`} state={{ t: n.t_seconds }} className="time-chip static" aria-label={`Open at ${clock(n.t_seconds)}`}>
+                  {clock(n.t_seconds)}
+                </Link>
                 <div className="note-body">
-                  <p className="note-text">
-                    {n.starred && <span aria-label="starred">★ </span>}
-                    {n.kind === 'doubt' && <span className={`badge ${n.solved ? 'good' : 'bad'}`}>{n.solved ? 'Solved' : 'Doubt'}</span>}{' '}
-                    {n.tag && <span className="badge">{n.tag.toUpperCase()}</span>} {n.text || <span className="help">(empty mark)</span>}
-                  </p>
+                  <div className="note-head">
+                    {n.kind === 'doubt' && <span className={`badge ${n.solved ? 'good' : 'bad'}`}>{n.solved ? 'Solved' : 'Doubt'}</span>}
+                    {n.tag && <span className="badge">{n.tag.toUpperCase()}</span>}
+                    {n.starred && <Star size={15} fill="currentColor" color="var(--amber)" aria-label="starred" />}
+                  </div>
+                  <p className="note-text">{n.text || <span className="help">(empty mark)</span>}</p>
                   {n.answer && <p className="answer">Answer: {n.answer}</p>}
                 </div>
               </li>
@@ -107,12 +179,6 @@ export default function Personal() {
           </ul>
         </div>
       ))}
-
-      {book && book.total > 0 && (
-        <button className="secondary" onClick={exportMd}>
-          Export my notes (.md)
-        </button>
-      )}
     </section>
   )
 }

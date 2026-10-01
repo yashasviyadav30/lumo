@@ -200,6 +200,16 @@ class Card(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+class CardReview(Base):
+    """One review, kept only to show a gentle weekly count ("32 cards this week"). No streaks (R8)."""
+
+    __tablename__ = "card_reviews"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 # ---------- YouTube data (purged after 30 days, R1) ----------
 
 

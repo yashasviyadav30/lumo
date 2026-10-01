@@ -29,6 +29,8 @@ export type HomeSummary = {
   cards_due: number
   doubts_open: number
   marks_to_fill: number
+  week: { reviews: number; notes: number }
+  totals: { notes: number; lectures: number; cards: number }
 }
 export type Notebook = { lectures: Array<{ video_id: string; video: VideoCard | null; notes: Note[] }>; total: number }
 export type ReviewCard = {
