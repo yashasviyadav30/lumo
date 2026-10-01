@@ -150,6 +150,56 @@ class QuotaUsage(Base):
     count: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class Note(Base):
+    """A mark, note or doubt at a second of a lecture. Our data: the video ID and the second, never YouTube's
+    title (R1). An empty `text` is a mark she hasn't filled in yet."""
+
+    __tablename__ = "notes"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    video_id: Mapped[str] = mapped_column(String(11), index=True)
+    t_seconds: Mapped[int] = mapped_column(Integer)
+    kind: Mapped[str] = mapped_column(String(10), default="note")  # "note" | "doubt"
+    tag: Mapped[str | None] = mapped_column(String(10), nullable=True)  # def | sec | pyq | trick
+    starred: Mapped[bool] = mapped_column(Boolean, default=False)
+    text: Mapped[str] = mapped_column(Text, default="")
+    solved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # doubts
+    answer: Mapped[str] = mapped_column(Text, default="")  # doubts: her own answer once solved
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class LectureProgress(Base):
+    """Where she stopped in a lecture, so she can resume. Not kept for Made-for-Kids videos (R14)."""
+
+    __tablename__ = "lecture_progress"
+    __table_args__ = (UniqueConstraint("user_id", "video_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    video_id: Mapped[str] = mapped_column(String(11))
+    position_s: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class Card(Base):
+    """A recall card made from one of her notes by blanking words she chose (her text only, R3/R4).
+    It remembers the lecture second, so a forgotten card can replay just that part."""
+
+    __tablename__ = "cards"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    note_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("notes.id", ondelete="CASCADE"), index=True)
+    blanks: Mapped[list] = mapped_column(JSON)  # the words she hid
+    step: Mapped[int] = mapped_column(Integer, default=0)  # place on the review ladder
+    due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    retired: Mapped[bool] = mapped_column(Boolean, default=False)
+    reviews: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 # ---------- YouTube data (purged after 30 days, R1) ----------
 
 
