@@ -63,3 +63,10 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - `tools/measure_search.py`: real search timings, cold and cached (step 3.7).
 - `tools/eval_goals.py`: scores goal parsers on the 66-goal test set.
 - `frontend/e2e/smoke.mjs` (`npm run e2e`): end-to-end run in real Edge.
+
+## v2.0 study companion (built 2026-10-01, from `docs/idea.md`)
+
+- Done and live: 4 tabs (Home · Search · Library · Personal; Settings inside Personal); study page with Mark · Doubt · ★ · −10s under the player (keys N, D, S), fill-in tray, tap a time to jump back, resume from the last spot; cards from her own notes (tap words to hide), review ladder 1 day → 3 days → retired, Forgot replays only t−30 s to t+60 s; Personal notebook by lecture with search, Doubts/Starred filters and Markdown export; Home opens on resume, cards due or open doubts.
+- Tests: backend 69, frontend 36 (9 new), live end-to-end run passed on https://focuslearn.focuslearn.workers.dev (test account deleted by the run).
+- Not built yet (later in `idea.md` build order): doubts answered by friends, the paper tracker, amendments, past-paper drill.
+- Still needs a real phone check: the capture bar and card sheet on iPhone Safari and Android Chrome (1.3, 1.4).

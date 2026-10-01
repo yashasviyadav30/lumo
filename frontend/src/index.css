@@ -572,6 +572,7 @@ button.small {
 }
 .time-chip {
   flex: none;
+  align-self: flex-start;
   min-height: 36px;
   padding: 0 10px;
   border-radius: 8px;

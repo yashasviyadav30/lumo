@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation } from 'react-router'
 import { clock, lectureTitle, notebook, notebookMarkdown, type Notebook } from '../lib/study'
 
@@ -17,13 +17,18 @@ export default function Personal() {
   const [filter, setFilter] = useState<Filter>(start)
   const [error, setError] = useState<string | null>(null)
 
-  const load = (query: string, f: Filter) =>
-    notebook(query, f === 'all' ? undefined : f)
-      .then(setBook)
+  // Only the latest request may fill the list, so a slow older reply can't overwrite a newer one.
+  const latest = useRef(0)
+  const load = (query: string, f: Filter) => {
+    const ticket = ++latest.current
+    return notebook(query, f === 'all' ? undefined : f)
+      .then((b) => ticket === latest.current && setBook(b))
       .catch(() => setError('Couldn’t load your notes.'))
+  }
 
   useEffect(() => {
     load('', start)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- load once, on open
   }, [])
 
   const onSearch = (e: FormEvent) => {
