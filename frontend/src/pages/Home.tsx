@@ -1,4 +1,4 @@
-import { BookOpen, CircleHelp, Layers, MapPin, Pencil, Play, Search, Sparkles, Users } from 'lucide-react'
+import { ArrowUpRight, BookOpen, CircleHelp, Layers, MapPin, Pencil, Play, Search, Sparkles, Users } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
@@ -54,6 +54,9 @@ function Today({ s, onStart }: { s: HomeSummary | null; onStart: () => void }) {
         </Link>
         <Link to={`/watch/${s.resume.video_id}`} className="button small">
           <Play size={16} aria-hidden="true" /> Resume
+          <span className="arrow" aria-hidden="true">
+            <ArrowUpRight size={14} />
+          </span>
         </Link>
         {pills}
       </div>
@@ -285,7 +288,9 @@ export default function Home() {
     <section>
       <header className="greet">
         <p>{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-        <h1>{greeting()}</h1>
+        <h1>
+          {greeting()}, <span className="hl">let’s study.</span>
+        </h1>
       </header>
 
       <Today s={summary} onStart={start} />

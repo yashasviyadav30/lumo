@@ -77,3 +77,4 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Done and live: new design system (Plus Jakarta Sans, violet gradient, icon tab bar, laptop sidebar, dark mode); Welcome shows all six features; Home shows today card, weekly counts (no streaks), every study tool as a tile, how-it-works for new users; study page, revision (swipe to grade), Personal and Library restyled; notebook times open the lecture at that second.
 - Backend: `card_reviews` table (migration 09da5fce7406) for "N cards reviewed this week".
 - Next: study with friends (shown on Home as "Coming next"), then longer review gaps.
+- Restyled again to match a reference screenshot from the user: dark near-black with faint grid, neon lime accent, Sora display headings with two-tone words, numbered 01./02. cards with one lime card, lime pill buttons with arrow, phone mockup in a glowing orbit on Welcome. App icons regenerated in lime.

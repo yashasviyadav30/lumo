@@ -1,16 +1,47 @@
-import { BookOpen, CircleHelp, EyeOff, Layers, MapPin, Users } from 'lucide-react'
+import { ArrowUpRight, BookOpen, CircleHelp, EyeOff, Layers, MapPin, Play, ShieldCheck, Users } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
-import Logo from '../components/Logo'
 import { APP_NAME } from '../config'
 
 const FEATURES = [
-  { Icon: EyeOff, tone: '', title: 'Only study videos', text: 'Search YouTube without Shorts, entertainment or rabbit holes. We always show you what we hid.' },
-  { Icon: MapPin, tone: '', title: 'Notes on the exact second', text: 'Tap Mark while the teacher talks. Fill it in at the next pause. Tap it later to jump back.' },
-  { Icon: CircleHelp, tone: 'orange', title: 'Park a doubt, keep going', text: 'Save a doubt in one tap without stopping the lecture. Solve it later.' },
-  { Icon: Layers, tone: 'green', title: 'Cards from your own notes', text: 'Hide a few words, and the card comes back right before you forget. Forgot? Re-watch just those 90 seconds.' },
-  { Icon: BookOpen, tone: 'amber', title: 'Your notebook', text: 'Every note, by lecture. Search it, filter doubts, export it.' },
-  { Icon: Users, tone: 'pink', title: 'Study with friends', text: 'Send a doubt to a friend and get the answer back on the same second. Coming next.' },
+  { Icon: EyeOff, title: 'Only study videos', text: 'Search YouTube without Shorts, entertainment or rabbit holes. We always show you what we hid.' },
+  { Icon: MapPin, title: 'Notes on the exact second', text: 'Tap Mark while the teacher talks. Fill it in at the next pause. Tap it later to jump back.' },
+  { Icon: CircleHelp, title: 'Park a doubt, keep going', text: 'Save a doubt in one tap without stopping the lecture. Solve it later.' },
+  { Icon: Layers, title: 'Cards from your own notes', text: 'Hide a few words; the card returns right before you forget. Forgot? Re-watch just those 90 seconds.' },
+  { Icon: BookOpen, title: 'Your notebook', text: 'Every note, by lecture. Search it, filter doubts, export it.' },
+  { Icon: Users, title: 'Study with friends', text: 'Send a doubt to a friend and get the answer on the same second. Coming next.' },
 ]
+
+// A drawing of the study page, so people see the app before signing up. Decorative only.
+function PhoneMock() {
+  return (
+    <div className="stage" aria-hidden="true">
+      <span className="orbit" />
+      <span className="orbit two" />
+      <div className="phone">
+        <div className="notch" />
+        <div className="vid">
+          <Play size={26} fill="currentColor" />
+        </div>
+        <div className="bar">
+          <span>Mark</span>
+          <span>Doubt</span>
+          <span>Star</span>
+          <span>−10s</span>
+        </div>
+        <div className="n">
+          <b>12:40</b> CSR spend = 2% of average net profit
+        </div>
+        <div className="n">
+          <b>18:05</b> BRSR is for the top 1000 listed companies
+        </div>
+        <div className="n">
+          <b>24:31</b> <i>Doubt: does Section 8 count?</i>
+        </div>
+        <div className="due">Tonight: 5 cards to review →</div>
+      </div>
+    </div>
+  )
+}
 
 export default function Welcome() {
   const note = (useLocation().state as { note?: string } | null)?.note
@@ -22,37 +53,53 @@ export default function Welcome() {
         </p>
       )}
       <div className="landing-hero">
-        <Logo size={64} />
-        <h1>Study on YouTube. Skip the rabbit holes.</h1>
-        <p>
-          {APP_NAME} turns YouTube lectures into a study desk: clean search, notes on the exact second, doubts and
-          revision cards that come back on time.
-        </p>
-        <div className="actions">
-          <Link className="button" to="/sign-up">
-            Get started
-          </Link>
-          <Link className="button secondary" to="/sign-in">
-            Sign in
-          </Link>
+        <div>
+          <p className="kicker">Keep your study focused</p>
+          <h1>
+            Study <span className="hl">smarter</span> on YouTube, <span className="dim">without the rabbit holes.</span>
+          </h1>
+          <p className="lead">
+            {APP_NAME} turns YouTube lectures into a study desk: clean search, notes on the exact second, doubts, and
+            revision cards that come back on time.
+          </p>
+          <div className="actions">
+            <Link className="button gradient" to="/sign-up">
+              Get started
+              <span className="arrow" aria-hidden="true">
+                <ArrowUpRight size={16} />
+              </span>
+            </Link>
+            <Link className="button secondary" to="/sign-in">
+              Sign in
+            </Link>
+          </div>
+          <p className="trust">
+            <span className="ring">
+              <ShieldCheck size={20} aria-hidden="true" />
+            </span>
+            Free. No ads from us. Videos play through YouTube’s own player.
+          </p>
         </div>
+        <PhoneMock />
       </div>
 
+      <h2 className="section-title">
+        Your <span className="hl">study desk</span> <span className="dim">on YouTube.</span>
+      </h2>
       <div className="feature-grid">
-        {FEATURES.map(({ Icon, tone, title, text }) => (
-          <div key={title} className="card feature">
-            <span className={`icon-circle ${tone}`}>
+        {FEATURES.map(({ Icon, title, text }, i) => (
+          <div key={title} className={`card feature${i === 1 ? ' featured' : ''}`}>
+            <span className="num">{String(i + 1).padStart(2, '0')}.</span>
+            <span className="icon-circle">
               <Icon size={22} aria-hidden="true" />
             </span>
-            <div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
+            <h3>{title}</h3>
+            <p>{text}</p>
           </div>
         ))}
       </div>
       <p className="help" style={{ textAlign: 'center' }}>
-        For ages 18 and over. Videos play through YouTube’s own player. Not made by YouTube or Google.
+        For ages 18 and over. Not made by YouTube or Google.
       </p>
     </section>
   )
