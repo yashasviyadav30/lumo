@@ -1,7 +1,13 @@
 import { YOUTUBE_EMBED_HOST } from '../config'
 
 // Minimal types for the parts of the YouTube IFrame Player API we use.
-export type YTPlayer = { destroy(): void; seekTo(seconds: number, allowSeekAhead: boolean): void }
+export type YTPlayer = {
+  destroy(): void
+  seekTo(seconds: number, allowSeekAhead: boolean): void
+  getCurrentTime(): number
+  getPlayerState(): number // 1 = playing, 2 = paused
+  playVideo(): void
+}
 type YTNamespace = {
   Player: new (el: HTMLElement, opts: Record<string, unknown>) => YTPlayer
 }
@@ -37,8 +43,13 @@ export function loadYouTubeApi(): Promise<YTNamespace> {
 }
 
 // Player options. R7: standard controls, nothing hidden or blocked, no autoplay.
-export function playerVars(origin: string): Record<string, string | number> {
+export function playerVars(origin: string, window_?: { start?: number; end?: number }): Record<string, string | number> {
+  const range: Record<string, number> = {}
+  // The embed's own start/end options: used to resume, and to replay just one part (no code pausing the player).
+  if (window_?.start) range.start = Math.floor(window_.start)
+  if (window_?.end) range.end = Math.floor(window_.end)
   return {
+    ...range,
     autoplay: 0,
     controls: 1,
     playsinline: 1, // play inside the page on iPhone instead of forcing fullscreen

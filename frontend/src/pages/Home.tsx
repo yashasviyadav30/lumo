@@ -1,7 +1,53 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
 import { chooseMeaning, getActiveGoal, goalSummary, setGoal, type Goal } from '../lib/goals'
+import { clock, homeSummary, lectureTitle, type HomeSummary } from '../lib/study'
+
+// Home opens on one thing to do: resume, else cards due, else open doubts.
+function OneThing({ s }: { s: HomeSummary | null }) {
+  if (!s) return null
+  const extra: string[] = []
+  if (s.cards_due) extra.push(`${s.cards_due} card${s.cards_due === 1 ? '' : 's'} due`)
+  if (s.doubts_open) extra.push(`${s.doubts_open} open doubt${s.doubts_open === 1 ? '' : 's'}`)
+  if (s.resume) {
+    return (
+      <div className="hero">
+        <p className="hero-kicker">Continue</p>
+        <Link to={`/watch/${s.resume.video_id}`} className="hero-main">
+          {lectureTitle(s.resume.video, s.resume.video_id)}
+          <span className="help"> · from {clock(s.resume.position_s)}</span>
+        </Link>
+        {s.cards_due > 0 && (
+          <Link to="/cards" className="hero-side">
+            Review {extra[0]}
+          </Link>
+        )}
+      </div>
+    )
+  }
+  if (s.cards_due) {
+    return (
+      <div className="hero">
+        <p className="hero-kicker">Today</p>
+        <Link to="/cards" className="hero-main">
+          Review {extra[0]}
+        </Link>
+      </div>
+    )
+  }
+  if (s.doubts_open) {
+    return (
+      <div className="hero">
+        <p className="hero-kicker">Still open</p>
+        <Link to="/personal" state={{ only: 'doubts' }} className="hero-main">
+          {extra[0]}
+        </Link>
+      </div>
+    )
+  }
+  return null
+}
 
 export default function Home() {
   const navigate = useNavigate()
@@ -11,8 +57,12 @@ export default function Home() {
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [summary, setSummary] = useState<HomeSummary | null>(null)
 
   useEffect(() => {
+    homeSummary()
+      .then(setSummary)
+      .catch(() => setSummary(null))
     getActiveGoal()
       .then((g) => setGoalState(g && g.id ? g : null))
       .catch(() => setGoalState(null))
@@ -47,6 +97,7 @@ export default function Home() {
   if (!goal || editing) {
     return (
       <section>
+        {!editing && <OneThing s={summary} />}
         <h1>What are you learning?</h1>
         <p>Type it the way you’d say it. Any exam, subject or skill.</p>
         <form className="search-form" onSubmit={onSubmit}>
@@ -94,6 +145,7 @@ export default function Home() {
 
   return (
     <section>
+      <OneThing s={summary} />
       <p className="goal-line">
         <span className="goal-label">Your goal:</span> <strong>{goalSummary(goal)}</strong>{' '}
         <button

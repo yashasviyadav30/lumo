@@ -10,7 +10,10 @@ afterEach(() => {
 
 describe('watch page (1.2)', () => {
   beforeEach(() => {
-    signInForTest()
+    signInForTest({
+      'POST /api/study/open': () => ({ status: 200, body: { video: null, position_s: 0, notes: [] } }),
+      'POST /api/progress': () => ({ status: 204 }),
+    })
   })
 
   it('accepts real video IDs and rejects others', () => {
@@ -33,6 +36,13 @@ describe('watch page (1.2)', () => {
         }
         destroy() {}
         seekTo() {}
+        getCurrentTime() {
+          return 0
+        }
+        getPlayerState() {
+          return -1
+        }
+        playVideo() {}
       },
     }
     renderAt('/watch/dQw4w9WgXcQ')

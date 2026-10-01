@@ -13,7 +13,7 @@ describe('app shell (1.1)', () => {
     renderAt('/')
     expect(await screen.findByText(APP_NAME)).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Main' })
-    for (const label of ['Home', 'Search', 'Library', 'Settings']) {
+    for (const label of ['Home', 'Search', 'Library', 'Personal']) {
       expect(nav).toHaveTextContent(label)
     }
   })
@@ -26,8 +26,9 @@ describe('app shell (1.1)', () => {
   })
 
   it('marks the current tab as active', async () => {
-    renderAt('/settings')
-    expect(await screen.findByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page')
+    renderAt('/personal')
+    expect(await screen.findByRole('link', { name: 'Personal' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings')
   })
 
   it('says it is not made by YouTube (R9)', async () => {

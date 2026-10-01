@@ -441,3 +441,290 @@ button.link {
   text-align: left;
   margin: 8px 0;
 }
+
+/* ---------- v2: study companion ---------- */
+button.link {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: underline;
+}
+button.danger-link {
+  color: var(--danger);
+}
+button.small {
+  min-height: 40px;
+  padding: 0 14px;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+.row input {
+  flex: 1 1 180px;
+  width: auto;
+}
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* Capture bar sits under the player, never over it (R7). */
+.capture {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+.capture button {
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 4px;
+  min-height: 56px;
+  background: var(--surface);
+  color: var(--brand);
+  border-color: var(--border);
+}
+.capture button span {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.capture button.doubt {
+  color: #a5520b;
+}
+@media (prefers-color-scheme: dark) {
+  .capture button {
+    color: var(--brand);
+  }
+  .capture button.doubt {
+    color: #f5b26b;
+  }
+}
+.toast {
+  margin: 4px 0;
+  font-weight: 600;
+  color: var(--brand);
+}
+.tray,
+.fill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+.tray .fill {
+  border-style: dashed;
+  margin: 8px 0 0;
+}
+.doubt-line {
+  border-left: 4px solid #e08a2e;
+}
+.doubt-line label {
+  margin-top: 0;
+}
+.tags {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+.tag-btn,
+.word {
+  min-height: 36px;
+  padding: 0 10px;
+  background: var(--surface);
+  color: var(--brand);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+}
+.tag-btn.on,
+.word.on,
+.chip.on {
+  background: var(--brand);
+  color: var(--surface);
+  border-color: var(--brand);
+}
+.lecture-title {
+  margin: 18px 0 0;
+  font-size: 1.1rem;
+}
+.notes {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+.note {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.note.is-doubt .note-text {
+  font-style: italic;
+}
+.time-chip {
+  flex: none;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface);
+  color: var(--brand);
+  border: 1px solid var(--brand);
+}
+.time-chip.static {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.note-body {
+  flex: 1;
+  min-width: 0;
+}
+.note-head {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.note-text {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+}
+.note-actions {
+  display: flex;
+  gap: 14px;
+  font-size: 0.9rem;
+}
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.badge.bad {
+  color: #a5520b;
+  border-color: #e08a2e;
+}
+.badge.good {
+  color: #1d7a3a;
+  border-color: #4caf6a;
+}
+.star {
+  margin-left: auto;
+  min-height: 36px;
+  padding: 0 8px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+.star.on {
+  color: #d99a00;
+}
+.answer {
+  margin: 2px 0;
+  color: var(--muted);
+}
+.sheet {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 20;
+}
+.sheet-inner {
+  width: 100%;
+  max-width: 560px;
+  background: var(--surface);
+  border-radius: 16px 16px 0 0;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+}
+.sheet-inner h2 {
+  margin-top: 0;
+}
+.word-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Home: one thing to do. */
+.hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin: 4px 0 18px;
+}
+.hero-kicker {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.hero-main {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 2px 0;
+  text-decoration: none;
+}
+.hero-side {
+  font-weight: 600;
+}
+
+/* Cards review. */
+.card-face {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin: 8px 0 14px;
+  font-size: 1.15rem;
+}
+.card-front {
+  margin: 0;
+}
+.card-answer {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.grades {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.replay h2 {
+  margin-bottom: 0;
+}
+.review-done {
+  text-align: center;
+  padding-top: 24px;
+}
+.lecture-block h2 {
+  font-size: 1.05rem;
+  margin: 18px 0 0;
+}
+.lecture-block h2 + .help {
+  margin: 0;
+}

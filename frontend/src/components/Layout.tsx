@@ -6,7 +6,7 @@ const tabs = [
   { to: '/', label: 'Home', end: true },
   { to: '/search', label: 'Search', end: false },
   { to: '/library', label: 'Library', end: false },
-  { to: '/settings', label: 'Settings', end: false },
+  { to: '/personal', label: 'Personal', end: false },
 ]
 
 export default function Layout() {

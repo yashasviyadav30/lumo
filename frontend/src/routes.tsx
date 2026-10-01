@@ -3,10 +3,12 @@ import Layout from './components/Layout'
 import PublicLayout from './components/PublicLayout'
 import RequireAccount from './components/RequireAccount'
 import { SessionProvider } from './lib/session'
+import Cards from './pages/Cards'
 import Home from './pages/Home'
 import Library from './pages/Library'
 import NotFound from './pages/NotFound'
 import NotYet from './pages/NotYet'
+import Personal from './pages/Personal'
 import Privacy from './pages/Privacy'
 import Search from './pages/Search'
 import Settings from './pages/Settings'
@@ -43,6 +45,8 @@ export const routes: RouteObject[] = [
               { index: true, element: <Home /> },
               { path: 'search', element: <Search /> },
               { path: 'library', element: <Library /> },
+              { path: 'personal', element: <Personal /> },
+              { path: 'cards', element: <Cards /> },
               { path: 'settings', element: <Settings /> },
               { path: 'watch/:videoId', element: <Watch /> },
               { path: '*', element: <NotFound /> },

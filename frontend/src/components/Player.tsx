@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { YOUTUBE_EMBED_HOST, loadYouTubeApi, playerErrorMessage, playerVars, type YTPlayer } from '../lib/youtube'
 
-type Props = { videoId: string; onReady?: (player: YTPlayer) => void }
+type Props = { videoId: string; start?: number; end?: number; onReady?: (player: YTPlayer) => void }
 
-export default function Player({ videoId, onReady }: Props) {
+export default function Player({ videoId, start, end, onReady }: Props) {
   const hostRef = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -21,7 +21,7 @@ export default function Player({ videoId, onReady }: Props) {
           videoId,
           width: '100%',
           height: '100%',
-          playerVars: playerVars(window.location.origin),
+          playerVars: playerVars(window.location.origin, { start, end }),
           events: {
             onReady: (e: { target: YTPlayer }) => {
               // The page-wide <meta name="referrer"> in index.html is the other half of the "Error 153" fix.
@@ -39,7 +39,7 @@ export default function Player({ videoId, onReady }: Props) {
       player?.destroy()
       mount.remove()
     }
-  }, [videoId, onReady])
+  }, [videoId, start, end, onReady])
 
   return (
     <div className="player">
