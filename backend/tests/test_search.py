@@ -82,6 +82,23 @@ def test_youtube_type_reason():
     assert youtube_type_reason("35", []) is None  # documentaries stay
 
 
+def test_users_hide_list_uses_youtube_labels_only():
+    # Songs, movies, entertainment shows, news and travel vlogs: hidden by YouTube's own category.
+    for cat in ("10", "1", "30", "24", "43", "25", "19", "21"):
+        assert not judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
+    # Podcasts and interviews mostly sit in People & Blogs, so it stays visible; so do lectures.
+    for cat in ("22", "27", "28", "26", "35", "17"):
+        assert judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
+
+
+def test_no_built_in_channel_list_overrides_the_filter():
+    import inspect
+
+    from app.routers import search as search_router
+
+    assert "curated" not in inspect.getsource(search_router.rules_for)
+
+
 def test_trusted_channels_are_never_hidden_by_youtube_type():
     lecture_in_entertainment = video("x" * 11, category_id="24")
     assert not judge(lecture_in_entertainment, UserRules()).visible

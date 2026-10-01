@@ -1,6 +1,7 @@
 import { ArrowUpRight, BookOpen, CircleHelp, Layers, MapPin, Pencil, Play, Search, Sparkles, Users } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
+import Feed from '../components/Feed'
 import { APP_NAME } from '../config'
 import { chooseMeaning, getActiveGoal, goalSummary, setGoal, type Goal } from '../lib/goals'
 import { clock, homeSummary, lectureTitle, type HomeSummary } from '../lib/study'
@@ -243,7 +244,7 @@ export default function Home() {
     )
   } else {
     goalBlock = (
-      <div className="card goal-card">
+      <>
         <p className="goal-line">
           <span className="goal-label">Your goal:</span> <strong>{goalSummary(goal)}</strong>{' '}
           <button
@@ -262,28 +263,12 @@ export default function Home() {
             This goal mentions school (“{goal.minor_signals[0]}”). {APP_NAME} is for ages 18 and over for now.
           </p>
         )}
-        {goal.query && (
-          <button className="primary-wide gradient" onClick={() => openSearch(goal.query!)}>
-            <Search size={18} aria-hidden="true" /> Search: {goal.query}
-          </button>
-        )}
-        {goal.topics.length > 0 && (
-          <>
-            <h3 style={{ margin: '14px 0 0' }}>Topics</h3>
-            <div className="chips scroll">
-              {goal.topics.map((t) => (
-                <button key={t.id} className="chip" onClick={() => openSearch(t.query)}>
-                  {t.name}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      </>
     )
   }
 
   const isNew = !summary?.totals || summary.totals.notes === 0
+  const goalReady = goal && !editing && goal.did_you_mean.length === 0
   return (
     <section>
       <header className="greet">
@@ -294,6 +279,17 @@ export default function Home() {
       </header>
 
       <Today s={summary} onStart={start} />
+
+      <div className="section-head">
+        <h2>Your feed</h2>
+      </div>
+      {goalBlock}
+      <Feed key={goal?.id ?? 'none'} topics={goalReady ? goal.topics : []} />
+
+      <div className="section-head">
+        <h2>Your study tools</h2>
+      </div>
+      <Tools s={summary} />
 
       {summary?.week && summary.totals && (
         <div className="stats" aria-label="This week">
@@ -322,16 +318,6 @@ export default function Home() {
           <HowItWorks />
         </>
       )}
-
-      <div className="section-head">
-        <h2>What you’re studying</h2>
-      </div>
-      {goalBlock}
-
-      <div className="section-head">
-        <h2>Your study tools</h2>
-      </div>
-      <Tools s={summary} />
     </section>
   )
 }

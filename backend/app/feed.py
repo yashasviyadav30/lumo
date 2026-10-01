@@ -1,0 +1,89 @@
+"""Home feed (user decision 2026-10-01: "like YouTube's feed, minus songs, movies, shows, news and vlogs").
+
+YouTube gives apps no personal recommendations, so the feed mixes two sources the user chose herself:
+- the newest uploads of channels she follows (playlistItems.list, 1 unit per channel, cached 6 hours);
+- searches for her goal and a few of its topics (the shared 24-hour search cache; the topics rotate daily).
+Sources are interleaved so no single one fills the screen. The same hide rules as search apply (R3, R6).
+"""
+
+import hashlib
+from datetime import date, datetime, timedelta, timezone
+
+from sqlalchemy.orm import Session
+
+from app import quota
+from app.filters import UserRules, judge
+from app.models import YtSearchCache
+from app.search import MAX_AGE, _aware, _details, _ids_for, video_card
+from app.youtube import QuotaExceeded, YouTubeClient, YouTubeError
+
+UPLOADS_FRESH = timedelta(hours=6)
+MAX_CHANNELS = 12
+MAX_TOPICS = 3  # besides the goal itself
+SPARE_SEARCHES = 30  # topic searches beyond the first only run while the day's bucket has room
+FEED_SIZE = 60
+
+
+def _uploads(db: Session, yt: YouTubeClient, channel_id: str, now: datetime) -> list[str]:
+    """A channel's newest videos. The uploads playlist ID is the channel ID with "UU" for "UC"."""
+    key = hashlib.sha256(f"uploads|{channel_id}".encode()).hexdigest()
+    cached = db.get(YtSearchCache, key)
+    if cached and now - _aware(cached.fetched_at) < UPLOADS_FRESH:
+        return list(cached.video_ids)
+    try:
+        ids = yt.playlist_items("UU" + channel_id[2:])
+        quota.record(db, "general")
+    except (QuotaExceeded, YouTubeError):
+        return list(cached.video_ids) if cached and now - _aware(cached.fetched_at) < MAX_AGE else []
+    if cached:
+        cached.video_ids, cached.fetched_at = ids, now
+    else:
+        db.add(YtSearchCache(key=key, video_ids=ids, fetched_at=now))
+    db.commit()
+    return ids
+
+
+def todays_topics(queries: list[str], today: date | None = None) -> list[str]:
+    """A different few topics each day, so the feed changes without spending more searches."""
+    if not queries:
+        return []
+    start = (today or date.today()).toordinal() % len(queries)
+    return (queries[start:] + queries[:start])[:MAX_TOPICS]
+
+
+def interleave(sources: list[list[str]], limit: int = FEED_SIZE) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for i in range(max((len(s) for s in sources), default=0)):
+        for s in sources:
+            if i < len(s) and s[i] not in seen:
+                seen.add(s[i])
+                out.append(s[i])
+    return out[:limit]
+
+
+def build_feed(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[str], goal_query: str | None,
+               topic_queries: list[str], language: str) -> dict:
+    now = datetime.now(timezone.utc)
+    sources = [_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]]
+    others = [q for q in dict.fromkeys(topic_queries) if q != goal_query]
+    queries = ([goal_query] if goal_query else []) + todays_topics(others)
+    for n, q in enumerate(queries):
+        if n > 0 and quota.search_left(db) < SPARE_SEARCHES:
+            break
+        ids, _mode = _ids_for(db, yt, q, language, now)
+        sources.append(ids)
+
+    order = interleave(sources)
+    videos = _details(db, yt, order, now)
+    results, hidden = [], []
+    for vid in order:
+        v = videos.get(vid)
+        if v is None:
+            continue
+        verdict = judge(v, rules)
+        if verdict.visible:
+            results.append(video_card(v))
+        else:
+            hidden.append({**video_card(v), "reasons": verdict.reasons, "playable": verdict.playable})
+    return {"results": results, "hidden": hidden, "hidden_count": len(hidden), "sources": {"channels": len(follows[:MAX_CHANNELS]), "searches": len(sources) - len(follows[:MAX_CHANNELS])}}

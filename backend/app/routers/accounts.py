@@ -152,6 +152,20 @@ def logout(request: Request, session: AuthSession = Depends(current_session), db
     db.commit()
 
 
+class SettingsIn(BaseModel):
+    shorts_enabled: bool | None = None
+
+
+@router.post("/me/settings", response_model=MeOut)
+def update_settings(body: SettingsIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> MeOut:
+    if user.settings is None:
+        user.settings = UserSettings(shorts_enabled=False, shorts_daily_limit_min=None, search_language="en")
+    if body.shorts_enabled is not None:
+        user.settings.shorts_enabled = body.shorts_enabled
+    db.commit()
+    return _me(user)
+
+
 @router.get("/me", response_model=MeOut)
 def me(user: User = Depends(current_user)) -> MeOut:
     return _me(user)

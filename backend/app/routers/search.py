@@ -11,9 +11,10 @@ from sqlalchemy.orm import Session
 from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
-from app.fields import curated_channel_ids
+from app.feed import build_feed
 from app.filters import UserRules
-from app.models import Follow, Mute, User
+from app.models import Follow, Goal, Mute, User
+from app.routers.goals import view
 from app.search import run_search
 from app.youtube import YouTubeClient, YouTubeError
 
@@ -38,7 +39,7 @@ def rules_for(db: Session, user: User) -> UserRules:
         muted_channels={m.value for m in mutes if m.kind == "channel"},
         muted_phrases=[m.value for m in mutes if m.kind == "phrase"],
         shorts_enabled=bool(s and s.shorts_enabled),
-        trusted_channels=set(curated_channel_ids()) | follows,
+        trusted_channels=follows,
     )
 
 
@@ -127,3 +128,19 @@ def add_follow(body: FollowIn, user: User = Depends(current_user), db: Session =
 def remove_follow(body: FollowIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> None:
     db.execute(delete(Follow).where(Follow.user_id == user.id, Follow.channel_id == body.channel_id))
     db.commit()
+
+
+@router.get("/feed")
+def feed(request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
+         yt: YouTubeClient = Depends(get_youtube)) -> dict:
+    """Home feed: new uploads from followed channels + the goal's searches, with the same hide rules."""
+    request.state.action = "feed"
+    row = db.scalar(select(Goal).where(Goal.user_id == user.id, Goal.active.is_(True)).order_by(Goal.created_at.desc()))
+    goal = view(row) if row else None
+    follows = list(db.scalars(select(Follow.channel_id).where(Follow.user_id == user.id).order_by(Follow.id.desc())))
+    language = user.settings.search_language if user.settings else "en"
+    try:
+        return build_feed(db, yt, rules_for(db, user), follows, goal["query"] if goal else None,
+                          [t["query"] for t in goal["topics"]] if goal else [], language)
+    except YouTubeError:
+        raise HTTPException(status_code=502, detail="youtube_unavailable") from None

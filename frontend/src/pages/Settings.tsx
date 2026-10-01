@@ -1,7 +1,71 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
+import { api } from '../lib/api'
+import { listMutes, unmuteChannel } from '../lib/search'
 import { useSession } from '../lib/session'
+
+const HIDE_LIST = [
+  'Songs (Music)',
+  'Movies, trailers and animation',
+  'Entertainment shows and comedy',
+  'News & Politics',
+  'Travel vlogs',
+  'Gaming',
+]
+
+// What's hidden, in plain words, and the switches that are hers to change.
+function Filters({ shortsOn }: { shortsOn: boolean }) {
+  const [shorts, setShorts] = useState(shortsOn)
+  const [hiddenChannels, setHiddenChannels] = useState<string[]>([])
+
+  useEffect(() => {
+    listMutes()
+      .then((m) => setHiddenChannels(m.filter((x) => x.kind === 'channel').map((x) => x.value)))
+      .catch(() => setHiddenChannels([]))
+  }, [])
+
+  async function toggleShorts() {
+    const next = !shorts
+    setShorts(next)
+    await api('/api/me/settings', { method: 'POST', body: JSON.stringify({ shorts_enabled: next }) }).catch(() =>
+      setShorts(!next),
+    )
+  }
+
+  async function unhideAll() {
+    await Promise.all(hiddenChannels.map(unmuteChannel))
+    setHiddenChannels([])
+  }
+
+  return (
+    <div className="card settings-section">
+      <h2>What’s hidden</h2>
+      <p className="help">
+        Everything else on YouTube shows, including podcasts and interviews. The type comes from YouTube’s own label for
+        each video.
+      </p>
+      <div className="chips">
+        {HIDE_LIST.map((h) => (
+          <span key={h} className="badge">
+            {h}
+          </span>
+        ))}
+      </div>
+      <label className="check">
+        <input type="checkbox" checked={shorts} onChange={toggleShorts} /> Show Shorts
+      </label>
+      <p>
+        Channels you hid: <strong>{hiddenChannels.length}</strong>{' '}
+        {hiddenChannels.length > 0 && (
+          <button className="link" onClick={unhideAll}>
+            Unhide all
+          </button>
+        )}
+      </p>
+    </div>
+  )
+}
 
 export default function Settings() {
   const { me, signOut, deleteAccount } = useSession()
@@ -35,6 +99,8 @@ export default function Settings() {
           Sign out
         </button>
       </div>
+
+      <Filters shortsOn={!!me?.settings.shorts_enabled} />
 
       <div className="card settings-section">
         <h2>Delete my data</h2>

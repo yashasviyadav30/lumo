@@ -87,11 +87,11 @@ def test_hybrid_uses_the_llm_only_when_rules_are_unsure_and_survives_llm_failure
     ("text", "query"),
     [
         ("CMA Inter costing", "CMA Inter Cost Accounting"),
-        ("cma inter ka costing chapter samjhna hai", "CMA Inter Cost Accounting hindi"),
+        ("cma inter ka costing chapter samjhna hai", "CMA Inter Cost Accounting"),
         ("cs executive capital market hindi me", "CS Executive Capital Market and Securities Laws hindi"),
         ("neet electrostatics one shot", "electrostatics neet one shot"),
         ("UPSC polity laxmikanth", "upsc polity laxmikanth"),
-        ("spoken english sikhna hai", "spoken english in hindi"),
+        ("spoken english sikhna hai", "spoken english"),
     ],
 )
 def test_query_builder(text, query):

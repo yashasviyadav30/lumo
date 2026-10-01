@@ -35,8 +35,16 @@ try {
   log('goal understood as:', await page.locator('.goal-line strong').innerText())
   await page.screenshot({ path: shots + '3-goal.png', fullPage: true })
 
-  await page.getByRole('button', { name: /^Search: / }).click()
+  await page.locator('.feed .video-list li.video').first().waitFor({ timeout: 30000 })
+  const feedCount = await page.locator('.feed .video-list li.video').count()
+  const feedHidden = (await page.locator('.feed .hidden-line').count()) ? await page.locator('.feed .hidden-line p').innerText() : '(nothing hidden)'
+  log(`Home feed shows ${feedCount} videos; ${feedHidden.replace(/\s+/g, ' ')}`)
+  await page.screenshot({ path: shots + '3b-feed.png', fullPage: false })
+
+  await page.getByRole('link', { name: 'Search', exact: true }).click()
   await page.waitForURL('**/search')
+  await page.getByLabel('Search a topic').fill('CMA Inter Cost Accounting')
+  await page.getByRole('button', { name: 'Search', exact: true }).click()
   await page.locator('.video-list li.video').first().waitFor({ timeout: 20000 })
   const shown = await page.locator('.video-list li.video').count()
   const hiddenLine = (await page.locator('.hidden-line').count()) ? await page.locator('.hidden-line p').innerText() : '(nothing hidden)'

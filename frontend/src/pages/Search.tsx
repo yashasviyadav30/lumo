@@ -4,7 +4,7 @@ import { useLocation } from 'react-router'
 import HiddenLine from '../components/HiddenLine'
 import VideoItem from '../components/VideoItem'
 import { getActiveGoal, type Goal } from '../lib/goals'
-import { followChannel, muteChannel, searchVideos, type SearchResponse } from '../lib/search'
+import { followChannel, muteChannel, searchVideos, unmuteChannel, type SearchResponse } from '../lib/search'
 
 export default function Search() {
   const location = useLocation()
@@ -15,6 +15,7 @@ export default function Search() {
   const [busy, setBusy] = useState(false)
   const [showHidden, setShowHidden] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
+  const [lastHidden, setLastHidden] = useState<string | null>(null)
   const [goal, setGoal] = useState<Goal | null>(null)
 
   // Topic ideas for the empty screen come from her own goal.
@@ -28,7 +29,10 @@ export default function Search() {
     if (!q.trim()) return
     setBusy(true)
     setError(null)
-    if (!keepNotice) setNotice(null)
+    if (!keepNotice) {
+      setNotice(null)
+      setLastHidden(null)
+    }
     setShowHidden(false)
     try {
       setData(await searchVideos(q.trim()))
@@ -52,20 +56,29 @@ export default function Search() {
 
   async function onMute(channelId: string) {
     await muteChannel(channelId)
-    setNotice('Channel muted. It won’t appear in your results.')
+    setNotice('Channel hidden. It won’t appear in your search or feed again.')
+    setLastHidden(channelId)
+    run(query, true)
+  }
+
+  async function onUndoHide() {
+    if (!lastHidden) return
+    await unmuteChannel(lastHidden)
+    setLastHidden(null)
+    setNotice('Channel is back.')
     run(query, true)
   }
 
   async function onFollow(channelId: string) {
     await followChannel(channelId)
-    setNotice('Following this teacher. Their videos won’t be hidden by YouTube’s category.')
+    setNotice('Following this channel. Its new videos come to your Home feed.')
   }
 
   return (
     <section>
       <div className="page-head">
         <h1>Search</h1>
-        <p>Only study videos. Shorts and entertainment are hidden, and we always show what we hid.</p>
+        <p>All of YouTube except songs, movies, shows, news and vlogs. We always show what we hid.</p>
       </div>
       <form className="search-form" role="search" onSubmit={onSubmit}>
         <label htmlFor="q" className="visually-hidden">
@@ -94,7 +107,12 @@ export default function Search() {
       )}
       {notice && (
         <p className="notice-line" role="status">
-          {notice}
+          {notice}{' '}
+          {lastHidden && (
+            <button className="link" onClick={onUndoHide}>
+              Undo
+            </button>
+          )}
         </p>
       )}
       {data?.note && <p className="notice-line">{data.note}</p>}

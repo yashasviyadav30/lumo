@@ -1,3 +1,4 @@
+import { EyeOff, UserPlus } from 'lucide-react'
 import { Link } from 'react-router'
 import { APP_NAME } from '../config'
 import { formatDuration, type VideoCard } from '../lib/search'
@@ -45,13 +46,15 @@ export default function VideoItem({ video, hiddenBecause, playable = true, onMut
       {(onMute || onFollow) && (
         <div className="video-actions">
           {onFollow && (
-            <button className="link" onClick={() => onFollow(video.channel_id)}>
-              Follow teacher
+            <button onClick={() => onFollow(video.channel_id)}>
+              <UserPlus size={14} aria-hidden="true" />
+              Follow channel
             </button>
           )}
           {onMute && (
-            <button className="link" onClick={() => onMute(video.channel_id)}>
-              Mute channel
+            <button onClick={() => onMute(video.channel_id)}>
+              <EyeOff size={14} aria-hidden="true" />
+              Hide channel
             </button>
           )}
         </div>

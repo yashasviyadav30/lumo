@@ -96,8 +96,8 @@ describe('search (Stage 3)', () => {
     })
     renderAt('/search')
     await search()
-    await userEvent.click(await screen.findByRole('button', { name: 'Mute channel' }))
-    expect(await screen.findByText(/Channel muted/)).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Hide channel' }))
+    expect(await screen.findByText(/Channel hidden/)).toBeInTheDocument()
     expect(calls.find((c) => c.path === '/api/mutes')!.body).toEqual({ kind: 'channel', value: 'UC' + 'a'.repeat(22) })
   })
 

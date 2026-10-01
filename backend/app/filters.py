@@ -4,10 +4,10 @@ Every rule uses YouTube's own fields or the user's own settings. Nothing here ju
 
 - DROP: videos that can't play in the app (age-restricted, not embeddable, blocked in India). Listed with
   the reason, never playable here.
-- HIDE: videos YouTube itself types as entertainment, the user's mutes, Shorts when the user has them off.
-  "Show" reveals them in place.
-Videos from curated channels and channels the user follows are never hidden by YouTube's type (uploaders
-choose their own category and are sometimes wrong).
+- HIDE: videos YouTube itself types as songs, movies, entertainment shows, news or travel vlogs; the user's
+  mutes; Shorts when the user has them off. "Show" reveals them in place.
+Channels the user follows are never hidden by YouTube's type (uploaders choose their own category and are
+sometimes wrong). People & Blogs is shown: podcasts and interviews carry that label too.
 """
 
 from dataclasses import dataclass, field
@@ -48,8 +48,12 @@ CATEGORY_NAMES = {
     "43": "Shows",
     "44": "Trailers",
 }
-# Documentary (35) is left out on purpose: it's often learning.
-ENTERTAINMENT_CATEGORIES = {"10", "20", "23", "24", "18", "30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43", "44"}
+# The user's hide list (2026-10-01): songs, movies, entertainment shows, news channels, vlogs.
+# Documentary (35) and People & Blogs (22, where most podcasts sit) are left out on purpose.
+ENTERTAINMENT_CATEGORIES = {
+    "1", "10", "19", "20", "21", "23", "24", "25",  # Film, Music, Travel vlogs, Gaming, Videoblogging, Comedy, Entertainment, News
+    "18", "30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43", "44",  # movie & show genres
+}
 LEARNING_CATEGORIES = {"26", "27", "28"}
 
 # topicDetails.topicCategories are Wikipedia URLs. These page names mean entertainment.
@@ -72,7 +76,7 @@ class UserRules:
     muted_channels: set[str] = field(default_factory=set)
     muted_phrases: list[str] = field(default_factory=list)
     shorts_enabled: bool = False
-    trusted_channels: set[str] = field(default_factory=set)  # curated + followed
+    trusted_channels: set[str] = field(default_factory=set)  # channels the user follows
 
 
 @dataclass

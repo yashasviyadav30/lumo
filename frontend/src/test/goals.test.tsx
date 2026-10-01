@@ -34,7 +34,7 @@ describe('goal on Home (Stage 4A)', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Set goal' }))
     expect(await screen.findByText('CMA · CMA Intermediate · Paper 8: Cost Accounting')).toBeInTheDocument()
     expect(calls.find((c) => c.path === '/api/goals')!.body).toEqual({ text: 'CMA Inter costing' })
-    expect(screen.getByRole('button', { name: 'Search: CMA Inter Cost Accounting' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Material cost' })).toBeInTheDocument() // topics join the feed's chip bar
   })
 
   it('asks one Did-you-mean tap only when the goal is ambiguous', async () => {
@@ -50,7 +50,7 @@ describe('goal on Home (Stage 4A)', () => {
     expect(await screen.findByText('CS')).toBeInTheDocument()
   })
 
-  it('a topic chip runs its search without putting the query in the URL (R11)', async () => {
+  it('a topic chip shows its search in the feed without putting the query in the URL (R11)', async () => {
     const { calls } = signInForTest({
       'GET /api/goals/active': () => ({ status: 200, body: CMA_GOAL }),
       'POST /api/search': () => SEARCH_OK,
@@ -59,7 +59,7 @@ describe('goal on Home (Stage 4A)', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Material cost' }))
     await waitFor(() => expect(calls.some((c) => c.path === '/api/search')).toBe(true))
     expect(calls.find((c) => c.path === '/api/search')!.body).toEqual({ q: 'CMA Inter material cost' })
-    expect(router.state.location.pathname).toBe('/search')
+    expect(router.state.location.pathname).toBe('/')
     expect(router.state.location.search).toBe('')
   })
 

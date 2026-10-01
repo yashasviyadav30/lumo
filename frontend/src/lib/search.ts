@@ -28,9 +28,20 @@ export function searchVideos(q: string): Promise<SearchResponse> {
   return api<SearchResponse>('/api/search', { method: 'POST', body: JSON.stringify({ q }) })
 }
 
+export type FeedResponse = { results: VideoCard[]; hidden: HiddenCard[]; hidden_count: number }
+
+// Home feed: new uploads from channels she follows + her goal's topics, with the same hide list as search.
+export const getFeed = () => api<FeedResponse>('/api/feed')
+
 export function muteChannel(channelId: string) {
   return api('/api/mutes', { method: 'POST', body: JSON.stringify({ kind: 'channel', value: channelId }) })
 }
+
+export function unmuteChannel(channelId: string) {
+  return api('/api/mutes/remove', { method: 'POST', body: JSON.stringify({ kind: 'channel', value: channelId }) })
+}
+
+export const listMutes = () => api<Array<{ kind: string; value: string }>>('/api/mutes')
 
 export function followChannel(channelId: string) {
   return api('/api/follows', { method: 'POST', body: JSON.stringify({ channel_id: channelId }) })

@@ -6,7 +6,8 @@ Rules, chosen after comparing outputs on the goal test set (docs/progress.md):
   because the short codes (CMSL, CRVI) are rarely what videos are titled.
 - A unit (NEET, AI): the topic's search term that shares most words with what the user typed.
 - Up to two useful words the user added ("one shot", "botany") are kept.
-- Hindi or Hinglish goals get "hindi" added. Goals outside our fields use the user's own words.
+- No language is added: the query is in the user's own words plus our topic names, and YouTube orders the
+  results (user decision 2026-10-01). Goals outside our fields use the user's own words.
 """
 
 import re
@@ -45,12 +46,6 @@ def _clean_name(name: str) -> str:
     return re.sub(r"\s*\([^)]*\)", "", name).strip()
 
 
-def _hindi(query: str, goal: ParsedGoal) -> str:
-    if goal.language in ("hi", "mixed") and "hindi" not in query.casefold():
-        return f"{query} hindi"
-    return query
-
-
 def _add_leftovers(query: str, goal: ParsedGoal, level_words: set[str]) -> str:
     have = set(_words(query))
     extra = []
@@ -66,10 +61,19 @@ def _add_leftovers(query: str, goal: ParsedGoal, level_words: set[str]) -> str:
 
 def build_query(goal: ParsedGoal, topic_id: str | None = None) -> str:
     """topic_id: a topic the user tapped; defaults to the goal's own topic."""
+    query = _build(goal, topic_id)
+    # A language the user typed is her own word, so it stays ("cs executive capital market hindi me").
+    for lang in ("hindi", "english"):
+        if lang in _words(goal.text) and lang not in query.casefold().split() and goal.field is not None:
+            query = f"{query} {lang}"
+    return query
+
+
+def _build(goal: ParsedGoal, topic_id: str | None) -> str:
     fid = goal.field
     if fid is None:
         query = " ".join(w for w in _words(goal.text) if w not in FILLER) or goal.text.strip()
-        return f"{query} in hindi" if goal.language in ("hi", "mixed") and "hindi" not in query else query
+        return query
 
     level_words = {w for w in _words(" ".join(LEVEL_PREFIX.values()))} | {"executive", "exe", "exec", "professional", "prof", "inter", "intermediate", "final", "foundation"}
     tid = topic_id or (goal.topic_ids[0] if goal.topic_ids else None)
@@ -80,15 +84,15 @@ def build_query(goal: ParsedGoal, topic_id: str | None = None) -> str:
             query = f"{LEVEL_PREFIX.get(topic['level'], FIELD_PREFIX[fid])} {_clean_name(topic['name'])}"
         else:
             terms = topic.get("search_terms", {})
-            options = (terms.get("hi") if goal.language in ("hi", "mixed") else None) or terms.get("en") or [_clean_name(topic["name"])]
+            options = terms.get("en") or [_clean_name(topic["name"])]
             user = set(_words(goal.text))
             query = max(options, key=lambda t: (len(user & set(_words(t))), -options.index(t)))
             prefix = LEVEL_PREFIX.get(topic["level"]) or FIELD_PREFIX.get(fid, "")
             if prefix and prefix.casefold().split()[0] not in query.casefold():
                 query = f"{prefix} {query}"
-        return _hindi(_add_leftovers(query, goal, level_words), goal)
+        return _add_leftovers(query, goal, level_words)
 
     if fid == "ai":
-        return _hindi(" ".join(w for w in _words(goal.text) if w not in FILLER) or "machine learning", goal)
+        return " ".join(w for w in _words(goal.text) if w not in FILLER) or "machine learning"
     prefix = LEVEL_PREFIX.get(goal.level or "") or FIELD_ONLY.get(fid) or goal.field_label
-    return _hindi(_add_leftovers(prefix, goal, level_words), goal)
+    return _add_leftovers(prefix, goal, level_words)

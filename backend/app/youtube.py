@@ -132,6 +132,11 @@ class YouTubeClient:
         )
         return [i["id"]["videoId"] for i in data.get("items", []) if i.get("id", {}).get("videoId")]
 
+    def playlist_items(self, playlist_id: str, max_results: int = 10) -> list[str]:
+        """A playlist's first videos (a channel's uploads playlist lists newest first). 1 unit."""
+        data = self._get("playlistItems", {"part": "contentDetails", "playlistId": playlist_id, "maxResults": max_results})
+        return [i["contentDetails"]["videoId"] for i in data.get("items", []) if i.get("contentDetails", {}).get("videoId")]
+
     def videos(self, ids: list[str]) -> list[VideoFields]:
         """videos.list, 1 unit per 50 IDs."""
         out: list[VideoFields] = []

@@ -41,6 +41,10 @@ class FakeYouTube:
         self.search_calls.append((query, language))
         return list(self.results.get(query, []))
 
+    def playlist_items(self, playlist_id: str, max_results: int = 10) -> list[str]:
+        self.playlist_calls = getattr(self, "playlist_calls", []) + [playlist_id]
+        return list(getattr(self, "playlists", {}).get(playlist_id, []))[:max_results]
+
     def videos(self, ids: list[str]) -> list[VideoFields]:
         self.video_calls.append(list(ids))
         return [self.video_map[i] for i in ids if i in self.video_map]
