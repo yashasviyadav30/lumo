@@ -70,3 +70,10 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Tests: backend 69, frontend 36 (9 new), live end-to-end run passed on https://focuslearn.focuslearn.workers.dev (test account deleted by the run).
 - Not built yet (later in `idea.md` build order): doubts answered by friends, the paper tracker, amendments, past-paper drill.
 - Still needs a real phone check: the capture bar and card sheet on iPhone Safari and Android Chrome (1.3, 1.4).
+
+## Premium redesign (2026-10-01)
+
+- User feedback: "app looks useless, can't find notes or friends, nothing special". Valid: features were hidden and the look was plain.
+- Done and live: new design system (Plus Jakarta Sans, violet gradient, icon tab bar, laptop sidebar, dark mode); Welcome shows all six features; Home shows today card, weekly counts (no streaks), every study tool as a tile, how-it-works for new users; study page, revision (swipe to grade), Personal and Library restyled; notebook times open the lecture at that second.
+- Backend: `card_reviews` table (migration 09da5fce7406) for "N cards reviewed this week".
+- Next: study with friends (shown on Home as "Coming next"), then longer review gaps.

@@ -207,7 +207,7 @@ svg {
 @media (min-width: 960px) {
   .app.signed-in {
     display: grid;
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 240px minmax(0, 1fr);
     grid-template-rows: auto 1fr;
   }
   .app.signed-in .topbar {
@@ -460,6 +460,7 @@ label {
   margin: 0 auto 10px;
 }
 .icon-circle {
+  flex: none;
   width: 44px;
   height: 44px;
   border-radius: 14px;

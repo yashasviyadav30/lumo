@@ -37,8 +37,8 @@ try {
 
   await page.getByRole('button', { name: /^Search: / }).click()
   await page.waitForURL('**/search')
-  await page.locator('.video-list li').first().waitFor({ timeout: 20000 })
-  const shown = await page.locator('.video-list li').count()
+  await page.locator('.video-list li.video').first().waitFor({ timeout: 20000 })
+  const shown = await page.locator('.video-list li.video').count()
   const hiddenLine = (await page.locator('.hidden-line').count()) ? await page.locator('.hidden-line p').innerText() : '(nothing hidden)'
   log(`search shows ${shown} videos; hidden line: ${hiddenLine.replace(/\s+/g, ' ')}`)
   if (page.url().includes('?')) throw new Error('query leaked into the URL')
@@ -83,7 +83,7 @@ try {
   await page.screenshot({ path: shots + '7-study.png', fullPage: true })
   log('made a card from her own note')
 
-  await page.getByRole('link', { name: 'Home' }).click()
+  await page.getByRole('link', { name: 'Home', exact: true }).click()
   await page.locator('.hero').waitFor({ timeout: 15000 })
   log('Home hero:', (await page.locator('.hero').innerText()).replace(/\s+/g, ' '))
   await page.screenshot({ path: shots + '8-home.png' })
@@ -110,6 +110,14 @@ try {
   log('Personal notebook shows the lecture; Doubts filter works')
   await page.screenshot({ path: shots + '10-personal.png', fullPage: true })
 
+  await page.setViewportSize({ width: 1280, height: 860 })
+  await page.getByRole('link', { name: 'Home', exact: true }).click()
+  await page.locator('.hero').waitFor()
+  await page.waitForTimeout(800)
+  await page.screenshot({ path: shots + '11-home-laptop.png' })
+  await page.setViewportSize({ width: 412, height: 915 })
+
+  await page.getByRole('link', { name: 'Personal' }).click()
   await page.getByRole('link', { name: 'Settings' }).click()
   await page.getByRole('button', { name: 'Delete my data' }).click()
   await page.getByRole('button', { name: 'Yes, delete everything' }).click()

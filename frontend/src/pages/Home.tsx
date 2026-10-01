@@ -167,13 +167,11 @@ export default function Home() {
   const [summary, setSummary] = useState<HomeSummary | null>(null)
 
   useEffect(() => {
-    homeSummary()
-      .then(setSummary)
-      .catch(() => setSummary(null))
-    getActiveGoal()
-      .then((g) => setGoalState(g && g.id ? g : null))
-      .catch(() => setGoalState(null))
-      .finally(() => setLoading(false))
+    // Draw Home once both are in, so the "today" card never flashes the wrong thing.
+    Promise.allSettled([
+      homeSummary().then(setSummary),
+      getActiveGoal().then((g) => setGoalState(g && g.id ? g : null)),
+    ]).finally(() => setLoading(false))
   }, [])
 
   async function onSubmit(e: FormEvent) {
