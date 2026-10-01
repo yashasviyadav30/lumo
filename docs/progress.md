@@ -78,3 +78,12 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Backend: `card_reviews` table (migration 09da5fce7406) for "N cards reviewed this week".
 - Next: study with friends (shown on Home as "Coming next"), then longer review gaps.
 - Restyled again to match a reference screenshot from the user: dark near-black with faint grid, neon lime accent, Sora display headings with two-tone words, numbered 01./02. cards with one lime card, lime pill buttons with arrow, phone mockup in a glowing orbit on Welcome. App icons regenerated in lime.
+
+## Feed and hide list, user decision (2026-10-01)
+
+- User asked for "a feed exactly like YouTube": everything shows (podcasts, interviews) except songs, movies, entertainment shows, news channels, vlogs and personal content. No Hinglish add-on, no Indian teachers pushed up.
+- User also asked to judge videos by title, description and comments. Refused: Google's policy guide (re-read 2026-10-01) says "Infer or estimate the content category/type of a video or channel; you may only use the content type returned by the YouTube API." R3 stands.
+- Measured (6 searches x 25 videos): podcasts are People & Blogs (Raj Shamani 23/25, Ranveer Allahbadia 22/25), same label as vlogs (Flying Beast 23/25); Dhruv Rathee is Education 22/25; lectures and topper interviews are almost all Education. YouTube's India charts have no Education chart (404); Science & Tech chart is phones.
+- Chosen: hide Music, Film & Animation, movie/show genres, Entertainment, Comedy, Gaming, News & Politics, Travel & Events, Videoblogging. Show People & Blogs (podcasts); vlog channels are hidden one tap at a time ("Hide channel", with Undo). Shorts stay hidden by default, switch in Settings.
+- Removed: "hindi" added to goal searches (a language the user types herself is kept), curated-channel exemption. Followed channels are still exempt (her rule).
+- Home feed: followed channels' uploads (playlistItems, 1 unit, cached 6 h) + goal search + 3 topics rotating daily (24 h shared cache; extra topics only while 30+ searches are left today).
