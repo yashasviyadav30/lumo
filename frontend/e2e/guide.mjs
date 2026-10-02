@@ -326,20 +326,20 @@ try {
   await page.getByRole('link', { name: 'Settings' }).click()
   await page.getByRole('heading', { name: 'Appearance' }).waitFor()
   await shoot('settings', 'Settings', 'Your switches.', [
-    [page.getByRole('group', { name: 'Theme' }), 'Appearance', 'Dark, Light, or the same as your phone.'],
+    [page.getByRole('group', { name: 'Theme' }), 'Appearance', 'Same as your phone (default), Light, or Night.'],
     [page.locator('.settings-section .chips').first(), 'What’s hidden', 'The kinds of videos hidden, using YouTube’s own labels.'],
     [page.getByRole('switch'), 'Show Shorts', 'Off by default.'],
     [page.getByText('Channels you hid'), 'Hidden channels', '“Unhide all” brings them back.'],
     [role('button', 'Delete my data'), 'Delete my data', 'Deletes your account and everything in it.'],
   ])
-  await page.getByRole('group', { name: 'Theme' }).getByRole('button', { name: 'Light' }).click()
+  await page.getByRole('group', { name: 'Theme' }).getByRole('button', { name: 'Night' }).click()
   await role('link', 'My notes').click()
   await page.locator('.lecture-block').first().waitFor()
-  await shoot('light', 'Light theme', 'The same app in Light (Settings → Appearance).', [
-    [page.locator('.lecture-block').first(), 'Easier in daylight', 'Warm off-white paper, dark text.'],
+  await shoot('night', 'Night theme', 'For studying late: soft navy, never pure black (Settings → Appearance).', [
+    [page.locator('.lecture-block').first(), 'Easy on the eyes at night', 'Soft colours that don’t glare in a dark room.'],
   ], { full: false })
   await page.getByRole('link', { name: 'Settings' }).click()
-  await page.getByRole('group', { name: 'Theme' }).getByRole('button', { name: 'Dark' }).click()
+  await page.getByRole('group', { name: 'Theme' }).getByRole('button', { name: 'Same as phone' }).click()
 
   // ---------- Clean up ----------
   await role('button', 'Delete my data').click()

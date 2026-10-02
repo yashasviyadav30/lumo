@@ -11,7 +11,8 @@ import {
   StickyNote,
   Trash2,
 } from 'lucide-react'
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
 import Comments from '../components/Comments'
 import Description from '../components/Description'
@@ -36,7 +37,7 @@ import {
 } from '../lib/study'
 
 // The rich-text editor is big, so it loads only when the notepad is first opened.
-const Notepad = lazy(() => import('../components/Notepad'))
+const Notepad = lazyWithReload(() => import('../components/Notepad'))
 
 const PROGRESS_EVERY_MS = 15000
 

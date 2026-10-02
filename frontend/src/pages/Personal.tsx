@@ -10,7 +10,8 @@ import {
   Star,
   StickyNote,
 } from 'lucide-react'
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
+import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useNavigate } from 'react-router'
 import {
   clock,
@@ -25,7 +26,7 @@ import {
 } from '../lib/study'
 
 // Loaded only when there is a notepad page to show (the editor is big).
-const NotepadView = lazy(() => import('../components/Notepad').then((m) => ({ default: m.NotepadView })))
+const NotepadView = lazyWithReload(() => import('../components/Notepad').then((m) => ({ default: m.NotepadView })))
 
 type Filter = 'all' | 'doubts' | 'starred'
 type View = 'videos' | 'notes'

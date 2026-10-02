@@ -23,7 +23,7 @@ function PhoneMock() {
         <div className="bar">
           <span>Mark</span>
           <span>Doubt</span>
-          <span>Star</span>
+          <span>Notepad</span>
           <span>−10s</span>
         </div>
         <div className="n">

@@ -1,130 +1,135 @@
 /* FocusLearn design system: soft surfaces, one violet brand colour, warm accents, generous spacing. */
 /* Dark "neon lime" theme: near-black, faint grid, one lime accent, white type. */
-/* Themes (UX review 2026-10-02): soft graphite dark (default) and warm "paper" light. Lime has one job: the
-   main action and the active tab. Each meaning has its own calm colour: success green, star gold, doubt coral,
-   info blue. No pure black or pure white; body text stays under ~15:1 to avoid glare in long sessions. */
+/* "Paper & Ink" theme (2026-10-02), from reading and colour research:
+   - Light by default when the phone is light: dark text on a light page reads faster with fewer mistakes
+     (Piepenbrock et al., Ergonomics 2013). Warm off-white paper, not pure white, to cut glare.
+   - One calm accent: deep indigo-blue (the usual colour of learning products; blue is linked with calm,
+     approach motivation in Mehta & Zhu, Science 2009, though later replications are mixed).
+   - Night: soft navy, never black, with desaturated colours (Material Design dark theme guidance), so
+     nothing "vibrates" on the dark background.
+   - Each meaning has its own colour: success green, star gold, doubt orange, danger red. */
 :root {
-  --bg: #12141a;
-  --surface: #1a1d25;
-  --surface-2: #232733;
-  --text: #e6e8ef;
-  --muted: #a3a9b8;
-  --line: #2c3140;
-  --primary: #c6f432;
-  --primary-2: #a6e01c;
-  --primary-ink: #12141a;
-  --primary-soft: rgb(198 244 50 / 0.12);
-  --info: #8ab4f8;
-  --info-soft: rgb(138 180 248 / 0.14);
-  --amber: #f2c46d;
-  --amber-soft: rgb(242 196 109 / 0.14);
-  --orange: #f28b82;
-  --orange-soft: rgb(242 139 130 / 0.14);
-  --green: #7dd3a8;
-  --green-soft: rgb(125 211 168 / 0.14);
-  --pink: #f4a6c6;
-  --danger: #f28b82;
-  --danger-soft: rgb(242 139 130 / 0.14);
-  --focus: #8ab4f8;
-  --np-red: #f28b82;
-  --np-orange: #f5b07a;
-  --np-green: #7dd3a8;
-  --np-blue: #8ab4f8;
-  --np-purple: #c4a7f5;
-  --hl-yellow: rgb(242 196 109 / 0.3);
-  --hl-green: rgb(125 211 168 / 0.3);
-  --hl-blue: rgb(138 180 248 / 0.3);
-  --hl-pink: rgb(244 166 198 / 0.3);
+  --bg: #f8f8f5;
+  --surface: #ffffff;
+  --surface-2: #f1f2f6;
+  --text: #1b2130;
+  --muted: #586174;
+  --line: #e2e5ec;
+  --primary: #3550d8;
+  --primary-2: #2a41b5;
+  --primary-ink: #ffffff;
+  --primary-soft: rgb(53 80 216 / 0.09);
+  --info: #3550d8;
+  --info-soft: rgb(53 80 216 / 0.09);
+  --amber: #995a00;
+  --amber-soft: rgb(242 184 75 / 0.22);
+  --orange: #c2410c;
+  --orange-soft: rgb(194 65 12 / 0.08);
+  --green: #1d7a55;
+  --green-soft: rgb(29 122 85 / 0.1);
+  --pink: #a8326e;
+  --danger: #b42318;
+  --danger-soft: rgb(180 35 24 / 0.08);
+  --focus: #3550d8;
+  --np-red: #b42318;
+  --np-orange: #b85c00;
+  --np-green: #1d7a55;
+  --np-blue: #3550d8;
+  --np-purple: #6b3fc4;
+  --hl-yellow: rgb(250 204 21 / 0.4);
+  --hl-green: rgb(110 205 160 / 0.4);
+  --hl-blue: rgb(130 170 250 / 0.4);
+  --hl-pink: rgb(244 166 198 / 0.45);
+  --shadow: 0 1px 2px rgb(27 33 48 / 0.05), 0 4px 14px rgb(27 33 48 / 0.06);
+  --shadow-lg: 0 12px 36px rgb(27 33 48 / 0.12);
+  --glow: 0 4px 14px rgb(53 80 216 / 0.22);
+  color-scheme: light;
   --radius-sm: 10px;
   --radius: 16px;
-  --radius-lg: 22px;
-  --shadow: 0 6px 20px rgb(0 0 0 / 0.28);
-  --shadow-lg: 0 20px 50px rgb(0 0 0 / 0.45);
-  --glow: 0 6px 20px rgb(0 0 0 / 0.25);
+  --radius-lg: 20px;
   --tap: 48px;
-  --gradient: linear-gradient(135deg, #d4ff4a 0%, #b4ec22 100%);
-  --display: 'Sora Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
-  color-scheme: dark;
+  --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+  --display: 'Plus Jakarta Sans Variable', system-ui, 'Segoe UI', Roboto, sans-serif;
   font-family: 'Plus Jakarta Sans Variable', system-ui, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
 }
-:root[data-theme="light"] {
-  --bg: #fafaf7;
-  --surface: #ffffff;
-  --surface-2: #f1f1ec;
-  --text: #1f2328;
-  --muted: #5b6270;
-  --line: #e3e3dc;
-  --primary: #2f5bd3;
-  --primary-2: #2448ad;
-  --primary-ink: #ffffff;
-  --primary-soft: rgb(47 91 211 / 0.1);
-  --info: #2f5bd3;
-  --info-soft: rgb(47 91 211 / 0.1);
-  --amber: #a15c00;
-  --amber-soft: rgb(242 196 109 / 0.3);
-  --orange: #b3261e;
-  --orange-soft: rgb(179 38 30 / 0.08);
-  --green: #1f7a4d;
-  --green-soft: rgb(31 122 77 / 0.1);
-  --pink: #b0306a;
-  --danger: #b3261e;
-  --danger-soft: rgb(179 38 30 / 0.08);
-  --focus: #2f5bd3;
-  --np-red: #b3261e;
-  --np-orange: #b85c00;
-  --np-green: #1f7a4d;
-  --np-blue: #2f5bd3;
-  --np-purple: #6b3fc4;
-  --hl-yellow: rgb(242 196 109 / 0.5);
-  --hl-green: rgb(125 211 168 / 0.45);
-  --hl-blue: rgb(138 180 248 / 0.45);
-  --hl-pink: rgb(244 166 198 / 0.45);
-  --shadow: 0 1px 2px rgb(20 20 40 / 0.05), 0 4px 14px rgb(20 20 40 / 0.06);
-  --shadow-lg: 0 12px 36px rgb(20 20 40 / 0.12);
-  --glow: 0 4px 14px rgb(47 91 211 / 0.25);
-  color-scheme: light;
+:root[data-theme='dark'] {
+  --bg: #10141f;
+  --surface: #171c29;
+  --surface-2: #1f2535;
+  --text: #e3e7f0;
+  --muted: #9ba4b7;
+  --line: #2b3346;
+  --primary: #93a8ff;
+  --primary-2: #7b93f5;
+  --primary-ink: #10141f;
+  --primary-soft: rgb(147 168 255 / 0.14);
+  --info: #8ab4f8;
+  --info-soft: rgb(138 180 248 / 0.14);
+  --amber: #f0c36a;
+  --amber-soft: rgb(240 195 106 / 0.14);
+  --orange: #f2a27d;
+  --orange-soft: rgb(242 162 125 / 0.14);
+  --green: #6fcb9f;
+  --green-soft: rgb(111 203 159 / 0.14);
+  --pink: #f4a6c6;
+  --danger: #f28b82;
+  --danger-soft: rgb(242 139 130 / 0.14);
+  --focus: #93a8ff;
+  --np-red: #f28b82;
+  --np-orange: #f5b07a;
+  --np-green: #6fcb9f;
+  --np-blue: #8ab4f8;
+  --np-purple: #c4a7f5;
+  --hl-yellow: rgb(240 195 106 / 0.3);
+  --hl-green: rgb(111 203 159 / 0.3);
+  --hl-blue: rgb(138 180 248 / 0.3);
+  --hl-pink: rgb(244 166 198 / 0.3);
+  --shadow: 0 6px 20px rgb(0 0 0 / 0.28);
+  --shadow-lg: 0 20px 50px rgb(0 0 0 / 0.45);
+  --glow: 0 6px 20px rgb(0 0 0 / 0.25);
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: light) {
-  :root[data-theme="system"] {
-    --bg: #fafaf7;
-    --surface: #ffffff;
-    --surface-2: #f1f1ec;
-    --text: #1f2328;
-    --muted: #5b6270;
-    --line: #e3e3dc;
-    --primary: #2f5bd3;
-    --primary-2: #2448ad;
-    --primary-ink: #ffffff;
-    --primary-soft: rgb(47 91 211 / 0.1);
-    --info: #2f5bd3;
-    --info-soft: rgb(47 91 211 / 0.1);
-    --amber: #a15c00;
-    --amber-soft: rgb(242 196 109 / 0.3);
-    --orange: #b3261e;
-    --orange-soft: rgb(179 38 30 / 0.08);
-    --green: #1f7a4d;
-    --green-soft: rgb(31 122 77 / 0.1);
-    --pink: #b0306a;
-    --danger: #b3261e;
-    --danger-soft: rgb(179 38 30 / 0.08);
-    --focus: #2f5bd3;
-    --np-red: #b3261e;
-    --np-orange: #b85c00;
-    --np-green: #1f7a4d;
-    --np-blue: #2f5bd3;
-    --np-purple: #6b3fc4;
-    --hl-yellow: rgb(242 196 109 / 0.5);
-    --hl-green: rgb(125 211 168 / 0.45);
-    --hl-blue: rgb(138 180 248 / 0.45);
-    --hl-pink: rgb(244 166 198 / 0.45);
-    --shadow: 0 1px 2px rgb(20 20 40 / 0.05), 0 4px 14px rgb(20 20 40 / 0.06);
-    --shadow-lg: 0 12px 36px rgb(20 20 40 / 0.12);
-    --glow: 0 4px 14px rgb(47 91 211 / 0.25);
-    color-scheme: light;
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    --bg: #10141f;
+    --surface: #171c29;
+    --surface-2: #1f2535;
+    --text: #e3e7f0;
+    --muted: #9ba4b7;
+    --line: #2b3346;
+    --primary: #93a8ff;
+    --primary-2: #7b93f5;
+    --primary-ink: #10141f;
+    --primary-soft: rgb(147 168 255 / 0.14);
+    --info: #8ab4f8;
+    --info-soft: rgb(138 180 248 / 0.14);
+    --amber: #f0c36a;
+    --amber-soft: rgb(240 195 106 / 0.14);
+    --orange: #f2a27d;
+    --orange-soft: rgb(242 162 125 / 0.14);
+    --green: #6fcb9f;
+    --green-soft: rgb(111 203 159 / 0.14);
+    --pink: #f4a6c6;
+    --danger: #f28b82;
+    --danger-soft: rgb(242 139 130 / 0.14);
+    --focus: #93a8ff;
+    --np-red: #f28b82;
+    --np-orange: #f5b07a;
+    --np-green: #6fcb9f;
+    --np-blue: #8ab4f8;
+    --np-purple: #c4a7f5;
+    --hl-yellow: rgb(240 195 106 / 0.3);
+    --hl-green: rgb(111 203 159 / 0.3);
+    --hl-blue: rgb(138 180 248 / 0.3);
+    --hl-pink: rgb(244 166 198 / 0.3);
+    --shadow: 0 6px 20px rgb(0 0 0 / 0.28);
+    --shadow-lg: 0 20px 50px rgb(0 0 0 / 0.45);
+    --glow: 0 6px 20px rgb(0 0 0 / 0.25);
+    color-scheme: dark;
   }
 }
 
@@ -779,7 +784,6 @@ label {
   border-radius: 50%;
   border: 2px solid var(--primary);
   opacity: 0.7;
-  filter: drop-shadow(0 0 8px rgb(198 244 50 / 0.6));
 }
 .orbit.two {
   width: 420px;
@@ -805,8 +809,9 @@ label {
   height: 450px;
   padding: 14px 12px;
   border-radius: 36px;
-  background: #050605;
-  border: 6px solid #22261f;
+  background: var(--bg);
+  border: 6px solid var(--line);
+  color: var(--text);
   box-shadow: var(--shadow-lg);
   rotate: 6deg;
   display: flex;
@@ -820,14 +825,14 @@ label {
   height: 16px;
   margin: -6px auto 4px;
   border-radius: 10px;
-  background: #22261f;
+  background: var(--line);
 }
 .phone .vid {
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   background:
-    radial-gradient(circle at 30% 30%, rgb(198 244 50 / 0.25), transparent 60%),
-    linear-gradient(135deg, #1d2219, #0d0f0c);
+    radial-gradient(circle at 30% 30%, var(--primary-soft), transparent 60%),
+    linear-gradient(135deg, var(--surface-2), var(--surface));
   display: flex;
   align-items: center;
   justify-content: center;

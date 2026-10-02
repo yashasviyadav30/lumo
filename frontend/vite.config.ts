@@ -16,8 +16,8 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#12141a',
-        theme_color: '#12141a',
+        background_color: '#f8f8f5',
+        theme_color: '#3550d8',
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -33,6 +33,16 @@ export default defineConfig({
       },
     }),
   ],
+  // The notepad editor loads on demand; pre-bundle it so the dev server never re-bundles mid-session.
+  optimizeDeps: {
+    include: [
+      '@tiptap/react',
+      '@tiptap/starter-kit',
+      '@tiptap/extension-highlight',
+      '@tiptap/extension-list',
+      '@tiptap/extension-text-style',
+    ],
+  },
   server: {
     // Dev only: send /api to the local backend so the app and API share one origin.
     proxy: { '/api': 'http://localhost:8000' },

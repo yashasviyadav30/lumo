@@ -79,9 +79,9 @@ function Appearance() {
     setTheme(t)
   }
   const options: Array<[Theme, string]> = [
-    ['dark', 'Dark'],
-    ['light', 'Light'],
     ['system', 'Same as phone'],
+    ['light', 'Light'],
+    ['dark', 'Night'],
   ]
   return (
     <div className="card settings-section">
