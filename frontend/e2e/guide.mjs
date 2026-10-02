@@ -6,7 +6,7 @@ import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
 // Where the API lives: same origin locally (Vite proxy); Render for the live site.
-const API = process.env.E2E_API ?? (BASE.includes('localhost') ? '' : 'https://focus-app-6fb9.onrender.com')
+const API = process.env.E2E_API ?? '' // same origin: Vite proxy locally, the Cloudflare Worker live
 let signedUp = false
 let deleted = false
 const root = new URL('../../docs/guide/', import.meta.url)

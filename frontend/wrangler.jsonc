@@ -1,11 +1,16 @@
-// Cloudflare hosting for the frontend: static files only, no Worker code (portability rule).
+// Cloudflare hosting for the frontend: the static app, plus a tiny Worker that passes /api/* to the
+// backend on Render (worker/index.js), so phones never need to reach onrender.com directly.
 // Deploy: npm run build && npx wrangler deploy
 {
   "name": "focuslearn",
+  "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     // Unknown paths (e.g. /watch/abc) get index.html so the app's own router handles them.
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    // API calls go to the Worker first; everything else is served straight from the static files.
+    "run_worker_first": ["/api/*", "/health"]
   }
 }
