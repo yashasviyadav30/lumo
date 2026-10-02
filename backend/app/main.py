@@ -15,6 +15,9 @@ from app.request_log import RequestLogMiddleware
 from app.routers import accounts, goals, search, study
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+# httpx logs every request URL at INFO, and YouTube URLs carry the API key: never let them reach a log.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 
 @contextlib.asynccontextmanager

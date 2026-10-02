@@ -24,6 +24,10 @@ class YouTubeError(Exception):
     pass
 
 
+class CommentsDisabled(YouTubeError):
+    pass
+
+
 def parse_duration(iso: str | None) -> int | None:
     m = _DURATION.fullmatch(iso or "")
     if not m or not iso or iso == "P":
@@ -136,6 +140,30 @@ class YouTubeClient:
         """A playlist's first videos (a channel's uploads playlist lists newest first). 1 unit."""
         data = self._get("playlistItems", {"part": "contentDetails", "playlistId": playlist_id, "maxResults": max_results})
         return [i["contentDetails"]["videoId"] for i in data.get("items", []) if i.get("contentDetails", {}).get("videoId")]
+
+    def comments(self, video_id: str, max_results: int = 50) -> list[dict]:
+        """Top-level comments, most relevant first, as plain text. 1 unit."""
+        r = self.http.get(f"{API}/commentThreads", params={
+            "part": "snippet", "videoId": video_id, "order": "relevance", "maxResults": max_results,
+            "textFormat": "plainText", "key": self.api_key})
+        if r.status_code == 403 and "commentsDisabled" in r.text:
+            raise CommentsDisabled(video_id)
+        if r.status_code == 403 and "quota" in r.text.lower():
+            raise QuotaExceeded("commentThreads")
+        if r.status_code != 200:
+            raise YouTubeError(f"commentThreads: HTTP {r.status_code}")
+        out = []
+        for item in r.json().get("items", []):
+            top = item.get("snippet", {}).get("topLevelComment", {}).get("snippet", {})
+            out.append({
+                "author": top.get("authorDisplayName", "")[:120],
+                "author_url": top.get("authorChannelUrl", "")[:300],
+                "text": top.get("textDisplay", "")[:5000],
+                "likes": int(top.get("likeCount", 0) or 0),
+                "published_at": top.get("publishedAt"),
+                "replies": int(item.get("snippet", {}).get("totalReplyCount", 0) or 0),
+            })
+        return out
 
     def videos(self, ids: list[str]) -> list[VideoFields]:
         """videos.list, 1 unit per 50 IDs."""

@@ -41,6 +41,14 @@ class FakeYouTube:
         self.search_calls.append((query, language))
         return list(self.results.get(query, []))
 
+    def comments(self, video_id: str, max_results: int = 50) -> list[dict]:
+        from app.youtube import CommentsDisabled
+
+        self.comment_calls = getattr(self, "comment_calls", []) + [video_id]
+        if video_id in getattr(self, "comments_off", set()):
+            raise CommentsDisabled(video_id)
+        return list(getattr(self, "comment_map", {}).get(video_id, []))
+
     def playlist_items(self, playlist_id: str, max_results: int = 10) -> list[str]:
         self.playlist_calls = getattr(self, "playlist_calls", []) + [playlist_id]
         return list(getattr(self, "playlists", {}).get(playlist_id, []))[:max_results]

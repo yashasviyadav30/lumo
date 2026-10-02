@@ -183,6 +183,32 @@ class LectureProgress(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 
+class StarredVideo(Base):
+    """A video she starred, shown in Library. Video ID only; the title is fetched fresh (R1)."""
+
+    __tablename__ = "starred_videos"
+    __table_args__ = (UniqueConstraint("user_id", "video_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    video_id: Mapped[str] = mapped_column(String(11))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class Notepad(Base):
+    """Her free-form notes beside one lecture (rich text, stored as the editor's JSON). Her own words only."""
+
+    __tablename__ = "notepads"
+    __table_args__ = (UniqueConstraint("user_id", "video_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    video_id: Mapped[str] = mapped_column(String(11))
+    content: Mapped[str] = mapped_column(Text, default="")
+    text: Mapped[str] = mapped_column(Text, default="")  # plain text copy, for search
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 class Card(Base):
     """A recall card made from one of her notes by blanking words she chose (her text only, R3/R4).
     It remembers the lecture second, so a forgotten card can replay just that part."""
@@ -243,3 +269,14 @@ class YtSearchCache(Base):
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
     video_ids: Mapped[list] = mapped_column(JSON)
     etag: Mapped[str | None] = mapped_column(String(120), nullable=True)
+
+
+class YtComments(Base):
+    """Top YouTube comments for a video, shown as YouTube gives them. Refreshed after 24 h, deleted after 30 days (R1)."""
+
+    __tablename__ = "yt_comments"
+
+    video_id: Mapped[str] = mapped_column(String(11), primary_key=True)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    items: Mapped[list] = mapped_column(JSON)
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False)

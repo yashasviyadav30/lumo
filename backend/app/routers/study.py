@@ -12,13 +12,14 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app import quota
 from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
-from app.models import Card, CardReview, LectureProgress, Note, User
-from app.search import _details, video_card
+from app.models import Card, CardReview, LectureProgress, Note, Notepad, StarredVideo, User, YtComments, YtVideo
+from app.search import _aware, _details, video_card
 from app.study import card_front, now, replay_window, schedule, word_in
-from app.youtube import YouTubeClient, YouTubeError
+from app.youtube import CommentsDisabled, QuotaExceeded, YouTubeClient, YouTubeError
 
 router = APIRouter(prefix="/api", tags=["study"])
 
@@ -89,11 +90,93 @@ def open_lecture(body: VideoIn, request: Request, user: User = Depends(current_u
     counts = _card_counts(db, [n.id for n in notes])
     progress = db.scalar(select(LectureProgress).where(LectureProgress.user_id == user.id, LectureProgress.video_id == body.video_id))
     info = lecture_info(db, yt, [body.video_id]).get(body.video_id)
+    row = db.get(YtVideo, body.video_id) if info else None
+    pad = db.scalar(select(Notepad).where(Notepad.user_id == user.id, Notepad.video_id == body.video_id))
+    starred = db.scalar(select(StarredVideo).where(StarredVideo.user_id == user.id, StarredVideo.video_id == body.video_id))
     return {
         "video": info,
+        "description": row.description if row else "",
+        "starred": starred is not None,
+        "notepad": {"content": pad.content, "updated_at": pad.updated_at.isoformat()} if pad else None,
         "position_s": progress.position_s if progress else 0,
         "notes": [note_view(n, counts.get(n.id, 0)) for n in notes],
     }
+
+
+COMMENTS_FRESH = timedelta(hours=24)
+
+
+@router.post("/study/comments")
+def comments(body: VideoIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
+             yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
+    """YouTube's top comments for the lecture, as YouTube gives them (shared 24-hour cache, 1 unit per refresh)."""
+    request.state.action = "comments"
+    now_ = now()
+    cached = db.get(YtComments, body.video_id)
+    if cached and now_ - _aware(cached.fetched_at) < COMMENTS_FRESH:
+        return {"comments": cached.items, "disabled": cached.disabled}
+    if yt is None:
+        return {"comments": cached.items if cached else [], "disabled": False}
+    try:
+        items, disabled = yt.comments(body.video_id), False
+        quota.record(db, "general")
+    except CommentsDisabled:
+        items, disabled = [], True
+    except (QuotaExceeded, YouTubeError):
+        return {"comments": cached.items if cached and now_ - _aware(cached.fetched_at) < timedelta(days=30) else [], "disabled": False}
+    if cached:
+        cached.items, cached.disabled, cached.fetched_at = items, disabled, now_
+    else:
+        db.add(YtComments(video_id=body.video_id, items=items, disabled=disabled, fetched_at=now_))
+    db.commit()
+    return {"comments": items, "disabled": disabled}
+
+
+class StarIn(BaseModel):
+    video_id: str = Field(pattern=VIDEO_ID)
+    starred: bool
+
+
+@router.post("/videos/star")
+def star_video(body: StarIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    row = db.scalar(select(StarredVideo).where(StarredVideo.user_id == user.id, StarredVideo.video_id == body.video_id))
+    if body.starred and row is None:
+        db.add(StarredVideo(user_id=user.id, video_id=body.video_id))
+    elif not body.starred and row is not None:
+        db.delete(row)
+    db.commit()
+    return {"video_id": body.video_id, "starred": body.starred}
+
+
+@router.get("/library")
+def library(user: User = Depends(current_user), db: Session = Depends(get_db),
+            yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
+    """Starred videos and watch history (where she stopped in each lecture), newest first."""
+    stars = list(db.scalars(select(StarredVideo).where(StarredVideo.user_id == user.id).order_by(StarredVideo.created_at.desc()).limit(100)))
+    history = list(db.scalars(select(LectureProgress).where(LectureProgress.user_id == user.id).order_by(LectureProgress.updated_at.desc()).limit(100)))
+    info = lecture_info(db, yt, [s.video_id for s in stars] + [h.video_id for h in history])
+    return {
+        "starred": [{"video_id": s.video_id, "video": info.get(s.video_id), "at": s.created_at.isoformat()} for s in stars],
+        "history": [{"video_id": h.video_id, "video": info.get(h.video_id), "position_s": h.position_s, "at": h.updated_at.isoformat()} for h in history],
+    }
+
+
+class NotepadIn(BaseModel):
+    video_id: str = Field(pattern=VIDEO_ID)
+    content: str = Field(max_length=200_000)  # the editor's JSON
+    text: str = Field(default="", max_length=100_000)  # plain text, for search
+
+
+@router.post("/notepad/save")
+def save_notepad(body: NotepadIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    request.state.action = "notepad_save"
+    pad = db.scalar(select(Notepad).where(Notepad.user_id == user.id, Notepad.video_id == body.video_id))
+    if pad is None:
+        pad = Notepad(user_id=user.id, video_id=body.video_id)
+        db.add(pad)
+    pad.content, pad.text, pad.updated_at = body.content, body.text, now()
+    db.commit()
+    return {"updated_at": pad.updated_at.isoformat()}
 
 
 class NoteIn(BaseModel):
@@ -230,6 +313,12 @@ def notebook(body: NotebookIn, user: User = Depends(current_user), db: Session =
         query = query.where(Note.starred.is_(True))
     notes = list(db.scalars(query.order_by(Note.created_at.desc())))
     counts = _card_counts(db, [n.id for n in notes])
+    pads: dict[str, Notepad] = {}
+    if body.only is None:  # notepads are plain notes: no doubts or stars inside them
+        pad_q = select(Notepad).where(Notepad.user_id == user.id, Notepad.text != "")
+        if body.q.strip():
+            pad_q = pad_q.where(Notepad.text.ilike(f"%{body.q.strip()}%"))
+        pads = {p.video_id: p for p in db.scalars(pad_q.order_by(Notepad.updated_at.desc()))}
     order: list[str] = []
     groups: dict[str, list[Note]] = {}
     for n in notes:
@@ -237,13 +326,19 @@ def notebook(body: NotebookIn, user: User = Depends(current_user), db: Session =
             order.append(n.video_id)
             groups[n.video_id] = []
         groups[n.video_id].append(n)
+    for vid in pads:
+        if vid not in groups:
+            order.append(vid)
+            groups[vid] = []
     info = lecture_info(db, yt, order)
     return {
         "lectures": [
-            {"video_id": vid, "video": info.get(vid), "notes": [note_view(n, counts.get(n.id, 0)) for n in sorted(groups[vid], key=lambda x: x.t_seconds)]}
+            {"video_id": vid, "video": info.get(vid),
+             "notes": [note_view(n, counts.get(n.id, 0)) for n in sorted(groups[vid], key=lambda x: x.t_seconds)],
+             "notepad": {"content": pads[vid].content, "updated_at": pads[vid].updated_at.isoformat()} if vid in pads else None}
             for vid in order
         ],
-        "total": len(notes),
+        "total": len(notes) + len(pads),
     }
 
 

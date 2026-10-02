@@ -221,3 +221,12 @@ def test_bad_channel_ids_are_refused(signed_in):
 
 def test_search_needs_an_account(client):
     assert client.post("/api/search", json={"q": "x"}).status_code == 401
+
+
+def test_http_client_logs_never_carry_the_api_key():
+    import logging
+
+    import app.main  # noqa: F401  (sets the levels)
+
+    assert logging.getLogger("httpx").getEffectiveLevel() >= logging.WARNING
+    assert logging.getLogger("httpcore").getEffectiveLevel() >= logging.WARNING

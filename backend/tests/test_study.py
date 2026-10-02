@@ -175,3 +175,53 @@ def test_video_ids_and_note_text_never_reach_the_log(yt, signed_in, db):
     for row in db.scalars(select(AppLog)):
         text = f"{row.route} {row.action}"
         assert LECTURE not in text and "secret" not in text
+
+
+# ---------- description, comments, stars, history, notepad ----------
+
+
+def test_open_returns_description_star_and_notepad(yt, signed_in):
+    yt.video_map[LECTURE] = video(LECTURE, title="ESG Lecture 6", description="0:00 Intro\n12:40 CSR rules")
+    opened = signed_in.post("/api/study/open", json={"video_id": LECTURE}).json()
+    assert opened["description"].startswith("0:00 Intro") and opened["starred"] is False and opened["notepad"] is None
+
+
+def test_comments_are_cached_and_disabled_comments_are_reported(yt, signed_in):
+    yt.comment_map = {LECTURE: [{"author": "A", "author_url": "", "text": "12:40 important", "likes": 5, "published_at": None, "replies": 0}]}
+    first = signed_in.post("/api/study/comments", json={"video_id": LECTURE}).json()
+    second = signed_in.post("/api/study/comments", json={"video_id": LECTURE}).json()
+    assert first == second and first["comments"][0]["text"] == "12:40 important"
+    assert yt.comment_calls == [LECTURE]  # the second read came from the 24-hour cache
+    yt.comments_off = {KIDS}
+    assert signed_in.post("/api/study/comments", json={"video_id": KIDS}).json() == {"comments": [], "disabled": True}
+
+
+def test_starred_videos_and_history_show_in_library(yt, signed_in):
+    assert signed_in.post("/api/videos/star", json={"video_id": LECTURE, "starred": True}).json()["starred"]
+    signed_in.post("/api/progress", json={"video_id": LECTURE, "position_s": 300})
+    lib = signed_in.get("/api/library").json()
+    assert [s["video_id"] for s in lib["starred"]] == [LECTURE]
+    assert lib["history"][0]["video_id"] == LECTURE and lib["history"][0]["position_s"] == 300
+    assert signed_in.post("/api/study/open", json={"video_id": LECTURE}).json()["starred"] is True
+    signed_in.post("/api/videos/star", json={"video_id": LECTURE, "starred": False})
+    assert signed_in.get("/api/library").json()["starred"] == []
+
+
+def test_notepad_saves_and_shows_in_notebook_and_search(yt, signed_in):
+    doc = '{"type":"doc","content":[]}'
+    signed_in.post("/api/notepad/save", json={"video_id": LECTURE, "content": doc, "text": "Prime cost formula"})
+    assert signed_in.post("/api/study/open", json={"video_id": LECTURE}).json()["notepad"]["content"] == doc
+    book = signed_in.post("/api/notebook", json={}).json()
+    assert book["lectures"][0]["notepad"]["content"] == doc and book["total"] == 1
+    assert signed_in.post("/api/notebook", json={"q": "prime"}).json()["total"] == 1
+    assert signed_in.post("/api/notebook", json={"q": "nothing"}).json()["total"] == 0
+
+
+def test_delete_my_data_removes_stars_and_notepads(yt, signed_in, db):
+    from app.models import Notepad, StarredVideo
+
+    signed_in.post("/api/videos/star", json={"video_id": LECTURE, "starred": True})
+    signed_in.post("/api/notepad/save", json={"video_id": LECTURE, "content": "{}", "text": "x"})
+    signed_in.delete("/api/me")
+    for model in (Notepad, StarredVideo):
+        assert db.scalar(select(func.count()).select_from(model)) == 0, model.__name__
