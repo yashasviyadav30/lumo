@@ -41,9 +41,48 @@ export function messageFor(code: string, status = 0): string {
     notice_not_accepted: 'Please read and accept the notice first.',
     invalid_date_of_birth: 'Please check your date of birth.',
     database_not_configured: 'The app is being set up. Please try again later.',
-    network: 'Can’t reach the server. Check your connection and try again.',
+    network: 'Can’t reach the server. If you just opened the app, wait a few seconds and try again.',
   }
   return messages[code] ?? (status >= 500 ? 'Something went wrong on our side. Please try again.' : 'Please check the form and try again.')
+}
+
+// The free server sleeps after 15 idle minutes and takes up to a minute to wake (also during a redeploy).
+// Requests that are safe to repeat wait for it, with a "waking up" banner, instead of failing at once.
+const WAKE_LIMIT_MS = 75_000
+const SAFE_POSTS = ['/api/auth/login', '/api/search', '/api/notebook', '/api/study/open', '/api/study/comments']
+let wakingCount = 0
+function setWaking(on: boolean) {
+  wakingCount = Math.max(0, wakingCount + (on ? 1 : -1))
+  window.dispatchEvent(new CustomEvent('focuslearn:waking', { detail: wakingCount > 0 }))
+}
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+// Fire-and-forget ping when the app opens, so the server is awake by the time she signs in.
+export function wakeServer() {
+  fetch(API_BASE + '/health').catch(() => {})
+}
+
+async function fetchWaiting(url: string, init: RequestInit, canRetry: boolean): Promise<Response> {
+  const start = Date.now()
+  let waiting = false
+  try {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const res = await fetch(url, init)
+        if (!canRetry || ![502, 503, 504].includes(res.status) || Date.now() - start > WAKE_LIMIT_MS) return res
+      } catch (e) {
+        // A real network failure (server asleep or restarting) is a TypeError from fetch.
+        if (!canRetry || !(e instanceof TypeError) || Date.now() - start > WAKE_LIMIT_MS) throw e
+      }
+      if (!waiting) {
+        waiting = true
+        setWaking(true)
+      }
+      await sleep(Math.min(2000 + attempt * 1500, 8000))
+    }
+  } finally {
+    if (waiting) setWaking(false)
+  }
 }
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -51,9 +90,11 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (init.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
   const token = readToken()
   if (token) headers.set('Authorization', `Bearer ${token}`)
+  const method = (init.method ?? 'GET').toUpperCase()
+  const canRetry = method === 'GET' || (method === 'POST' && SAFE_POSTS.includes(path))
   let res: Response
   try {
-    res = await fetch(API_BASE + path, { ...init, headers })
+    res = await fetchWaiting(API_BASE + path, { ...init, headers }, canRetry)
   } catch {
     throw new ApiError(0, 'network')
   }

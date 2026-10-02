@@ -4,10 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import '@fontsource-variable/plus-jakarta-sans'
 import '@fontsource-variable/sora'
 import './index.css'
+import { wakeServer } from './lib/api'
 import { applyTheme } from './lib/theme'
 import { routes } from './routes'
 
 applyTheme()
+wakeServer()
 
 const router = createBrowserRouter(routes)
 

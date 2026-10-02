@@ -2,6 +2,7 @@ import { ArrowLeft, House, Library, NotebookPen, Search } from 'lucide-react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
 import Logo from './Logo'
+import WakingBanner from './WakingBanner'
 
 const tabs = [
   { to: '/', label: 'Home', end: true, Icon: House },
@@ -36,6 +37,7 @@ export default function Layout() {
           <span className="brand">{APP_NAME}</span>
         </Link>
       </header>
+      <WakingBanner />
       <main id="main" className="content" tabIndex={-1}>
         <Outlet />
       </main>
