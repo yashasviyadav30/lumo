@@ -47,6 +47,17 @@ export function followChannel(channelId: string) {
   return api('/api/follows', { method: 'POST', body: JSON.stringify({ channel_id: channelId }) })
 }
 
+// "3 days ago", "2 yr ago": the upload date the way YouTube words it.
+export function ago(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
+  if (Number.isNaN(days) || days < 0) return ''
+  if (days < 1) return 'today'
+  if (days < 30) return `${days} day${days === 1 ? '' : 's'} ago`
+  if (days < 365) return `${Math.floor(days / 30)} mo ago`
+  return `${Math.floor(days / 365)} yr ago`
+}
+
 export function formatDuration(seconds: number | null): string {
   if (seconds == null) return ''
   const h = Math.floor(seconds / 3600)

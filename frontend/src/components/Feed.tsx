@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { followChannel, getFeed, muteChannel, searchVideos, unmuteChannel, type FeedResponse } from '../lib/search'
+import { starVideo } from '../lib/study'
 import HiddenLine from './HiddenLine'
 import VideoItem from './VideoItem'
 
@@ -50,6 +51,11 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
     setNotice('Channel is back.')
     load(current)
   }
+  async function onStar(videoId: string) {
+    await starVideo(videoId, true)
+    setLastHidden(null)
+    setNotice('Starred. Find it in Library → Starred.')
+  }
   async function onFollow(channelId: string) {
     await followChannel(channelId)
     setLastHidden(null)
@@ -58,13 +64,20 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
 
   return (
     <div className="feed">
-      <div className="chips scroll" role="group" aria-label="Feed">
-        {chips.map((c) => (
-          <button key={c.id} className={`chip${c.id === active ? ' on' : ''}`} aria-pressed={c.id === active} onClick={() => pick(c)}>
-            {c.name}
-          </button>
-        ))}
-      </div>
+      {chips.length > 1 && (
+        <div className="chips scroll" role="group" aria-label="Feed">
+          {chips.map((c) => (
+            <button
+              key={c.id}
+              className={`chip${c.id === active ? ' on' : ''}`}
+              aria-pressed={c.id === active}
+              onClick={() => pick(c)}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      )}
       {notice && (
         <p className="notice-line" role="status">
           {notice}{' '}
@@ -93,11 +106,17 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
           )}
           <ul className="video-list" aria-label="Your feed">
             {data.results.map((v) => (
-              <VideoItem key={v.video_id} video={v} onMute={onMute} onFollow={onFollow} />
+              <VideoItem key={v.video_id} video={v} onMute={onMute} onFollow={onFollow} onStar={onStar} />
             ))}
             {showHidden &&
               data.hidden.map((v) => (
-                <VideoItem key={v.video_id} video={v} hiddenBecause={v.reasons} playable={v.playable} onFollow={onFollow} />
+                <VideoItem
+                  key={v.video_id}
+                  video={v}
+                  hiddenBecause={v.reasons}
+                  playable={v.playable}
+                  onFollow={onFollow}
+                />
               ))}
           </ul>
           <HiddenLine hidden={data.hidden} shown={showHidden} onToggleShow={() => setShowHidden(!showHidden)} />

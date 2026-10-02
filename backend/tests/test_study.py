@@ -225,3 +225,12 @@ def test_delete_my_data_removes_stars_and_notepads(yt, signed_in, db):
     signed_in.delete("/api/me")
     for model in (Notepad, StarredVideo):
         assert db.scalar(select(func.count()).select_from(model)) == 0, model.__name__
+
+
+def test_history_items_can_be_removed_or_cleared(yt, signed_in):
+    signed_in.post("/api/progress", json={"video_id": LECTURE, "position_s": 300})
+    signed_in.post("/api/history/remove", json={"video_id": LECTURE})
+    assert signed_in.get("/api/library").json()["history"] == []
+    signed_in.post("/api/progress", json={"video_id": LECTURE, "position_s": 300})
+    signed_in.post("/api/history/remove", json={})
+    assert signed_in.get("/api/library").json()["history"] == []

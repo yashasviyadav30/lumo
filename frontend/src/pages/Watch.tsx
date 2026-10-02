@@ -1,10 +1,27 @@
-import { Check, CircleHelp, Layers, MapPin, NotebookPen, Pencil, RotateCcw, Star, Trash2 } from 'lucide-react'
+import {
+  AlignLeft,
+  Check,
+  CircleHelp,
+  Layers,
+  MapPin,
+  MessageSquare,
+  Pencil,
+  RotateCcw,
+  Star,
+  StickyNote,
+  Trash2,
+} from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
+import Comments from '../components/Comments'
+import Description from '../components/Description'
+import Notepad from '../components/Notepad'
 import Player from '../components/Player'
+import { ago } from '../lib/search'
 import { VIDEO_ID, type YTPlayer } from '../lib/youtube'
 import {
   TAGS,
+  tagLabel,
   addNote,
   clock,
   deleteNote,
@@ -12,6 +29,7 @@ import {
   makeCard,
   openLecture,
   saveProgress,
+  starVideo,
   updateNote,
   type Note,
   type StudyData,
@@ -43,6 +61,11 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [toast, setToast] = useState<string | null>(null)
   const [doubtFor, setDoubtFor] = useState<Note | null>(null)
   const [cardFor, setCardFor] = useState<Note | null>(null)
+  const [starred, setStarred] = useState(false)
+  const [pop, setPop] = useState(false)
+  const [padOpen, setPadOpen] = useState(false)
+  const [tab, setTab] = useState<'notes' | 'about' | 'comments'>('notes')
+  const padContent = useRef<string | null>(null)
   // A time tapped in the notebook opens the lecture at that note.
   const noteAt = (useLocation().state as { t?: number } | null)?.t
 
@@ -51,6 +74,8 @@ function StudyPage({ videoId }: { videoId: string }) {
       .then((d) => {
         setData(d)
         setNotes(d.notes)
+        setStarred(!!d.starred)
+        padContent.current = d.notepad?.content ?? null
         setStart(noteAt !== undefined ? Math.max(0, noteAt - 5) : d.position_s > 15 ? d.position_s : undefined)
       })
       .catch(() => setData({ video: null, position_s: 0, notes: [] }))
@@ -84,22 +109,44 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   const flash = (msg: string) => {
     setToast(msg)
-    window.setTimeout(() => setToast(null), 2200)
+    window.setTimeout(() => setToast(null), 1600)
   }
 
   const upsert = (n: Note) =>
     setNotes((all) => [...all.filter((x) => x.id !== n.id), n].sort((a, b) => a.t_seconds - b.t_seconds))
 
-  const mark = useCallback(
-    async (starred = false) => {
-      const n = await addNote({ video_id: videoId, t_seconds: now(), starred })
-      upsert(n)
-      flash(`${starred ? '★ Starred' : 'Marked'} at ${clock(n.t_seconds)}`)
-    },
-    [videoId],
-  )
+  // A mark at 0:00 before the video has started is almost always a mistake (UX review).
+  const notStarted = () => {
+    const p = player.current
+    if (!p) return true
+    const state = p.getPlayerState()
+    return p.getCurrentTime() < 1 && state !== 1 && state !== 2
+  }
+
+  const mark = useCallback(async () => {
+    if (notStarted()) return flash('Press play first, then Mark the moment.')
+    const n = await addNote({ video_id: videoId, t_seconds: now() })
+    upsert(n)
+    flash(`Marked at ${clock(n.t_seconds)}`)
+  }, [videoId])
+
+  // Star the whole video: it goes to Library → Starred. The icon fills at once; the server catches up.
+  const toggleStar = useCallback(async () => {
+    const next = !starred
+    setStarred(next)
+    setPop(true)
+    window.setTimeout(() => setPop(false), 400)
+    flash(next ? 'Starred. Find it in Library → Starred.' : 'Removed from Starred.')
+    try {
+      await starVideo(videoId, next)
+    } catch {
+      setStarred(!next)
+      flash('Couldn’t save the star. Try again.')
+    }
+  }, [starred, videoId])
 
   const doubt = useCallback(async () => {
+    if (notStarted()) return flash('Press play first, then tap Doubt at the confusing part.')
     const n = await addNote({ video_id: videoId, t_seconds: now(), kind: 'doubt' })
     upsert(n)
     setDoubtFor(n)
@@ -112,7 +159,7 @@ function StudyPage({ videoId }: { videoId: string }) {
     player.current?.playVideo()
   }
 
-  // Laptop shortcuts: N = mark, D = doubt, S = starred mark (not while typing).
+  // Laptop shortcuts: N = mark, D = doubt, S = star the video, P = notepad (not while typing).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement
@@ -120,24 +167,117 @@ function StudyPage({ videoId }: { videoId: string }) {
       const key = e.key.toLowerCase()
       if (key === 'n') mark()
       else if (key === 'd') doubt()
-      else if (key === 's') mark(true)
+      else if (key === 's') toggleStar()
+      else if (key === 'p') setPadOpen((o) => !o)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [mark, doubt])
+  }, [mark, doubt, toggleStar])
 
   const empty = notes.filter((n) => n.kind === 'note' && !n.text)
+  const shown = notes.filter((n) => n.text || n.kind === 'doubt')
   const title = lectureTitle(data?.video, videoId)
 
+  const notesPanel = (
+    <>
+      {doubtFor && (
+        <DoubtLine
+          note={doubtFor}
+          onSaved={(n) => {
+            upsert(n)
+            setDoubtFor(null)
+          }}
+          onClose={() => setDoubtFor(null)}
+        />
+      )}
+      {empty.length > 0 && (
+        <div className="tray">
+          <p className="tray-head">
+            <MapPin size={18} aria-hidden="true" />
+            <b>
+              {empty.length} mark{empty.length > 1 ? 's' : ''} to fill in
+            </b>
+          </p>
+          <p className="help">Play each one again, then write one line.</p>
+          {empty.map((n) => (
+            <FillMark key={n.id} note={n} onPlay={() => jump(n.t_seconds - 5)} onSaved={upsert} />
+          ))}
+        </div>
+      )}
+      {shown.length === 0 && empty.length === 0 && !doubtFor && (
+        <div className="empty">
+          <span className="icon-circle">
+            <MapPin size={22} aria-hidden="true" />
+          </span>
+          <p className="help">Tap Mark while you listen. Fill it in at the next pause.</p>
+        </div>
+      )}
+      <ul className="notes">
+        {shown.map((n) => (
+          <NoteRow
+            key={n.id}
+            note={n}
+            onJump={() => jump(n.t_seconds)}
+            onChange={upsert}
+            onDelete={async () => {
+              await deleteNote(n.id)
+              setNotes((all) => all.filter((x) => x.id !== n.id))
+            }}
+            onMakeCard={() => setCardFor(n)}
+          />
+        ))}
+      </ul>
+    </>
+  )
+
+  const tabs = (
+    <div className="study-tabs">
+      <div className="tabs" role="tablist" aria-label="About this lecture">
+        <button
+          role="tab"
+          aria-selected={tab === 'notes'}
+          className={tab === 'notes' ? 'on' : ''}
+          onClick={() => setTab('notes')}
+        >
+          <MapPin size={15} aria-hidden="true" /> Marks
+          {shown.length + empty.length > 0 && <span className="count">{shown.length + empty.length}</span>}
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === 'about'}
+          className={tab === 'about' ? 'on' : ''}
+          onClick={() => setTab('about')}
+        >
+          <AlignLeft size={15} aria-hidden="true" /> Description
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === 'comments'}
+          className={tab === 'comments' ? 'on' : ''}
+          onClick={() => setTab('comments')}
+        >
+          <MessageSquare size={15} aria-hidden="true" /> Comments
+        </button>
+      </div>
+      <div role="tabpanel" className="tab-panel">
+        {tab === 'notes' && notesPanel}
+        {tab === 'about' && <Description text={data?.description ?? ''} onSeek={jump} />}
+        {tab === 'comments' && <Comments videoId={videoId} onSeek={jump} />}
+      </div>
+    </div>
+  )
+
   return (
-    <section className="study">
+    <section className={`study${padOpen ? ' split' : ''}`}>
       <div className="study-main">
-        {ready ? (
-          <Player videoId={videoId} start={start} onReady={onReady} />
-        ) : (
-          <div className="player-frame" aria-busy="true" />
-        )}
-        {start && (
+        <div className="player-wrap">
+          {ready ? (
+            <Player videoId={videoId} start={start} onReady={onReady} />
+          ) : (
+            <div className="player-frame" aria-busy="true" />
+          )}
+        </div>
+        {start && !padOpen && (
           <p className="resume-line">
             {noteAt !== undefined
               ? `Opening at your note (${clock(noteAt)}).`
@@ -148,101 +288,82 @@ function StudyPage({ videoId }: { videoId: string }) {
           </p>
         )}
 
+        {!padOpen && (
+          <div className="title-block">
+            <div>
+              <h1 className="lecture-title">{title}</h1>
+              {data?.video && (
+                <p className="lecture-channel">
+                  {[data.video.channel_title, ago(data.video.published_at)].filter(Boolean).join(' · ')}
+                </p>
+              )}
+            </div>
+            <button
+              className={`star-video${starred ? ' on' : ''}${pop ? ' pop' : ''}`}
+              onClick={toggleStar}
+              aria-pressed={starred}
+              aria-keyshortcuts="S"
+              title={starred ? 'Starred (in Library)' : 'Star this video'}
+            >
+              <Star size={20} fill={starred ? 'currentColor' : 'none'} aria-hidden="true" />
+              {starred ? 'Starred' : 'Star'}
+            </button>
+          </div>
+        )}
         <div className="capture" role="toolbar" aria-label="Capture while you watch">
-          <button className="mark" onClick={() => mark()} aria-keyshortcuts="N">
+          <button className="mark" onClick={() => mark()} aria-keyshortcuts="N" title="Save this second (N)">
             <span className="ic" aria-hidden="true">
               <MapPin size={19} />
             </span>
             Mark
           </button>
-          <button className="doubt" onClick={doubt} aria-keyshortcuts="D">
+          <button className="doubt" onClick={doubt} aria-keyshortcuts="D" title="Park a doubt (D)">
             <span className="ic" aria-hidden="true">
               <CircleHelp size={19} />
             </span>
             Doubt
           </button>
-          <button className="star-btn" onClick={() => mark(true)} aria-keyshortcuts="S">
+          <button
+            className={`pad${padOpen ? ' on' : ''}`}
+            onClick={() => setPadOpen(!padOpen)}
+            aria-pressed={padOpen}
+            aria-keyshortcuts="P"
+            title="Open the notepad beside the video (P)"
+          >
             <span className="ic" aria-hidden="true">
-              <Star size={19} />
+              <StickyNote size={19} />
             </span>
-            Star
+            Notepad
           </button>
-          <button className="back" onClick={back10}>
+          <button className="back" onClick={back10} title="Back 10 seconds">
             <span className="ic" aria-hidden="true">
               <RotateCcw size={19} />
             </span>
             −10s
           </button>
         </div>
-        <p className="capture-hint">Mark saves this second. Write the note at the next pause.</p>
         {toast && (
           <p className="toast" role="status">
             <Check size={16} aria-hidden="true" /> {toast}
           </p>
         )}
-        <h1 className="lecture-title">{title}</h1>
-        {data?.video?.channel_title && <p className="lecture-channel">{data.video.channel_title}</p>}
+
+        {padOpen && tabs}
       </div>
 
       <div className="study-side">
-        {doubtFor && (
-          <DoubtLine
-            note={doubtFor}
-            onSaved={(n) => {
-              upsert(n)
-              setDoubtFor(null)
-            }}
-            onClose={() => setDoubtFor(null)}
+        {padOpen ? (
+          <Notepad
+            videoId={videoId}
+            initial={padContent.current}
+            onChange={(c) => (padContent.current = c)}
+            getTime={() => player.current?.getCurrentTime() ?? 0}
+            onSeek={jump}
+            onClose={() => setPadOpen(false)}
           />
+        ) : (
+          tabs
         )}
-
-        {empty.length > 0 && (
-          <div className="tray">
-            <p className="tray-head">
-              <MapPin size={18} aria-hidden="true" />
-              <b>
-                {empty.length} mark{empty.length > 1 ? 's' : ''} to fill in
-              </b>
-            </p>
-            <p className="help">Play each one again, then write one line.</p>
-            {empty.map((n) => (
-              <FillMark key={n.id} note={n} onPlay={() => jump(n.t_seconds - 5)} onSaved={upsert} />
-            ))}
-          </div>
-        )}
-
-        <div className="notes-head">
-          <h2>Your notes</h2>
-          <span className="badge violet">{notes.filter((n) => n.text || n.kind === 'doubt').length}</span>
-        </div>
-        <p className="help">Tap a time to jump back to it.</p>
-        {notes.filter((n) => n.text || n.kind === 'doubt').length === 0 && (
-          <div className="card empty">
-            <span className="icon-circle">
-              <NotebookPen size={22} aria-hidden="true" />
-            </span>
-            <h3>No notes yet</h3>
-            <p className="help">Tap Mark while you listen. Fill it in at the next pause.</p>
-          </div>
-        )}
-        <ul className="notes">
-          {notes
-            .filter((n) => n.text || n.kind === 'doubt')
-            .map((n) => (
-              <NoteRow
-                key={n.id}
-                note={n}
-                onJump={() => jump(n.t_seconds)}
-                onChange={upsert}
-                onDelete={async () => {
-                  await deleteNote(n.id)
-                  setNotes((all) => all.filter((x) => x.id !== n.id))
-                }}
-                onMakeCard={() => setCardFor(n)}
-              />
-            ))}
-        </ul>
-
         {cardFor && (
           <CardMaker
             note={cardFor}
@@ -374,12 +495,21 @@ function NoteRow({
           {isDoubt && (
             <span className={`badge ${note.solved ? 'good' : 'bad'}`}>{note.solved ? 'Doubt · solved' : 'Doubt'}</span>
           )}
-          {note.tag && <span className="badge">{note.tag.toUpperCase()}</span>}
+          {note.tag && <span className={`badge tag-${note.tag}`}>{tagLabel(note.tag)}</span>}
           <button
             className={`star${note.starred ? ' on' : ''}`}
             aria-pressed={note.starred}
-            aria-label="Star"
-            onClick={async () => onChange(await updateNote({ id: note.id, starred: !note.starred }))}
+            aria-label="Important"
+            title="Mark as important"
+            onClick={async () => {
+              const next = !note.starred
+              onChange({ ...note, starred: next }) // fill at once; the server catches up
+              try {
+                onChange(await updateNote({ id: note.id, starred: next }))
+              } catch {
+                onChange({ ...note, starred: !next })
+              }
+            }}
           >
             <Star size={18} fill={note.starred ? 'currentColor' : 'none'} aria-hidden="true" />
           </button>
@@ -398,7 +528,16 @@ function NoteRow({
             </button>
           </div>
         ) : (
-          <p className="note-text">{note.text || <span className="help">(no text yet)</span>}</p>
+          <p
+            className="note-text editable"
+            role="button"
+            tabIndex={0}
+            title="Tap to edit"
+            onClick={() => setEditing(true)}
+            onKeyDown={(e) => e.key === 'Enter' && setEditing(true)}
+          >
+            {note.text || <span className="help">(no text yet)</span>}
+          </p>
         )}
         {isDoubt && note.answer && <p className="answer">Answer: {note.answer}</p>}
         {isDoubt && !note.solved && (
@@ -410,10 +549,10 @@ function NoteRow({
               aria-label="Doubt answer"
             />
             <button
-              className="small"
+              className="small secondary"
               onClick={async () => onChange(await updateNote({ id: note.id, solved: true, answer }))}
             >
-              Solved
+              <Check size={15} aria-hidden="true" /> Solved
             </button>
           </div>
         )}
@@ -424,13 +563,13 @@ function NoteRow({
               {note.cards ? `Make another card (${note.cards})` : 'Make a card'}
             </button>
           )}
-          <button onClick={() => setEditing(!editing)}>
-            <Pencil size={14} aria-hidden="true" />
-            {editing ? 'Cancel' : 'Edit'}
-          </button>
-          <button className="del" onClick={onDelete}>
-            <Trash2 size={14} aria-hidden="true" />
-            Delete
+          {editing && (
+            <button onClick={() => setEditing(false)}>
+              <Pencil size={14} aria-hidden="true" /> Cancel
+            </button>
+          )}
+          <button className="del icon-only" onClick={onDelete} aria-label="Delete note" title="Delete note">
+            <Trash2 size={15} aria-hidden="true" />
           </button>
         </div>
       </div>

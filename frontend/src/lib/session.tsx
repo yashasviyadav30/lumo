@@ -12,6 +12,7 @@ type SignUpInput = { email: string; password: string; date_of_birth: string; acc
 type SessionValue = {
   me: Me | null
   loading: boolean
+  farewell: string | null
   signUp(input: SignUpInput): Promise<void>
   signIn(email: string, password: string): Promise<void>
   signOut(): Promise<void>
@@ -22,6 +23,8 @@ const SessionContext = createContext<SessionValue | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [me, setMe] = useState<Me | null>(null)
+  // The "your data is deleted" message. Kept here because clearing the account redirects to /welcome at once.
+  const [farewell, setFarewell] = useState<string | null>(null)
   const [loading, setLoading] = useState(() => readToken() !== null)
 
   useEffect(() => {
@@ -58,13 +61,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const deleteAccount = useCallback(async () => {
     const r = await api<{ note: string }>('/api/me', { method: 'DELETE' })
     writeToken(null)
+    setFarewell(r.note)
     setMe(null)
     return r.note
   }, [])
 
   const value = useMemo(
-    () => ({ me, loading, signUp, signIn, signOut, deleteAccount }),
-    [me, loading, signUp, signIn, signOut, deleteAccount],
+    () => ({ me, loading, farewell, signUp, signIn, signOut, deleteAccount }),
+    [me, loading, farewell, signUp, signIn, signOut, deleteAccount],
   )
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

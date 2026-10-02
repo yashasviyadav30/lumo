@@ -32,7 +32,8 @@ describe('home feed', () => {
     expect(screen.getByText(/1 hidden by/)).toBeInTheDocument() // what was hidden is always listed (R6)
 
     const vlog = within(feed).getByText('My Maldives trip').closest('li')!
-    await userEvent.click(within(vlog).getByRole('button', { name: 'Hide channel' }))
+    await userEvent.click(within(vlog).getByRole('button', { name: 'More actions' })) // one ⋮ menu per card
+    await userEvent.click(within(vlog).getByRole('menuitem', { name: 'Hide channel' }))
     await waitFor(() => expect(within(feed).queryByText('My Maldives trip')).not.toBeInTheDocument())
     expect(calls.find((c) => c.path === '/api/mutes')?.body).toEqual({ kind: 'channel', value: VLOG.channel_id })
 

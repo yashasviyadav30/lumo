@@ -4,6 +4,7 @@ import { useLocation } from 'react-router'
 import HiddenLine from '../components/HiddenLine'
 import VideoItem from '../components/VideoItem'
 import { getActiveGoal, type Goal } from '../lib/goals'
+import { starVideo } from '../lib/study'
 import { followChannel, muteChannel, searchVideos, unmuteChannel, type SearchResponse } from '../lib/search'
 
 export default function Search() {
@@ -69,6 +70,12 @@ export default function Search() {
     run(query, true)
   }
 
+  async function onStar(videoId: string) {
+    await starVideo(videoId, true)
+    setLastHidden(null)
+    setNotice('Starred. Find it in Library → Starred.')
+  }
+
   async function onFollow(channelId: string) {
     await followChannel(channelId)
     setNotice('Following this channel. Its new videos come to your Home feed.')
@@ -78,7 +85,6 @@ export default function Search() {
     <section>
       <div className="page-head">
         <h1>Search</h1>
-        <p>All of YouTube except songs, movies, shows, news and vlogs. We always show what we hid.</p>
       </div>
       <form className="search-form" role="search" onSubmit={onSubmit}>
         <label htmlFor="q" className="visually-hidden">
@@ -159,7 +165,7 @@ export default function Search() {
         <>
           <ul className="video-list" aria-label="Results">
             {data.results.map((v) => (
-              <VideoItem key={v.video_id} video={v} onMute={onMute} onFollow={onFollow} />
+              <VideoItem key={v.video_id} video={v} onMute={onMute} onFollow={onFollow} onStar={onStar} />
             ))}
             {showHidden &&
               data.hidden.map((v) => (

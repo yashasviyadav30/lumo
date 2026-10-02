@@ -1,14 +1,12 @@
-import { ArrowUpRight, BookOpen, CircleHelp, EyeOff, Layers, MapPin, Play, ShieldCheck, Users } from 'lucide-react'
+import { ArrowUpRight, EyeOff, Layers, Play, ShieldCheck, StickyNote } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
+import { useSession } from '../lib/session'
 
 const FEATURES = [
-  { Icon: EyeOff, title: 'Only study videos', text: 'Search YouTube without Shorts, entertainment or rabbit holes. We always show you what we hid.' },
-  { Icon: MapPin, title: 'Notes on the exact second', text: 'Tap Mark while the teacher talks. Fill it in at the next pause. Tap it later to jump back.' },
-  { Icon: CircleHelp, title: 'Park a doubt, keep going', text: 'Save a doubt in one tap without stopping the lecture. Solve it later.' },
-  { Icon: Layers, title: 'Cards from your own notes', text: 'Hide a few words; the card returns right before you forget. Forgot? Re-watch just those 90 seconds.' },
-  { Icon: BookOpen, title: 'Your notebook', text: 'Every note, by lecture. Search it, filter doubts, export it.' },
-  { Icon: Users, title: 'Study with friends', text: 'Send a doubt to a friend and get the answer on the same second. Coming next.' },
+  { Icon: EyeOff, title: 'Only study videos', text: 'All of YouTube minus songs, movies, shows, news and vlogs. You always see what was hidden.' },
+  { Icon: StickyNote, title: 'Notes beside the lecture', text: 'Mark a second in one tap, or open the notepad beside the video. Every note jumps back to its moment.' },
+  { Icon: Layers, title: 'Cards that come back', text: 'Your notes return as cards right before you forget. Forgot one? Re-watch just those 90 seconds.' },
 ]
 
 // A drawing of the study page, so people see the app before signing up. Decorative only.
@@ -44,7 +42,8 @@ function PhoneMock() {
 }
 
 export default function Welcome() {
-  const note = (useLocation().state as { note?: string } | null)?.note
+  const { farewell } = useSession()
+  const note = (useLocation().state as { note?: string } | null)?.note ?? farewell
   return (
     <section className="landing">
       {note && (
@@ -88,7 +87,7 @@ export default function Welcome() {
       </h2>
       <div className="feature-grid">
         {FEATURES.map(({ Icon, title, text }, i) => (
-          <div key={title} className={`card feature${i === 1 ? ' featured' : ''}`}>
+          <div key={title} className="card feature">
             <span className="num">{String(i + 1).padStart(2, '0')}.</span>
             <span className="icon-circle">
               <Icon size={22} aria-hidden="true" />

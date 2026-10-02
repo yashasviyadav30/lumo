@@ -3,11 +3,12 @@ import type { VideoCard } from './search'
 
 export type Tag = 'def' | 'sec' | 'pyq' | 'trick'
 export const TAGS: Array<{ id: Tag; label: string }> = [
-  { id: 'def', label: 'Def' },
-  { id: 'sec', label: 'Sec' },
-  { id: 'pyq', label: 'PYQ' },
+  { id: 'def', label: 'Definition' },
+  { id: 'sec', label: 'Section' },
+  { id: 'pyq', label: 'Past question' },
   { id: 'trick', label: 'Trick' },
 ]
+export const tagLabel = (t: Tag) => TAGS.find((x) => x.id === t)?.label ?? t
 
 export type Note = {
   id: string
@@ -23,7 +24,17 @@ export type Note = {
   created_at: string
 }
 
-export type StudyData = { video: VideoCard | null; position_s: number; notes: Note[] }
+export type NotepadDoc = { content: string; updated_at: string }
+export type StudyData = {
+  video: VideoCard | null
+  position_s: number
+  notes: Note[]
+  description?: string
+  starred?: boolean
+  notepad?: NotepadDoc | null
+}
+export type YtComment = { author: string; author_url: string; text: string; likes: number; published_at: string | null; replies: number }
+export type LibraryItem = { video_id: string; video: VideoCard | null; at: string; position_s?: number }
 export type HomeSummary = {
   resume: { video_id: string; position_s: number; video: VideoCard | null } | null
   cards_due: number
@@ -32,7 +43,10 @@ export type HomeSummary = {
   week: { reviews: number; notes: number }
   totals: { notes: number; lectures: number; cards: number }
 }
-export type Notebook = { lectures: Array<{ video_id: string; video: VideoCard | null; notes: Note[] }>; total: number }
+export type Notebook = {
+  lectures: Array<{ video_id: string; video: VideoCard | null; notes: Note[]; notepad?: NotepadDoc | null }>
+  total: number
+}
 export type ReviewCard = {
   id: string
   note_id: string
@@ -55,6 +69,11 @@ export const updateNote = (n: { id: string; text?: string; tag?: Tag; clear_tag?
   post<Note>('/api/notes/update', n)
 export const deleteNote = (id: string) => post<void>('/api/notes/delete', { id })
 export const saveProgress = (video_id: string, position_s: number) => post<void>('/api/progress', { video_id, position_s })
+export const getComments = (video_id: string) => post<{ comments: YtComment[]; disabled: boolean }>('/api/study/comments', { video_id })
+export const starVideo = (video_id: string, starred: boolean) => post<{ starred: boolean }>('/api/videos/star', { video_id, starred })
+export const getLibrary = () => api<{ starred: LibraryItem[]; history: LibraryItem[] }>('/api/library')
+export const saveNotepad = (video_id: string, content: string, text: string) =>
+  post<{ updated_at: string }>('/api/notepad/save', { video_id, content, text })
 export const homeSummary = () => api<HomeSummary>('/api/home/summary')
 export const notebook = (q = '', only?: 'doubts' | 'starred') => post<Notebook>('/api/notebook', { q, only })
 export const makeCard = (note_id: string, blanks: string[]) => post<ReviewCard>('/api/cards', { note_id, blanks })
@@ -88,3 +107,21 @@ export function notebookMarkdown(book: Notebook): string {
   }
   return lines.join('\n')
 }
+
+// Splits text into plain parts and "12:40" / "1:02:05" times, so times can become seek buttons.
+export type TextPart = { text: string; t?: number }
+const TIME = /\b(?:(\d{1,2}):)?([0-5]?\d):([0-5]\d)\b/g
+export function splitTimes(text: string): TextPart[] {
+  const parts: TextPart[] = []
+  let last = 0
+  for (const m of text.matchAll(TIME)) {
+    const i = m.index ?? 0
+    if (i > last) parts.push({ text: text.slice(last, i) })
+    const t = Number(m[1] ?? 0) * 3600 + Number(m[2]) * 60 + Number(m[3])
+    parts.push({ text: m[0], t })
+    last = i + m[0].length
+  }
+  if (last < text.length) parts.push({ text: text.slice(last) })
+  return parts
+}
+export const hasTimes = (text: string) => splitTimes(text).some((p) => p.t !== undefined)

@@ -9,7 +9,8 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import func, or_, select
+from sqlalchemy import delete, func, or_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app import quota
@@ -128,7 +129,10 @@ def comments(body: VideoIn, request: Request, user: User = Depends(current_user)
         cached.items, cached.disabled, cached.fetched_at = items, disabled, now_
     else:
         db.add(YtComments(video_id=body.video_id, items=items, disabled=disabled, fetched_at=now_))
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # two opens at once: the other request already saved the same comments
     return {"comments": items, "disabled": disabled}
 
 
@@ -144,7 +148,10 @@ def star_video(body: StarIn, user: User = Depends(current_user), db: Session = D
         db.add(StarredVideo(user_id=user.id, video_id=body.video_id))
     elif not body.starred and row is not None:
         db.delete(row)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # a double tap: already starred
     return {"video_id": body.video_id, "starred": body.starred}
 
 
@@ -161,6 +168,20 @@ def library(user: User = Depends(current_user), db: Session = Depends(get_db),
     }
 
 
+class HistoryIn(BaseModel):
+    video_id: str | None = Field(default=None, pattern=VIDEO_ID)  # None = clear all
+
+
+@router.post("/history/remove", status_code=204)
+def remove_history(body: HistoryIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> None:
+    """Remove one video from History, or all of it. Resume points go with it."""
+    q = delete(LectureProgress).where(LectureProgress.user_id == user.id)
+    if body.video_id:
+        q = q.where(LectureProgress.video_id == body.video_id)
+    db.execute(q)
+    db.commit()
+
+
 class NotepadIn(BaseModel):
     video_id: str = Field(pattern=VIDEO_ID)
     content: str = Field(max_length=200_000)  # the editor's JSON
@@ -175,7 +196,13 @@ def save_notepad(body: NotepadIn, request: Request, user: User = Depends(current
         pad = Notepad(user_id=user.id, video_id=body.video_id)
         db.add(pad)
     pad.content, pad.text, pad.updated_at = body.content, body.text, now()
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:  # two first saves at once: update the row the other one made
+        db.rollback()
+        pad = db.scalar(select(Notepad).where(Notepad.user_id == user.id, Notepad.video_id == body.video_id))
+        pad.content, pad.text, pad.updated_at = body.content, body.text, now()
+        db.commit()
     return {"updated_at": pad.updated_at.isoformat()}
 
 

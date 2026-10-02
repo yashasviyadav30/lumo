@@ -1,25 +1,84 @@
-import { ChevronRight, Download, Layers, Search, Settings, ShieldCheck, Star, NotebookPen } from 'lucide-react'
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Link, useLocation } from 'react-router'
-import { useSession } from '../lib/session'
-import { clock, homeSummary, lectureTitle, notebook, notebookMarkdown, type HomeSummary, type Notebook } from '../lib/study'
+import { Download, Layers, LayoutList, MapPin, NotebookPen, PlaySquare, Search, Settings, Star, StickyNote } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router'
+import { NotepadView } from '../components/Notepad'
+import {
+  clock,
+  homeSummary,
+  lectureTitle,
+  notebook,
+  notebookMarkdown,
+  tagLabel,
+  type HomeSummary,
+  type Note,
+  type Notebook,
+} from '../lib/study'
 
 type Filter = 'all' | 'doubts' | 'starred'
+type View = 'videos' | 'notes'
 const FILTERS: Array<{ id: Filter; label: string }> = [
-  { id: 'all', label: 'All notes' },
+  { id: 'all', label: 'All' },
   { id: 'doubts', label: 'Doubts' },
-  { id: 'starred', label: 'Starred' },
+  { id: 'starred', label: 'Important' },
 ]
+const VIEW_KEY = 'focuslearn.notes-view'
 
-// Her own space: every note she has made, by lecture. Nothing here comes from other people.
+function savedView(): View {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'notes' ? 'notes' : 'videos'
+  } catch {
+    return 'videos'
+  }
+}
+
+function NoteItem({ n, videoId, source }: { n: Note; videoId: string; source?: string }) {
+  return (
+    <li className={`note${n.kind === 'doubt' ? ' is-doubt' : ''}`}>
+      <Link
+        to={`/watch/${videoId}`}
+        state={{ t: n.t_seconds }}
+        className="time-chip static"
+        aria-label={`Open at ${clock(n.t_seconds)}`}
+      >
+        {clock(n.t_seconds)}
+      </Link>
+      <div className="note-body">
+        {(source || n.kind === 'doubt' || n.tag || n.starred) && (
+          <div className="note-head">
+            {n.kind === 'doubt' && (
+              <span className={`badge ${n.solved ? 'good' : 'bad'}`}>{n.solved ? 'Solved' : 'Doubt'}</span>
+            )}
+            {n.tag && <span className={`badge tag-${n.tag}`}>{tagLabel(n.tag)}</span>}
+            {n.starred && <Star size={15} fill="currentColor" color="var(--amber)" aria-label="important" />}
+            {source && <span className="source">{source}</span>}
+          </div>
+        )}
+        <p className="note-text">{n.text}</p>
+        {n.answer && <p className="answer">Answer: {n.answer}</p>}
+      </div>
+    </li>
+  )
+}
+
+// "My notes": everything she wrote, first thing on the screen. Settings sit behind the gear.
 export default function Personal() {
-  const { me } = useSession()
+  const navigate = useNavigate()
   const [book, setBook] = useState<Notebook | null>(null)
   const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [q, setQ] = useState('')
   const start = (useLocation().state as { only?: Filter } | null)?.only ?? 'all'
   const [filter, setFilter] = useState<Filter>(start)
+  const [view, setViewState] = useState<View>(savedView)
   const [error, setError] = useState<string | null>(null)
+
+  const setView = (v: View) => {
+    setViewState(v)
+    try {
+      localStorage.setItem(VIEW_KEY, v)
+    } catch {
+      // fine: the choice lasts for this visit
+    }
+  }
 
   // Only the latest request may fill the list, so a slow older reply can't overwrite a newer one.
   const latest = useRef(0)
@@ -31,22 +90,17 @@ export default function Personal() {
   }
 
   useEffect(() => {
-    load('', start)
     homeSummary()
       .then(setSummary)
       .catch(() => setSummary(null))
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- load once, on open
   }, [])
 
-  const onSearch = (e: FormEvent) => {
-    e.preventDefault()
-    load(q.trim(), filter)
-  }
-
-  const pick = (f: Filter) => {
-    setFilter(f)
-    load(q.trim(), f)
-  }
+  // Search as she types (a short pause first), in the request body (R11).
+  useEffect(() => {
+    const t = window.setTimeout(() => load(q.trim(), filter), q ? 300 : 0)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reruns on q/filter only
+  }, [q, filter])
 
   const exportMd = async () => {
     const all = await notebook('')
@@ -58,88 +112,88 @@ export default function Personal() {
     URL.revokeObjectURL(url)
   }
 
+  const lectures = book?.lectures ?? []
+  const toFill = lectures.reduce((n, l) => n + l.notes.filter((x) => x.kind === 'note' && !x.text).length, 0)
+  const written = (l: Notebook['lectures'][number]) => l.notes.filter((x) => x.text || x.kind === 'doubt')
+  const allNotes = lectures
+    .flatMap((l) => written(l).map((n) => ({ n, l })))
+    .sort((a, b) => b.n.created_at.localeCompare(a.n.created_at))
+
   return (
     <section>
-      <div className="card profile">
-        <span className="avatar big" aria-hidden="true">
-          {me?.email?.[0] ?? '·'}
-        </span>
-        <div style={{ minWidth: 0 }}>
-          <p className="email">{me?.email}</p>
-          <p className="help">Your private space. Only you see this.</p>
+      <div className="page-head title-row">
+        <h1>My notes</h1>
+        <div className="head-actions">
+          <button className="icon-btn" onClick={exportMd} aria-label="Export my notes" title="Export my notes (.md)">
+            <Download size={20} aria-hidden="true" />
+          </button>
+          <Link to="/settings" className="icon-btn" aria-label="Settings" title="Settings">
+            <Settings size={20} aria-hidden="true" />
+          </Link>
         </div>
       </div>
 
-      {summary?.week && summary.totals && (
-        <div className="stats">
-          <div className="stat">
-            <b>{summary.totals.notes}</b>
-            <span>notes</span>
-          </div>
-          <div className="stat">
-            <b>{summary.totals.lectures}</b>
-            <span>lectures</span>
-          </div>
-          <div className="stat">
-            <b>{summary.totals.cards}</b>
-            <span>cards</span>
-          </div>
-        </div>
+      {summary && summary.cards_due > 0 && (
+        <Link to="/cards" className="pill-link" style={{ marginBottom: 12 }}>
+          <Layers size={16} aria-hidden="true" /> Review {summary.cards_due} card{summary.cards_due === 1 ? '' : 's'} due
+        </Link>
       )}
 
-      <div className="card list-card" style={{ marginTop: 14 }}>
-        <Link to="/cards" className="list-row">
-          <span className="icon-circle green">
-            <Layers size={18} aria-hidden="true" />
-          </span>
-          <span className="grow">Revision cards</span>
-          {summary && summary.cards_due > 0 && <span className="badge violet">{summary.cards_due} due</span>}
-          <ChevronRight size={18} aria-hidden="true" />
-        </Link>
-        <button className="list-row" onClick={exportMd}>
-          <span className="icon-circle amber">
-            <Download size={18} aria-hidden="true" />
-          </span>
-          <span className="grow">Export my notes (.md)</span>
-          <ChevronRight size={18} aria-hidden="true" />
-        </button>
-        <Link to="/settings" className="list-row">
-          <span className="icon-circle gray">
-            <Settings size={18} aria-hidden="true" />
-          </span>
-          <span className="grow">Settings</span>
-          <ChevronRight size={18} aria-hidden="true" />
-        </Link>
-        <Link to="/privacy" className="list-row">
-          <span className="icon-circle gray">
-            <ShieldCheck size={18} aria-hidden="true" />
-          </span>
-          <span className="grow">Privacy</span>
-          <ChevronRight size={18} aria-hidden="true" />
-        </Link>
-      </div>
-
-      <div className="section-head">
-        <h2>Notebook</h2>
-        {book && <span className="help">{book.total} shown</span>}
-      </div>
-      <form className="search-form" onSubmit={onSearch} role="search">
+      <div className="search-form" role="search">
         <label htmlFor="note-q" className="visually-hidden">
           Search your notes
         </label>
         <div className="search-box">
           <Search size={20} aria-hidden="true" />
-          <input id="note-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search your notes" autoComplete="off" />
+          <input
+            id="note-q"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search your notes"
+            autoComplete="off"
+          />
         </div>
-        <button type="submit">Search</button>
-      </form>
-      <div className="segmented" role="group" aria-label="Show">
-        {FILTERS.map((f) => (
-          <button key={f.id} className={filter === f.id ? 'on' : ''} aria-pressed={filter === f.id} onClick={() => pick(f.id)}>
-            {f.label}
-          </button>
-        ))}
       </div>
+      <div className="notes-bar">
+        <div className="chips" role="group" aria-label="Show">
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              className={`chip${filter === f.id ? ' on' : ''}`}
+              aria-pressed={filter === f.id}
+              onClick={() => setFilter(f.id)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div className="view-switch" role="group" aria-label="View">
+          <button
+            className={view === 'videos' ? 'on' : ''}
+            aria-pressed={view === 'videos'}
+            onClick={() => setView('videos')}
+            title="By video"
+          >
+            <PlaySquare size={16} aria-hidden="true" /> By video
+          </button>
+          <button
+            className={view === 'notes' ? 'on' : ''}
+            aria-pressed={view === 'notes'}
+            onClick={() => setView('notes')}
+            title="All notes, no videos"
+          >
+            <LayoutList size={16} aria-hidden="true" /> All notes
+          </button>
+        </div>
+      </div>
+
+      {toFill > 0 && filter === 'all' && !q && (
+        <p className="fill-row">
+          <MapPin size={16} aria-hidden="true" /> {toFill} mark{toFill === 1 ? '' : 's'} to fill in: open the lecture
+          and write one line for each.
+        </p>
+      )}
 
       {error && <p className="error">{error}</p>}
       {book && book.total === 0 && (
@@ -149,36 +203,67 @@ export default function Personal() {
           </span>
           <h3>{q || filter !== 'all' ? 'Nothing matches' : 'No notes yet'}</h3>
           <p className="help">
-            {q || filter !== 'all' ? 'Try other words or another filter.' : 'Open any lecture and tap Mark while you listen.'}
+            {q || filter !== 'all'
+              ? 'Try other words or another filter.'
+              : 'Open any lecture and tap Mark or Notepad while you listen.'}
           </p>
         </div>
       )}
-      {book?.lectures.map((l) => (
-        <div key={l.video_id} className="lecture-block">
-          <h3>
-            <Link to={`/watch/${l.video_id}`}>{lectureTitle(l.video, l.video_id)}</Link>
-          </h3>
-          {l.video && <p className="help">{l.video.channel_title}</p>}
+
+      {view === 'notes' ? (
+        <>
           <ul className="notes">
-            {l.notes.map((n) => (
-              <li key={n.id} className={`note${n.kind === 'doubt' ? ' is-doubt' : ''}`}>
-                <Link to={`/watch/${l.video_id}`} state={{ t: n.t_seconds }} className="time-chip static" aria-label={`Open at ${clock(n.t_seconds)}`}>
-                  {clock(n.t_seconds)}
-                </Link>
-                <div className="note-body">
-                  <div className="note-head">
-                    {n.kind === 'doubt' && <span className={`badge ${n.solved ? 'good' : 'bad'}`}>{n.solved ? 'Solved' : 'Doubt'}</span>}
-                    {n.tag && <span className="badge">{n.tag.toUpperCase()}</span>}
-                    {n.starred && <Star size={15} fill="currentColor" color="var(--amber)" aria-label="starred" />}
-                  </div>
-                  <p className="note-text">{n.text || <span className="help">(empty mark)</span>}</p>
-                  {n.answer && <p className="answer">Answer: {n.answer}</p>}
-                </div>
-              </li>
+            {allNotes.map(({ n, l }) => (
+              <NoteItem key={n.id} n={n} videoId={l.video_id} source={lectureTitle(l.video, l.video_id)} />
             ))}
           </ul>
-        </div>
-      ))}
+          {lectures
+            .filter((l) => l.notepad)
+            .map((l) => (
+              <div key={l.video_id} className="notepad-card">
+                <p className="notepad-label">
+                  <StickyNote size={14} aria-hidden="true" /> {lectureTitle(l.video, l.video_id)}
+                </p>
+                <NotepadView
+                  content={l.notepad!.content}
+                  onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
+                />
+              </div>
+            ))}
+        </>
+      ) : (
+        lectures.map((l) => (
+          <div key={l.video_id} className="lecture-block">
+            <Link to={`/watch/${l.video_id}`} className="lecture-head">
+              <span className="thumb">
+                {l.video?.thumbnail_url && <img src={l.video.thumbnail_url} alt="" loading="lazy" />}
+              </span>
+              <span className="meta">
+                <span className="title">{lectureTitle(l.video, l.video_id)}</span>
+                {l.video && <span className="channel">{l.video.channel_title}</span>}
+              </span>
+            </Link>
+            {written(l).length > 0 && (
+              <ul className="notes">
+                {written(l).map((n) => (
+                  <NoteItem key={n.id} n={n} videoId={l.video_id} />
+                ))}
+              </ul>
+            )}
+            {l.notepad && (
+              <div className="notepad-card">
+                <p className="notepad-label">
+                  <StickyNote size={14} aria-hidden="true" /> Notepad
+                </p>
+                <NotepadView
+                  content={l.notepad.content}
+                  onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
+                />
+              </div>
+            )}
+          </div>
+        ))
+      )}
     </section>
   )
 }

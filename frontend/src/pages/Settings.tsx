@@ -4,6 +4,7 @@ import { APP_NAME } from '../config'
 import { api } from '../lib/api'
 import { listMutes, unmuteChannel } from '../lib/search'
 import { useSession } from '../lib/session'
+import { getTheme, setTheme, type Theme } from '../lib/theme'
 
 const HIDE_LIST = [
   'Songs (Music)',
@@ -52,8 +53,12 @@ function Filters({ shortsOn }: { shortsOn: boolean }) {
           </span>
         ))}
       </div>
-      <label className="check">
-        <input type="checkbox" checked={shorts} onChange={toggleShorts} /> Show Shorts
+      <label className="switch-row">
+        <span>
+          Show Shorts
+          <span className="help">Short vertical videos. Off keeps the feed calm.</span>
+        </span>
+        <input type="checkbox" role="switch" className="switch" checked={shorts} onChange={toggleShorts} />
       </label>
       <p>
         Channels you hid: <strong>{hiddenChannels.length}</strong>{' '}
@@ -63,6 +68,31 @@ function Filters({ shortsOn }: { shortsOn: boolean }) {
           </button>
         )}
       </p>
+    </div>
+  )
+}
+
+function Appearance() {
+  const [theme, setThemeState] = useState<Theme>(getTheme)
+  const pick = (t: Theme) => {
+    setThemeState(t)
+    setTheme(t)
+  }
+  const options: Array<[Theme, string]> = [
+    ['dark', 'Dark'],
+    ['light', 'Light'],
+    ['system', 'Same as phone'],
+  ]
+  return (
+    <div className="card settings-section">
+      <h2>Appearance</h2>
+      <div className="segmented" role="group" aria-label="Theme">
+        {options.map(([t, label]) => (
+          <button key={t} className={theme === t ? 'on' : ''} aria-pressed={theme === t} onClick={() => pick(t)}>
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
@@ -87,9 +117,6 @@ export default function Settings() {
     <section>
       <div className="page-head">
         <h1>Settings</h1>
-        <p>
-          <Link to="/personal">Back to Personal</Link>
-        </p>
       </div>
 
       <div className="card settings-section">
@@ -100,6 +127,7 @@ export default function Settings() {
         </button>
       </div>
 
+      <Appearance />
       <Filters shortsOn={!!me?.settings.shorts_enabled} />
 
       <div className="card settings-section">

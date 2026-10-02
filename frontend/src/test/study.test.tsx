@@ -12,7 +12,7 @@ function note(over: Partial<Note> = {}): Note {
 }
 
 // A stand-in for the YouTube player: records options, reports a fixed time.
-function fakeYouTube(currentTime = 2530) {
+function fakeYouTube(currentTime = 2530, state = 2) {
   const created: Array<Record<string, unknown>> = []
   const seeks: number[] = []
   window.YT = {
@@ -30,7 +30,7 @@ function fakeYouTube(currentTime = 2530) {
         return currentTime
       }
       getPlayerState() {
-        return 2
+        return state
       }
       playVideo() {}
     },
@@ -60,7 +60,7 @@ describe('study page', () => {
 
     expect(screen.getByText('1 mark to fill in')).toBeInTheDocument()
     await userEvent.type(screen.getByRole('textbox', { name: 'Note at 42:10' }), 'CSR spend = 2% of profit')
-    await userEvent.click(screen.getByRole('button', { name: 'Def' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Definition' }))
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
     expect(await screen.findByText('CSR spend = 2% of profit')).toBeInTheDocument()
     expect(calls.find((c) => c.path === '/api/notes/update')?.body).toMatchObject({ text: 'CSR spend = 2% of profit', tag: 'def' })
@@ -111,18 +111,34 @@ describe('study page', () => {
   })
 
   it('never puts the video ID in a URL (R11)', async () => {
-    fakeYouTube()
+    const yt = fakeYouTube()
     const { calls } = signInForTest({
       'POST /api/study/open': () => ({ status: 200, body: { video: VIDEO, position_s: 0, notes: [] } }),
       'POST /api/notes': () => ({ status: 201, body: note({ kind: 'doubt' }) }),
       'POST /api/progress': () => ({ status: 204 }),
     })
     renderAt(`/watch/${VID}`)
+    await waitFor(() => expect(yt.created).toHaveLength(1))
+    await new Promise((r) => setTimeout(r, 0)) // let the player report ready
     await userEvent.click(await screen.findByRole('button', { name: /Doubt/ }))
     expect(await screen.findByText(/Doubt parked at 42:10/)).toBeInTheDocument()
     expect(calls.length).toBeGreaterThan(1)
     for (const c of calls) expect(c.path).not.toContain(VID)
   })
+})
+
+it('asks to press play before marking at 0:00', async () => {
+  const yt = fakeYouTube(0, -1) // not started yet
+  const { calls } = signInForTest({
+    'POST /api/study/open': () => ({ status: 200, body: { video: VIDEO, position_s: 0, notes: [] } }),
+    'POST /api/progress': () => ({ status: 204 }),
+  })
+  renderAt(`/watch/${VID}`)
+  await waitFor(() => expect(yt.created).toHaveLength(1))
+  await new Promise((r) => setTimeout(r, 0))
+  await userEvent.click(screen.getByRole('button', { name: /Mark/ }))
+  expect(await screen.findByText(/Press play first/)).toBeInTheDocument()
+  expect(calls.some((c) => c.path === '/api/notes')).toBe(false)
 })
 
 describe('cards review', () => {
@@ -161,11 +177,9 @@ describe('home and personal', () => {
     renderAt('/')
     expect(await screen.findByRole('link', { name: /ESG Lecture 6/ })).toHaveAttribute('href', `/watch/${VID}`)
     expect(screen.getByRole('link', { name: 'Review 3 cards due' })).toHaveAttribute('href', '/cards')
-    expect(screen.getByLabelText('This week')).toHaveTextContent('32cards reviewed this week')
     // Every study tool is visible from Home.
-    for (const tool of ['Smart search', 'Notes on the lecture', 'Revision cards', 'Doubts', 'Notebook', 'Study with friends']) {
-      expect(screen.getByRole('heading', { name: tool })).toBeInTheDocument()
-    }
+    // One next step only (UX review): no tool grid or stats competing with it.
+    expect(screen.queryByText(/cards reviewed this week/)).not.toBeInTheDocument()
   })
 
   it('searches her notes and filters doubts, all in the request body', async () => {
@@ -174,8 +188,9 @@ describe('home and personal', () => {
     renderAt('/personal')
     expect(await screen.findByText(/What is XBRL\?/)).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Doubts' }))
-    await userEvent.type(screen.getByRole('searchbox', { name: 'Search your notes' }), 'xbrl{Enter}')
-    expect(calls.filter((c) => c.path === '/api/notebook').at(-1)?.body).toEqual({ q: 'xbrl', only: 'doubts' })
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Search your notes' }), 'xbrl')
+    // Searches as she types, after a short pause.
+    await waitFor(() => expect(calls.filter((c) => c.path === '/api/notebook').at(-1)?.body).toEqual({ q: 'xbrl', only: 'doubts' }))
   })
 
   it('exports notes as Markdown with links back to YouTube', () => {
