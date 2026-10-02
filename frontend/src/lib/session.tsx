@@ -38,7 +38,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signUp = useCallback(async (input: SignUpInput) => {
-    const r = await api<{ token: string; me: Me }>('/api/auth/signup', { method: 'POST', body: JSON.stringify(input) })
+    let r: { token: string; me: Me }
+    try {
+      r = await api<{ token: string; me: Me }>('/api/auth/signup', { method: 'POST', body: JSON.stringify(input) })
+    } catch (e) {
+      // While the server wakes, sign-up is retried; if the first try did create the account, the retry
+      // says "email taken". Same email and password: just sign in. Otherwise show the real error.
+      if (!(e instanceof ApiError) || e.code !== 'email_taken') throw e
+      try {
+        r = await api<{ token: string; me: Me }>('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: input.email, password: input.password }),
+        })
+      } catch {
+        throw e
+      }
+    }
     writeToken(r.token)
     setMe(r.me)
   }, [])

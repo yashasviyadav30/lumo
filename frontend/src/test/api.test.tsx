@@ -33,3 +33,29 @@ describe('waking server', () => {
     expect(f).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('sign-up while the server wakes', () => {
+  it('signs in when a retried sign-up finds the account was already made', async () => {
+    const { renderAt, signInForTest } = await import('./render')
+    const { screen } = await import('@testing-library/react')
+    const userEvent = (await import('@testing-library/user-event')).default
+    localStorage.clear()
+    const { calls } = signInForTest({
+      'GET /api/me': () => ({ status: 401, body: { detail: 'not_signed_in' } }),
+      'POST /api/auth/signup': () => ({ status: 409, body: { detail: 'email_taken' } }),
+      'POST /api/auth/login': () => ({ status: 200, body: { token: 't', me: { email: 'a@b.co', created_at: '', settings: { shorts_enabled: false, shorts_daily_limit_min: null, search_language: 'en' } } } }),
+      'GET /api/home/summary': () => ({ status: 200, body: null }),
+      'GET /api/goals/active': () => ({ status: 200, body: null }),
+      'GET /api/feed': () => ({ status: 200, body: { results: [], hidden: [], hidden_count: 0 } }),
+    })
+    localStorage.removeItem('focuslearn.token')
+    renderAt('/sign-up')
+    await userEvent.type(await screen.findByLabelText('Email'), 'a@b.co')
+    await userEvent.type(screen.getByLabelText(/Password/), 'long password 1')
+    await userEvent.type(screen.getByLabelText('Date of birth'), '1999-02-02')
+    await userEvent.click(screen.getByLabelText(/I’ve read what/))
+    await userEvent.click(screen.getByRole('button', { name: 'Create account' }))
+    expect(await screen.findByLabelText('Your learning goal')).toBeInTheDocument()
+    expect(calls.map((c) => c.path)).toContain('/api/auth/login')
+  })
+})

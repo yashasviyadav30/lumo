@@ -24,3 +24,4 @@ Thumbs.db
 # Local data exports (YouTube data must not be kept past 30 days)
 *.csv
 docs/guide/screens.json
+docs/guide/failure.png

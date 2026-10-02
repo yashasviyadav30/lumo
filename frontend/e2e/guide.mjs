@@ -96,9 +96,9 @@ try {
   await page.getByLabel(/Password/).fill('guide test password 1')
   await page.getByLabel('Date of birth').fill('1999-02-02')
   await page.getByLabel(/I’ve read what/).check()
+  signedUp = true // from here on, clean up even if sign-up itself stalls
   await role('button', 'Create account').click()
-  await page.getByLabel('Your learning goal').waitFor()
-  signedUp = true
+  await page.getByLabel('Your learning goal').waitFor({ timeout: 90000 })
   await page.waitForTimeout(1200)
 
   // ---------- Home, first time ----------

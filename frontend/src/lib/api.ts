@@ -49,7 +49,7 @@ export function messageFor(code: string, status = 0): string {
 // The free server sleeps after 15 idle minutes and takes up to a minute to wake (also during a redeploy).
 // Requests that are safe to repeat wait for it, with a "waking up" banner, instead of failing at once.
 const WAKE_LIMIT_MS = 75_000
-const SAFE_POSTS = ['/api/auth/login', '/api/search', '/api/notebook', '/api/study/open', '/api/study/comments']
+const SAFE_POSTS = ['/api/auth/login', '/api/auth/signup', '/api/search', '/api/notebook', '/api/study/open', '/api/study/comments']
 let wakingCount = 0
 function setWaking(on: boolean) {
   wakingCount = Math.max(0, wakingCount + (on ? 1 : -1))
