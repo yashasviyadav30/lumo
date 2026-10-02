@@ -5,6 +5,10 @@ import fs from 'node:fs'
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
+// Where the API lives: same origin locally (Vite proxy); Render for the live site.
+const API = process.env.E2E_API ?? (BASE.includes('localhost') ? '' : 'https://focus-app-6fb9.onrender.com')
+let signedUp = false
+let deleted = false
 const root = new URL('../../docs/guide/', import.meta.url)
 const out = (name) => new URL(name, root).pathname.replace(/^\/([A-Za-z]:)/, '$1')
 fs.mkdirSync(out(''), { recursive: true })
@@ -48,17 +52,17 @@ async function shoot(id, title, intro, items, { size = PHONE, full = true } = {}
   log(id, `${callouts.length} arrows`)
 }
 
-const api = (path, body) =>
+const api = (path, body, method) =>
   page.evaluate(
-    async ([p, b]) => {
+    async ([p, b, m]) => {
       const r = await fetch(p, {
-        method: b === undefined ? 'GET' : 'POST',
+        method: m ?? (b === undefined ? 'GET' : 'POST'),
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('focuslearn.token')}` },
         body: b === undefined ? undefined : JSON.stringify(b),
       })
       return r.status === 204 ? null : r.json()
     },
-    [path, body],
+    [API + path, body, method],
   )
 
 const role = (r, name, exact = true) => page.getByRole(r, { name, exact })
@@ -94,6 +98,7 @@ try {
   await page.getByLabel(/I’ve read what/).check()
   await role('button', 'Create account').click()
   await page.getByLabel('Your learning goal').waitFor()
+  signedUp = true
   await page.waitForTimeout(1200)
 
   // ---------- Home, first time ----------
@@ -340,6 +345,7 @@ try {
   await role('button', 'Delete my data').click()
   await role('button', 'Yes, delete everything').click()
   await page.waitForURL('**/welcome')
+  deleted = true
   const farewell = await page.getByRole('status').first().innerText().catch(() => '(no message)')
   log('test account deleted; welcome says:', farewell.slice(0, 60))
 } catch (e) {
@@ -347,6 +353,12 @@ try {
   await page.screenshot({ path: out('failure.png') }).catch(() => {})
   process.exitCode = 1
 } finally {
+  // Never leave a test account behind, even when a step failed.
+  if (signedUp && !deleted) {
+    await api('/api/me', undefined, 'DELETE')
+      .then(() => log('test account deleted after the failure'))
+      .catch((e) => console.log('COULD NOT DELETE TEST ACCOUNT:', e.message))
+  }
   await browser.close()
 }
 

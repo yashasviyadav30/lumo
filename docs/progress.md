@@ -87,3 +87,12 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Chosen: hide Music, Film & Animation, movie/show genres, Entertainment, Comedy, Gaming, News & Politics, Travel & Events, Videoblogging. Show People & Blogs (podcasts); vlog channels are hidden one tap at a time ("Hide channel", with Undo). Shorts stay hidden by default, switch in Settings.
 - Removed: "hindi" added to goal searches (a language the user types herself is kept), curated-channel exemption. Followed channels are still exempt (her rule).
 - Home feed: followed channels' uploads (playlistItems, 1 unit, cached 6 h) + goal search + 3 topics rotating daily (24 h shared cache; extra topics only while 30+ searches are left today).
+
+## Redesign from the UX review (2026-10-02)
+
+- User asked for: YouTube comments and description, a split-screen rich-text notepad, star a video (visible fill), Library with Starred and History, notes with/without videos, one Search entry, and an expert reviewer agent.
+- Built `.claude/agents/ux-reviewer.md` (Opus) and ran it: report in `docs/ux-review.md` with 38 screenshots. Applied nearly all of its top 10 (one Continue card + feed on Home, one Search entry, ⋮ card menu, upload dates, Watch order and pinned player, Press play first, Library = Starred + History, "My notes" with gear, inline toasts, delete message fix). Theme: kept dark as default (user's choice) but softened per the review; added Light and "same as phone".
+- Not done from the review: marks and doubts merged into the notepad (one place for all notes); onboarding screenshot instead of the phone drawing; password-length wording.
+- Security: httpx logged YouTube URLs with the API key at INFO, so Render logs held the key. Fixed (WARNING level, with a test). Rotating the YouTube key (step 6.7) is now more urgent.
+- Render had stopped deploying for over an hour on 2026-10-01; it caught up by itself on 2026-10-02.
+- Live end-to-end (guide script against the live site): 18 screens pass, no page errors; leftover test accounts from failed runs deleted.
