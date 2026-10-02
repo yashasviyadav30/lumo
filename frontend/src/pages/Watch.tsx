@@ -11,11 +11,10 @@ import {
   StickyNote,
   Trash2,
 } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import Comments from '../components/Comments'
 import Description from '../components/Description'
-import Notepad from '../components/Notepad'
 import Player from '../components/Player'
 import { ago } from '../lib/search'
 import { VIDEO_ID, type YTPlayer } from '../lib/youtube'
@@ -35,6 +34,9 @@ import {
   type StudyData,
   type Tag,
 } from '../lib/study'
+
+// The rich-text editor is big, so it loads only when the notepad is first opened.
+const Notepad = lazy(() => import('../components/Notepad'))
 
 const PROGRESS_EVERY_MS = 15000
 
@@ -353,14 +355,16 @@ function StudyPage({ videoId }: { videoId: string }) {
 
       <div className="study-side">
         {padOpen ? (
-          <Notepad
-            videoId={videoId}
-            initial={padContent.current}
-            onChange={(c) => (padContent.current = c)}
-            getTime={() => player.current?.getCurrentTime() ?? 0}
-            onSeek={jump}
-            onClose={() => setPadOpen(false)}
-          />
+          <Suspense fallback={<div className="notepad skeleton" aria-busy="true" />}>
+            <Notepad
+              videoId={videoId}
+              initial={padContent.current}
+              onChange={(c) => (padContent.current = c)}
+              getTime={() => player.current?.getCurrentTime() ?? 0}
+              onSeek={jump}
+              onClose={() => setPadOpen(false)}
+            />
+          </Suspense>
         ) : (
           tabs
         )}

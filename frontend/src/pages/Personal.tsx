@@ -1,7 +1,17 @@
-import { Download, Layers, LayoutList, MapPin, NotebookPen, PlaySquare, Search, Settings, Star, StickyNote } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import {
+  Download,
+  Layers,
+  LayoutList,
+  MapPin,
+  NotebookPen,
+  PlaySquare,
+  Search,
+  Settings,
+  Star,
+  StickyNote,
+} from 'lucide-react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
-import { NotepadView } from '../components/Notepad'
 import {
   clock,
   homeSummary,
@@ -13,6 +23,9 @@ import {
   type Note,
   type Notebook,
 } from '../lib/study'
+
+// Loaded only when there is a notepad page to show (the editor is big).
+const NotepadView = lazy(() => import('../components/Notepad').then((m) => ({ default: m.NotepadView })))
 
 type Filter = 'all' | 'doubts' | 'starred'
 type View = 'videos' | 'notes'
@@ -135,7 +148,8 @@ export default function Personal() {
 
       {summary && summary.cards_due > 0 && (
         <Link to="/cards" className="pill-link" style={{ marginBottom: 12 }}>
-          <Layers size={16} aria-hidden="true" /> Review {summary.cards_due} card{summary.cards_due === 1 ? '' : 's'} due
+          <Layers size={16} aria-hidden="true" /> Review {summary.cards_due} card{summary.cards_due === 1 ? '' : 's'}{' '}
+          due
         </Link>
       )}
 
@@ -224,10 +238,12 @@ export default function Personal() {
                 <p className="notepad-label">
                   <StickyNote size={14} aria-hidden="true" /> {lectureTitle(l.video, l.video_id)}
                 </p>
-                <NotepadView
-                  content={l.notepad!.content}
-                  onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
-                />
+                <Suspense fallback={null}>
+                  <NotepadView
+                    content={l.notepad!.content}
+                    onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
+                  />
+                </Suspense>
               </div>
             ))}
         </>
@@ -255,10 +271,12 @@ export default function Personal() {
                 <p className="notepad-label">
                   <StickyNote size={14} aria-hidden="true" /> Notepad
                 </p>
-                <NotepadView
-                  content={l.notepad.content}
-                  onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
-                />
+                <Suspense fallback={null}>
+                  <NotepadView
+                    content={l.notepad.content}
+                    onSeek={(t) => navigate(`/watch/${l.video_id}`, { state: { t } })}
+                  />
+                </Suspense>
               </div>
             )}
           </div>
