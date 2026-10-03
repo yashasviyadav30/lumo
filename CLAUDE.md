@@ -10,6 +10,18 @@ user hasn't picked the real name yet).
   the Worker passes `/api/*` and `/health` through (some Indian mobile networks fail on `*.onrender.com`).
 - Database: Supabase Postgres (Mumbai, session pooler). GitHub: `yashasviyadav30/focus-app` (private, `main`).
 
+## Continue the original chat
+
+The whole build happened in one Claude Code chat. To reopen it (with its history) from this folder:
+
+- Double-click **`continue-chat.cmd`** in the project root, or
+- run `claude --resume 53879416-9635-49a6-8f57-7049d50f390a` in this folder, or
+- run `claude --continue` (opens the most recent chat in this folder), or `claude --resume` to pick from a list.
+
+Session ID: `53879416-9635-49a6-8f57-7049d50f390a`. The chat is stored on this laptop only (path below), so it
+reopens here, not on another computer. If it ever can't be resumed, a new chat still has everything it needs
+from this file and `docs/progress.md`.
+
 ## Read these first
 
 | File | What it holds |
