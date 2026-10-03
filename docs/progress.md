@@ -4,7 +4,48 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
-## Status
+## Where things stand (2026-10-03)
+
+- **Live:** https://focuslearn.focuslearn.workers.dev — app and API through one Cloudflare address; backend on Render, database on Supabase.
+- **Built:** accounts (18+), goal parser and topics, filtered search, Home feed, study page (Mark, Doubt, split-screen notepad, −10s, description, comments with tappable times, star), revision cards with 90-second replay, Library (Starred, History), My notes (by video / all notes, search, export), Settings (theme, Shorts, hidden channels, delete my data), visual guide.
+- **Tests:** backend 85 (pytest), frontend 45 (vitest), live end-to-end 18 screens (`e2e/guide.mjs`), all passing.
+- **Theme:** "Paper & Ink" — indigo on warm paper, soft navy Night; follows the phone.
+- **Not built yet:** study with friends (doubts to friends), marks merged into the notepad, longer review gaps (Anki-style), past-paper drill, paper tracker.
+- **Open with the user:** their phone showed "Can't reach the server" (2026-10-02). Fixed twice (wake + retry, then API through the app's own address); the user has not confirmed it works on their phone yet.
+
+## Chat timeline (one conversation; first commit 2026-09-27, research before that → 2026-10-03)
+
+Full transcript: `C:\Users\yasha\.claude\projects\C--Users-yasha-Downloads-new-project\53879416-9635-49a6-8f57-7049d50f390a.jsonl`.
+
+1. **Research** (no code): 9 topics → `docs/research.md`, answer rounds with the user (aspirants first, 18+, LLM with zero retention, transcripts, safety), `research-summary.md`, deep `feasibility.md` on 24 expectations. Found the compliance-guide ban on inferring a video's type (R3).
+2. **Plan:** `docs/plan.md` with stages and rules R1–R14; old draft archived to `docs/archive/`.
+3. **Stage 0 setup:** Supabase (Mumbai, Data API off, RLS on), GitHub private repo `focus-app`, Render backend, env vars imported by the user.
+4. **Autonomous build** of Stages 1, 2, 3, 4A + curated sources (see Status below and `docs/session-report.md`).
+5. **Deploy:** frontend to Cloudflare (Workers static assets), CORS; plan step 6.7 added: rotate all secrets.
+6. **Ideation rounds 1 and 2** (sister's feedback "doesn't feel different from YouTube"): `docs/idea.md`, `docs/ideation/`, mockups.
+7. **v2 study companion** built from idea.md (2026-10-01): marks, doubts, cards, notebook, resume.
+8. **Premium redesign**, then **dark neon-lime theme** copied from a reference screenshot (crypto landing page).
+9. **Feed and hide list** (user decision): YouTube-like feed; hide songs, movies, shows, news, travel vlogs by YouTube's labels; podcasts shown; no Hindi add-on, no teacher list. Judging by title/comments refused (R3).
+10. **Visual guide** `docs/guide/app-guide.html` (user couldn't understand the app on first use).
+11. **User's fix list + Opus reviewer agent** (2026-10-02): comments, description, notepad, star, Library, My notes; `.claude/agents/ux-reviewer.md` → `docs/ux-review.md`; most top-10 fixes applied. Found and fixed: API key in Render logs.
+12. **"Can't reach the server"** on the user's phone: waking banner + retry, then API through the Worker.
+13. **Push every change** to GitHub (saved as a standing rule in CLAUDE.md and memory).
+14. **Paper & Ink theme** (2026-10-02/03): lime removed for a research-based study palette; sign-up made retry-safe.
+15. **This file and `CLAUDE.md`** written as the reference for future sessions (2026-10-03).
+
+## Blocked on the user (current)
+
+- **Rotate the YouTube API key now** (and the rest of step 6.7): Render logs held it until 2026-10-02, and an old screenshot showed all secrets.
+- **Confirm sign-in works on their phone** after closing and reopening the app twice; if not, open `/health` on the phone and report the network (Jio/Airtel/Wi-Fi).
+- **App name** (R9). **Device checks** 1.3/1.4 (iPhone, Android). **Testers list** (0.7). Human check of `docs/curation/*.md`.
+- Optional: Render → Settings → Build Filters → include `backend/**` (stops restarts on frontend/docs pushes).
+- Optional: GitHub profile → Contribution settings → **Private contributions** (so the private repo shows on the graph).
+
+---
+
+*Everything below this line is the original log, kept in order. "Status", "Next" and "Blocked on the user" directly below are as of 2026-09-29.*
+
+## Status (as of 2026-09-29)
 
 | Step | Status | Note |
 |---|---|---|
@@ -96,3 +137,21 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Security: httpx logged YouTube URLs with the API key at INFO, so Render logs held the key. Fixed (WARNING level, with a test). Rotating the YouTube key (step 6.7) is now more urgent.
 - Render had stopped deploying for over an hour on 2026-10-01; it caught up by itself on 2026-10-02.
 - Live end-to-end (guide script against the live site): 18 screens pass, no page errors; leftover test accounts from failed runs deleted.
+
+## "Can't reach the server" on the user's phone (2026-10-02)
+
+- Server was healthy from here (sign-in 4 s). Two causes: Render restarts on every push (three pushes 11:32–11:38) and the free plan's 15-minute sleep (30–60 s wake).
+- Fix 1: the app pings `/health` on open; safe requests (reads, sign-in, sign-up, search) retry up to 75 s with a "Waking up the server" banner; writes never retry (no double saves). Only real network errors (`TypeError`) trigger retries.
+- User still saw the error. Fix 2: the API now goes through the app's own address — `frontend/worker/index.js` passes `/api/*` and `/health` to Render (`run_worker_first`), so phones never contact `*.onrender.com` (reported to fail on some Indian mobile networks; not confirmed for this user). Same-origin, so no CORS. `VITE_API_BASE` is empty in production.
+- Sign-up is retry-safe: if a retried sign-up finds the account already made, it signs in with the same details.
+- Lazy-loaded pieces (the notepad editor) reload the page once if their file is gone after a deploy (`src/lib/lazy.ts`).
+
+## Paper & Ink theme (2026-10-02/03)
+
+- User: the green-on-black theme felt like a music app, not a study app; asked for expert-based colours.
+- Evidence used: dark text on light reads ~26% faster with fewer errors (Piepenbrock et al., Ergonomics 2013); Material Design dark theme guidance (no pure black, desaturated colours); blue linked with calm/approach motivation (Mehta & Zhu, Science 2009 — replications mixed, so a minor point).
+- Result: light "paper" `#f8f8f5` with indigo `#3550d8` as the only accent; Night = soft navy `#10141f` with periwinkle `#93a8ff`; one colour per meaning (green solved, gold star, orange doubt, red delete). Default follows the phone; Settings → Appearance: Same as phone / Light / Night. Lime removed everywhere, new indigo logo and app icons, one font family (Plus Jakarta Sans).
+
+## GitHub activity (2026-10-02)
+
+- Standing rule: commit and push each finished change separately (user wants an active contribution graph). Commits use the account's noreply email, so they count; the repo is private, so the user must turn on "Private contributions" in their GitHub profile.
