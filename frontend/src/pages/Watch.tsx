@@ -74,6 +74,8 @@ function StudyPage({ videoId }: { videoId: string }) {
   const askedTab = (useLocation().state as { tab?: string } | null)?.tab
   const [tab, setTab] = useState<'notes' | 'map' | 'mine'>(askedTab === 'map' ? 'map' : askedTab === 'mine' ? 'mine' : 'notes')
   const [padVersion, setPadVersion] = useState(0) // bumps when a copy changes the saved notepad
+  // The editor opens only once her saved notes are in: a blank editor could save over them.
+  const [padState, setPadState] = useState<'loading' | 'ready' | 'failed'>('loading')
   const [aboutOpen, setAboutOpen] = useState(false)
   const [commentsOpen, setCommentsOpen] = useState(false)
   const ai = useAiNotes(videoId)
@@ -88,9 +90,13 @@ function StudyPage({ videoId }: { videoId: string }) {
         setNotes(d.notes)
         setStarred(!!d.starred)
         padContent.current = d.notepad?.content ?? null
+        setPadState('ready')
         setStart(noteAt !== undefined ? Math.max(0, noteAt - 5) : d.position_s > 15 ? d.position_s : undefined)
       })
-      .catch(() => setData({ video: null, position_s: 0, notes: [] }))
+      .catch(() => {
+        setData({ video: null, position_s: 0, notes: [] })
+        setPadState('failed')
+      })
       .finally(() => setReady(true))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per lecture
   }, [videoId])
@@ -283,16 +289,28 @@ function StudyPage({ videoId }: { videoId: string }) {
         )}
         {tab === 'mine' && (
           <>
-            <Suspense fallback={<div className="notepad skeleton" aria-busy="true" />}>
-              <Notepad
-                key={padVersion}
-                videoId={videoId}
-                initial={padContent.current}
-                onChange={(c) => (padContent.current = c)}
-                getTime={() => player.current?.getCurrentTime() ?? 0}
-                onSeek={jump}
-              />
-            </Suspense>
+            {padState === 'loading' && <div className="notepad skeleton" style={{ minHeight: 220 }} aria-busy="true" aria-label="Loading your notes" />}
+            {padState === 'failed' && (
+              <div className="ai-state" role="alert">
+                <h3>Couldn’t load your notes</h3>
+                <p>Your saved notes are safe. Check your connection and try again.</p>
+                <button className="small" onClick={() => window.location.reload()}>
+                  Try again
+                </button>
+              </div>
+            )}
+            {padState === 'ready' && (
+              <Suspense fallback={<div className="notepad skeleton" aria-busy="true" />}>
+                <Notepad
+                  key={padVersion}
+                  videoId={videoId}
+                  initial={padContent.current}
+                  onChange={(c) => (padContent.current = c)}
+                  getTime={() => player.current?.getCurrentTime() ?? 0}
+                  onSeek={jump}
+                />
+              </Suspense>
+            )}
             <h3 className="marks-head">Marks and doubts</h3>
             {notesPanel}
           </>

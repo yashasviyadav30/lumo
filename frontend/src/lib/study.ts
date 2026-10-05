@@ -72,8 +72,11 @@ export const saveProgress = (video_id: string, position_s: number) => post<void>
 export const getComments = (video_id: string) => post<{ comments: YtComment[]; disabled: boolean }>('/api/study/comments', { video_id })
 export const starVideo = (video_id: string, starred: boolean) => post<{ starred: boolean }>('/api/videos/star', { video_id, starred })
 export const getLibrary = () => api<{ starred: LibraryItem[]; history: LibraryItem[] }>('/api/library')
-export const saveNotepad = (video_id: string, content: string, text: string) =>
-  post<{ updated_at: string }>('/api/notepad/save', { video_id, content, text })
+// keepalive: the browser finishes the save even while the page closes (it allows bodies up to 64 KB).
+export const saveNotepad = (video_id: string, content: string, text: string, keepalive = false) => {
+  const body = JSON.stringify({ video_id, content, text })
+  return api<{ updated_at: string }>('/api/notepad/save', { method: 'POST', body, keepalive: keepalive && body.length < 60_000 })
+}
 export const homeSummary = () => api<HomeSummary>('/api/home/summary')
 export const notebook = (q = '', only?: 'doubts' | 'starred') => post<Notebook>('/api/notebook', { q, only })
 export const makeCard = (note_id: string, blanks: string[]) => post<ReviewCard>('/api/cards', { note_id, blanks })

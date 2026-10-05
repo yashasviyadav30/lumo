@@ -936,3 +936,45 @@ html[data-text-size='larger'] {
   letter-spacing: 0.02em;
   color: var(--muted);
 }
+
+/* ---------- My notes: full screen, pictures, coloured underlines ---------- */
+.notepad.full {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  max-height: none;
+  border-radius: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior: contain;
+}
+.notepad.full .np-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;
+}
+.notepad.full .np-doc {
+  max-width: 820px;
+  margin: 0 auto;
+  min-height: 100%;
+}
+.np-doc img.np-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.np-doc img.np-img.ProseMirror-selectednode {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.np-underline-swatch {
+  text-decoration: underline 3px;
+  text-underline-offset: 3px;
+  font-weight: 700;
+}
