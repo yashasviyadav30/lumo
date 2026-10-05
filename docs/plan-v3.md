@@ -57,6 +57,12 @@ Video on top; three tabs below on phone, a side panel on laptop: **Notes · Mind
   only if testing shows Gemini handles part of a video.
 - **Never:** captions.download on other people's videos, timedtext, youtube-transcript-api or any scraping
   (Developer Policies III.D.7, III.E.6).
+- **R4 narrowed for notes:** free Gemini keeps inputs and humans may read them, so it gets only the public video
+  URL and our fixed prompt, never anything a user typed. Notes are deleted 30 days after they are made (as R1).
+- **Tested 2026-10-05:** `gemini-3.5-flash-lite` made good English notes and a mind map for a 19-minute lecture
+  in 13–20 s (~100K tokens). Timestamps as raw seconds went past the end of the video; `MM:SS` fixed it, and
+  times past the end are dropped anyway. The free models often answer 503 "high demand", so every request
+  goes through the queue with backoff. Still untested: Hindi notes and notes in parts (Gemini was overloaded).
 - **Offline:** notes, mind maps and own notes open without internet after the first view.
 - **Export:** notes and mind map as PDF, or share to WhatsApp.
 
