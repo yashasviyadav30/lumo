@@ -9,7 +9,17 @@ Rules for this session: R1–R14, the cost rule, no secrets printed or committed
 The user did not like the v2 app (look, feel or features). After a design interview they confirmed
 [plan-v3.md](plan-v3.md): keep the backend, rebuild every screen, and centre the app on Gemini-made notes, a
 zoomable mind map and the user's own notepad, then add a YouTube-like feed and study groups. Revision cards
-are removed. Next: step 1, the study page.
+are removed.
+
+**Step 1 (study page) is live (2026-10-05):** tabs Notes · Mind map · My notes under the video. Notes and the
+mind map come from one shared Gemini job per video and language (`app/ai_notes.py`, `POST /api/ai-notes`):
+peek on open, "Generate notes" starts it, the page polls while queued, a copy is kept on the phone for 30 days.
+The mind map uses `@xyflow/react` (lazy chunk, ~58 KB gzip). Description and Comments are fold-outs; the
+player stays pinned on phones; making revision cards is gone from this page. Checked live with
+`E2E_BASE=… node e2e/study-v3.mjs` (phone + laptop, light + dark). Tests: backend 95, frontend 50.
+
+Still open in step 1: PDF / WhatsApp export, Hindi notes tested on a real Hindi lecture (Gemini was
+overloaded), notes in parts for videos over 2.5 h. Next: those, then step 2 (Home and search).
 
 ## Where things stood (2026-10-03)
 
