@@ -1,4 +1,4 @@
-import { Share2, X } from "lucide-react";
+import { Share2, X } from "./icons";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";

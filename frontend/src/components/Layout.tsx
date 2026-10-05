@@ -1,4 +1,4 @@
-import { ArrowLeft, House, Library, Moon, NotebookPen, Search, Settings, SquarePlay, Sun, SunMoon, UsersRound } from 'lucide-react'
+import { ArrowLeft, House, Library, Moon, NotebookPen, Search, Settings, SquarePlay, Sun, SunMoon, UsersRound } from './icons'
 import { useEffect, useState, type CSSProperties, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
@@ -124,7 +124,7 @@ export default function Layout() {
         {tabs.map(({ to, label, end, Icon }) => (
           <NavLink key={to} to={to} end={end} className="tab">
             <span className="tab-icon">
-              <Icon size={22} strokeWidth={2} aria-hidden="true" />
+              <Icon size={24} aria-hidden="true" />
               {to === '/groups' && unread > 0 && <span className="tab-badge">{unread > 9 ? '9+' : unread}</span>}
             </span>
             {label}

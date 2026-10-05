@@ -1,4 +1,4 @@
-import { Loader } from 'lucide-react'
+import { Loader } from './icons'
 import { useEffect, useState } from 'react'
 
 // Shown while the free server wakes up (first visit after a quiet spell). Disappears by itself.

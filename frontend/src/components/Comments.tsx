@@ -1,4 +1,4 @@
-import { Clock, MessageSquareOff, ThumbsUp } from 'lucide-react'
+import { Clock, MessageSquareOff, ThumbsUp } from './icons'
 import { useEffect, useState } from 'react'
 import { ago } from '../lib/search'
 import { getComments, hasTimes, type YtComment } from '../lib/study'

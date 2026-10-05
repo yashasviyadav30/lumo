@@ -1,4 +1,4 @@
-import { CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from 'lucide-react'
+import { CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from '../components/icons'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {

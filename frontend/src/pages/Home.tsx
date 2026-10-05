@@ -1,4 +1,4 @@
-import { Play } from 'lucide-react'
+import { Play } from '../components/icons'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import Feed from '../components/Feed'

@@ -1,6 +1,6 @@
 import { Background, Controls, Handle, Position, ReactFlow, type Edge, type Node, type NodeProps } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { CopyPlus, Maximize2, Minimize2, Play, X } from 'lucide-react'
+import { CopyPlus, Maximize2, Minimize2, Play, X } from './icons'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { NODE_W, layoutTree, type MapNode } from '../lib/aiNotes'
 import { clock } from '../lib/study'

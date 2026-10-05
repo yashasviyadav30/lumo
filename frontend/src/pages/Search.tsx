@@ -1,4 +1,4 @@
-import { History, Search as SearchIcon, X } from 'lucide-react'
+import { History, Search as SearchIcon, X } from '../components/icons'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useLocation } from 'react-router'
 import HiddenLine from '../components/HiddenLine'

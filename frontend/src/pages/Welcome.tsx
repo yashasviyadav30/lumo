@@ -1,4 +1,4 @@
-import { ArrowUpRight, EyeOff, Network, Play, ShieldCheck, StickyNote } from 'lucide-react'
+import { ArrowUpRight, EyeOff, Network, Play, ShieldCheck, StickyNote } from '../components/icons'
 import { Link, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
 import { pendingJoin } from '../lib/groups'
@@ -19,7 +19,7 @@ function PhoneMock() {
       <div className="phone">
         <div className="notch" />
         <div className="vid">
-          <Play size={26} fill="currentColor" />
+          <Play size={26} weight="fill" />
         </div>
         <div className="bar">
           <span>Notes</span>

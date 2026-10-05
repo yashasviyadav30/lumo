@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { IconContext } from '@phosphor-icons/react'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import '@fontsource-variable/plus-jakarta-sans'
 import './index.css'
@@ -28,6 +29,8 @@ const router = createBrowserRouter(routes)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <IconContext.Provider value={{ weight: 'duotone' }}>
+      <RouterProvider router={router} />
+    </IconContext.Provider>
   </StrictMode>,
 )

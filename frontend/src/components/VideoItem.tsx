@@ -1,4 +1,4 @@
-import { Ban, EllipsisVertical, EyeOff, Star, UserPlus } from 'lucide-react'
+import { Ban, EllipsisVertical, EyeOff, Star, UserPlus } from './icons'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { APP_NAME } from '../config'

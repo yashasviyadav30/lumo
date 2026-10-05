@@ -1,4 +1,4 @@
-import { Search as SearchIcon, UserPlus } from 'lucide-react'
+import { Search as SearchIcon, UserPlus } from '../components/icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import ImportSubscriptions from '../components/ImportSubscriptions'

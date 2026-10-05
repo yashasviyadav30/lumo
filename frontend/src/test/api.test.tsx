@@ -57,5 +57,5 @@ describe('sign-up while the server wakes', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Create account' }))
     expect(await screen.findByLabelText('Your learning goal')).toBeInTheDocument()
     expect(calls.map((c) => c.path)).toContain('/api/auth/login')
-  })
+  }, 20_000) // types a whole sign-up form and renders the app: about 6 s in jsdom
 })

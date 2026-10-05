@@ -1,4 +1,4 @@
-import { SquarePlay } from 'lucide-react'
+import { SquarePlay } from './icons'
 import { useEffect, useState } from 'react'
 import { googleClientId, importSubscriptions, youtubeAccessToken } from '../lib/google'
 

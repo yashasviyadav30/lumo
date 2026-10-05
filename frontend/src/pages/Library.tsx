@@ -1,4 +1,4 @@
-import { History, Star, X } from 'lucide-react'
+import { History, Star, X } from '../components/icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { api } from '../lib/api'

@@ -7,7 +7,7 @@ import {
   Search,
   Star,
   StickyNote,
-} from 'lucide-react'
+} from '../components/icons'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useNavigate } from 'react-router'
@@ -59,7 +59,7 @@ function NoteItem({ n, videoId, source }: { n: Note; videoId: string; source?: s
               <span className={`badge ${n.solved ? 'good' : 'bad'}`}>{n.solved ? 'Solved' : 'Doubt'}</span>
             )}
             {n.tag && <span className={`badge tag-${n.tag}`}>{tagLabel(n.tag)}</span>}
-            {n.starred && <Star size={15} fill="currentColor" color="var(--amber)" aria-label="important" />}
+            {n.starred && <Star size={15} weight="fill" color="var(--amber)" aria-label="important" />}
             {source && <span className="source">{source}</span>}
           </div>
         )}

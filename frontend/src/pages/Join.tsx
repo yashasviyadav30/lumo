@@ -1,4 +1,4 @@
-import { UsersRound } from 'lucide-react'
+import { UsersRound } from '../components/icons'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { joinGroup, keepName, lastName, previewInvite } from '../lib/groups'

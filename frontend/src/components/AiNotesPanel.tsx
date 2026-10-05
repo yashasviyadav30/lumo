@@ -1,4 +1,4 @@
-import { ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from 'lucide-react'
+import { ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
 import { LANGS, type AiPoint, type NotesLang } from '../lib/aiNotes'
 import { printNotes, shareNotes } from '../lib/exportNotes'
 import { clock } from '../lib/study'

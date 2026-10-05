@@ -19,7 +19,8 @@ import {
   PenLine,
   Undo2,
   X,
-} from 'lucide-react'
+} from './icons'
+import { IconContext } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../lib/api'
 import { UNDERLINE_COLOURS, notepadExtensions, parseDoc, timeFromLink } from '../lib/notepad'
@@ -80,6 +81,7 @@ function Toolbar({ editor, onTime, onImages }: { editor: Editor; onTime: () => v
   })
   const c = () => editor.chain().focus()
   return (
+    <IconContext.Provider value={{ weight: 'regular' }}>
     <div className="np-toolbar" role="toolbar" aria-label="Formatting">
       <Tool label="Bold" on={st.bold} onClick={() => c().toggleBold().run()}>
         <Bold size={16} />
@@ -240,6 +242,7 @@ function Toolbar({ editor, onTime, onImages }: { editor: Editor; onTime: () => v
         <Redo2 size={16} opacity={st.canRedo ? 1 : 0.35} />
       </Tool>
     </div>
+    </IconContext.Provider>
   )
 }
 

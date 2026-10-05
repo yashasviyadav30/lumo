@@ -11,7 +11,7 @@ import {
   Sparkles,
   Star,
   Trash2,
-} from 'lucide-react'
+} from '../components/icons'
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
@@ -358,7 +358,7 @@ function StudyPage({ videoId }: { videoId: string }) {
             aria-keyshortcuts="S"
             title={starred ? 'Starred (in Library)' : 'Star this video'}
           >
-            <Star size={20} fill={starred ? 'currentColor' : 'none'} aria-hidden="true" />
+            <Star size={20} weight={starred ? 'fill' : 'duotone'} aria-hidden="true" />
             {starred ? 'Starred' : 'Star'}
           </button>
           </div>
@@ -543,7 +543,7 @@ function NoteRow({
               }
             }}
           >
-            <Star size={18} fill={note.starred ? 'currentColor' : 'none'} aria-hidden="true" />
+            <Star size={18} weight={note.starred ? 'fill' : 'regular'} aria-hidden="true" />
           </button>
         </div>
         {editing ? (

@@ -1,4 +1,4 @@
-import { Send } from 'lucide-react'
+import { Send } from '../components/icons'
 import ImportSubscriptions from '../components/ImportSubscriptions'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'

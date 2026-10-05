@@ -1,4 +1,4 @@
-import { Search as SearchIcon } from 'lucide-react'
+import { Search as SearchIcon } from './icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { getFeed, recentSearches, searchVideos, type FeedResponse } from '../lib/search'

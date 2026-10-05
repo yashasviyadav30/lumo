@@ -1,4 +1,4 @@
-import { Network, Sparkles, UserPlus } from 'lucide-react'
+import { Network, Sparkles, UserPlus } from './icons'
 import { useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config'
 
