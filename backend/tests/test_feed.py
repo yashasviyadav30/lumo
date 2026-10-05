@@ -51,7 +51,10 @@ def test_feed_mixes_goal_and_followed_channels_with_the_hide_list(yt, signed_in)
     assert "newsclip001" in hidden  # news: hidden, but listed so she can see what was hidden (R6)
     assert "upload00002" in shown  # a followed channel is never hidden by YouTube's type
     queries = [q for q, _ in yt.search_calls]
-    assert len(queries) == 4 and len(set(queries)) == 4  # the goal + three of today's topics, each cached for everyone
+    # The goal + three of today's topics, then today's two searches every feed shares; each cached for everyone.
+    from app.feed import SHARED_QUERIES, todays_topics
+
+    assert len(queries) == 6 and queries[-2:] == todays_topics(SHARED_QUERIES, limit=2)
 
 
 def test_hiding_a_channel_removes_it_from_the_feed(yt, signed_in):
@@ -111,3 +114,20 @@ def test_shorts_tab_shows_only_vertical_shorts_from_followed_channels(yt, signed
     assert [v["video_id"] for v in signed_in.get("/api/shorts").json()["results"]] == ["short000001"]
     # The same Short never appears in the Home feed: it has its own tab.
     assert "short000001" not in {v["video_id"] for v in signed_in.post("/api/feed", json={}).json()["results"]}
+
+
+def test_every_feed_gets_shared_podcasts_and_talks_with_their_own_chip(yt, signed_in):
+    from app.feed import PODCASTS_PER_DAY, SHARED_PER_DAY, SHARED_QUERIES, todays_topics
+
+    today = todays_topics(SHARED_QUERIES, limit=PODCASTS_PER_DAY)
+    for n, q in enumerate(today):
+        yt.results[q] = [f"talk{n:07d}"]
+        yt.video_map[f"talk{n:07d}"] = video(f"talk{n:07d}", category_id="22", title=f"A good talk {n}")
+    shown = {v["video_id"] for v in signed_in.post("/api/feed", json={}).json()["results"]}
+    assert {f"talk{n:07d}" for n in range(SHARED_PER_DAY)} <= shown  # even with no goal and no follows
+    chip = signed_in.post("/api/feed", json={"only": "podcasts"}).json()["results"]
+    assert {v["video_id"] for v in chip} == {f"talk{n:07d}" for n in range(PODCASTS_PER_DAY)}
+    calls = len(yt.search_calls)
+    signed_in.post("/api/feed", json={"only": "podcasts"})
+    assert len(yt.search_calls) == calls  # cached and shared, not fetched again
+    assert signed_in.post("/api/feed", json={"only": "trending"}).status_code == 422

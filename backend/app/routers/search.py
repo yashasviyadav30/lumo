@@ -179,6 +179,7 @@ def remove_follow(body: FollowIn, user: User = Depends(current_user), db: Sessio
 class FeedIn(BaseModel):
     # Her last searches, kept on her phone (never stored here) and sent in the body (R11).
     recent: list[str] = Field(default_factory=list, max_length=5)
+    only: str | None = Field(default=None, pattern=r"^podcasts$")  # the shared "Podcasts & talks" chip
 
 
 @router.get("/feed")
@@ -201,7 +202,7 @@ def feed(body: FeedIn, request: Request, user: User = Depends(current_user), db:
     language = user.settings.search_language if user.settings else "en"
     try:
         out = build_feed(db, yt, rules, channels, goal["query"] if goal else None,
-                         [t["query"] for t in goal["topics"]] if goal else [], language, recent)
+                         [t["query"] for t in goal["topics"]] if goal else [], language, recent, body.only)
     except YouTubeError:
         raise HTTPException(status_code=502, detail="youtube_unavailable") from None
     return out | {"progress": progress_for(db, user, [r["video_id"] for r in out["results"]])}

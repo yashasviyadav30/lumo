@@ -11,6 +11,7 @@ from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
 from app.fields import load_fields
+from app.goal_topics import suggest_topics
 from app.goals import Candidate, ParsedGoal, parse_hybrid, parse_rules
 from app.llm import groq_json
 from app.models import Goal, User
@@ -26,8 +27,15 @@ def parser():
     return parse_rules
 
 
+def topic_suggester():
+    """Topics for goals outside our curated fields, from the user's own words (R4). None without an LLM."""
+    if get_settings().groq_api_key:
+        return lambda text: suggest_topics(text, groq_json)
+    return lambda text: []
+
+
 def _from_dict(d: dict) -> ParsedGoal:
-    d = dict(d)
+    d = {k: v for k, v in d.items() if k != "suggested"}
     d["candidates"] = [Candidate(**c) for c in d.get("candidates", [])]
     return ParsedGoal(**d)
 
@@ -63,9 +71,10 @@ def view(row: Goal) -> dict:
         "did_you_mean": [{"index": i, "label": c.label} for i, c in enumerate(goal.candidates)] if goal.ambiguous else [],
         "minor_signals": goal.minor_signals,  # the age re-check itself is step 4.6
         "query": None if goal.ambiguous else build_query(goal),
-        "topics": [
-            {"id": t["id"], "name": t["name"], "query": build_query(goal, t["id"])} for t in topics_for(goal)
-        ] if not goal.ambiguous else [],
+        "topics": [] if goal.ambiguous else (
+            [{"id": t["id"], "name": t["name"], "query": build_query(goal, t["id"])} for t in topics_for(goal)]
+            or row.parsed.get("suggested", [])
+        ),
     }
 
 
@@ -77,9 +86,16 @@ class ChoiceIn(BaseModel):
     index: int = Field(ge=0, le=5)
 
 
+def _with_suggestions(goal: ParsedGoal) -> dict:
+    parsed = goal.to_dict()
+    if goal.field is None and not goal.ambiguous:
+        parsed["suggested"] = topic_suggester()(goal.text)
+    return parsed
+
+
 def _save(db: Session, user: User, text: str, goal: ParsedGoal) -> Goal:
     db.execute(update(Goal).where(Goal.user_id == user.id, Goal.active.is_(True)).values(active=False))
-    row = Goal(user_id=user.id, raw_text=text, parsed=goal.to_dict(), active=True)
+    row = Goal(user_id=user.id, raw_text=text, parsed=_with_suggestions(goal), active=True)
     db.add(row)
     db.commit()
     return row
@@ -95,6 +111,12 @@ def set_goal(body: GoalIn, request: Request, user: User = Depends(current_user),
 @router.get("/active")
 def active_goal(user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict | None:
     row = db.scalar(select(Goal).where(Goal.user_id == user.id, Goal.active.is_(True)).order_by(Goal.created_at.desc()))
+    if row and row.parsed.get("field") is None and not row.parsed.get("ambiguous") and not row.parsed.get("suggested"):
+        # Goals saved before topics existed (or when the LLM was down) get them on the next visit.
+        suggested = topic_suggester()(row.raw_text)
+        if suggested:
+            row.parsed = {**row.parsed, "suggested": suggested}
+            db.commit()
     return view(row) if row else None
 
 

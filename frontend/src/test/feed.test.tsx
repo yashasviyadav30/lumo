@@ -54,6 +54,7 @@ describe('home feed', () => {
     const feed = await screen.findByRole('list', { name: 'Your feed' })
     expect(calls.find((c) => c.path === '/api/feed')?.body).toEqual({ recent: ['cost sheet'] })
     expect(screen.getByRole('button', { name: 'cost sheet' })).toBeInTheDocument() // her search is a chip
+    expect(screen.getByRole('button', { name: 'Podcasts & talks' })).toBeInTheDocument() // on every Home
     const podcast = within(feed).getByText('Podcast with a CMA topper').closest('li')!
     await userEvent.click(within(podcast).getByRole('button', { name: 'More actions' }))
     await userEvent.click(within(podcast).getByRole('menuitem', { name: 'Not interested' }))

@@ -36,8 +36,8 @@ export type FeedResponse = { results: VideoCard[]; hidden: HiddenCard[]; hidden_
 
 // Home feed: followed and recently watched channels, her goal's topics and her recent searches (sent from this
 // device; the server never stores search history).
-export const getFeed = (recent: string[] = []) =>
-  api<FeedResponse>('/api/feed', { method: 'POST', body: JSON.stringify({ recent }) })
+export const getFeed = (recent: string[] = [], only?: 'podcasts') =>
+  api<FeedResponse>('/api/feed', { method: 'POST', body: JSON.stringify(only ? { recent, only } : { recent }) })
 
 // Shorts only from channels she follows.
 export const getShorts = () => api<{ results: VideoCard[]; follows: number }>('/api/shorts')

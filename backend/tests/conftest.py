@@ -51,3 +51,11 @@ def signed_in(client):
     token = r.json()["token"]
     client.headers["Authorization"] = f"Bearer {token}"
     return client
+
+
+@pytest.fixture(autouse=True)
+def no_llm_topics(monkeypatch):
+    # Tests never call the real LLM for goal topics; a test that wants topics patches this again.
+    from app.routers import goals as goals_router
+
+    monkeypatch.setattr(goals_router, "topic_suggester", lambda: (lambda text: []))

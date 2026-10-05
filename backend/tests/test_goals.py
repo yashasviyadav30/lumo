@@ -134,3 +134,32 @@ def test_goal_text_never_reaches_the_log(signed_in, db):
     signed_in.post("/api/goals", json={"text": "CMA Inter costing"})
     for row in db.scalars(select(AppLog)):
         assert "costing" not in f"{row.route} {row.action}".casefold()
+
+
+def test_any_goal_gets_its_own_topics_from_the_users_words(signed_in, monkeypatch):
+    import json as _json
+
+    from app.goal_topics import clean, suggest_topics
+
+    seen = []
+
+    def fake_llm(system, user):
+        seen.append(user)
+        return _json.dumps({"topics": [{"name": "Indian polity", "query": "UPSC polity lecture"},
+                                       {"name": "Topper interviews", "query": "UPSC topper interview"},
+                                       {"name": "Indian polity", "query": "UPSC polity lecture"},
+                                       {"name": "", "query": "x"}]})
+
+    monkeypatch.setattr(goals_router, "topic_suggester", lambda: (lambda text: suggest_topics(text, fake_llm)))
+    g = signed_in.post("/api/goals", json={"text": "UPSC prelims"}).json()
+    assert g["field"] is None and [t["name"] for t in g["topics"]] == ["Indian polity", "Topper interviews"]
+    assert g["topics"][1]["query"] == "UPSC topper interview"
+    assert seen == ["Goal: upsc prelims"]  # only her own words go to the LLM (R4)
+    assert signed_in.get("/api/goals/active").json()["topics"] == g["topics"]
+    assert clean('{"topics": "nope"}') == () and suggest_topics("x", lambda s, u: "not json") == []
+
+
+def test_curated_goals_keep_their_own_topics(signed_in, monkeypatch):
+    monkeypatch.setattr(goals_router, "topic_suggester", lambda: (lambda text: [{"id": "s1", "name": "X", "query": "x"}]))
+    g = signed_in.post("/api/goals", json={"text": "CMA Inter costing"}).json()
+    assert g["topics"][0]["id"] == "cma-int-p8-cost-accounting"

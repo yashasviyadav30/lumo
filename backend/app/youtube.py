@@ -122,18 +122,16 @@ class YouTubeClient:
 
     def search(self, query: str, language: str, max_results: int = 25) -> list[str]:
         """One search.list call (the 100-a-day bucket). safeSearch=strict always (R5)."""
-        data = self._get(
-            "search",
-            {
-                "part": "id",
-                "q": query,
-                "type": "video",
-                "safeSearch": "strict",
-                "relevanceLanguage": language,
-                "regionCode": INDIA,
-                "maxResults": max_results,
-            },
-        )
+        params = {
+            "part": "id",
+            "q": query,
+            "type": "video",
+            "safeSearch": "strict",
+            "relevanceLanguage": language,
+            "regionCode": INDIA,
+            "maxResults": max_results,
+        }
+        data = self._get("search", params)
         return [i["id"]["videoId"] for i in data.get("items", []) if i.get("id", {}).get("videoId")]
 
     def playlist_items(self, playlist_id: str, max_results: int = 10) -> list[str]:

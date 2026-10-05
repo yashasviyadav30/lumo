@@ -6,9 +6,9 @@ import { useVideoActions } from '../lib/useVideoActions'
 import HiddenLine from './HiddenLine'
 import VideoItem, { NoticeLine } from './VideoItem'
 
-type Chip = { id: string; name: string; query: string | null }
+type Chip = { id: string; name: string; query: string | null; only?: 'podcasts' }
 
-// YouTube-style Home: chips ("All", her goal's topics, her recent searches) over a grid of videos.
+// YouTube-style Home: chips ("All", "Podcasts & talks", her goal's topics, her recent searches) over a grid.
 // "All" mixes followed and recently watched channels, her goal and her searches. The same hide list applies
 // everywhere, and hidden videos are always listed (R6).
 export default function Feed({ topics }: { topics: Array<{ id: string; name: string; query: string }> }) {
@@ -17,6 +17,7 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
     const recent = recentSearches().filter((q) => !own.includes(q.toLowerCase()))
     return [
       { id: 'all', name: 'All', query: null },
+      { id: 'podcasts', name: 'Podcasts & talks', query: null, only: 'podcasts' },
       ...topics.map((t) => ({ id: t.id, name: t.name, query: t.query })),
       ...recent.map((q) => ({ id: `recent:${q}`, name: q, query: q })),
     ]
@@ -31,7 +32,7 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
     setData(null)
     setError(false)
     setShowHidden(false)
-    const req = chip.query ? searchVideos(chip.query) : getFeed(recentSearches())
+    const req = chip.query ? searchVideos(chip.query) : getFeed(recentSearches(), chip.only)
     return req.then(setData).catch(() => setError(true))
   }
 
@@ -48,7 +49,7 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
 
   return (
     <div className="feed">
-      {chips.length > 1 && (
+      {(
         <div className="chipbar" role="group" aria-label="Topics">
           {chips.map((c) => (
             <button key={c.id} className={`chip${c.id === active ? ' on' : ''}`} aria-pressed={c.id === active} onClick={() => pick(c)}>
