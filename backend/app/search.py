@@ -15,6 +15,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app import quota
@@ -79,7 +80,10 @@ def _ids_for(db: Session, yt: YouTubeClient, query: str, language: str, now: dat
                 cached.video_ids, cached.fetched_at = ids, now
             else:
                 db.add(YtSearchCache(key=key, video_ids=ids, fetched_at=now))
-            db.commit()
+            try:
+                db.commit()
+            except IntegrityError:
+                db.rollback()  # two requests cached the same search at once; the other saved it
             return ids, "live"
     if cached and now - _aware(cached.fetched_at) < MAX_AGE:
         return list(cached.video_ids), "cache_stale"

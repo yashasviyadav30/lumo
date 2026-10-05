@@ -9,6 +9,7 @@ Sources are interleaved so no single one fills the screen. The same hide rules a
 import hashlib
 from datetime import date, datetime, timedelta, timezone
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app import quota
@@ -40,7 +41,10 @@ def _uploads(db: Session, yt: YouTubeClient, channel_id: str, now: datetime) -> 
         cached.video_ids, cached.fetched_at = ids, now
     else:
         db.add(YtSearchCache(key=key, video_ids=ids, fetched_at=now))
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # two requests cached the same search at once; the other saved it
     return ids
 
 
