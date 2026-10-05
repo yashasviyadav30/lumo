@@ -8,19 +8,38 @@ export default function Notice() {
       <h2>What {APP_NAME} stores, and why</h2>
       <ul>
         <li>
-          <strong>Your email and password</strong> (the password is stored scrambled), so you can sign in.
+          <strong>Your email</strong>, and your password stored scrambled. If you continue with Google, we get your
+          Google email only, and there is no password.
         </li>
         <li>
           <strong>That you confirmed you’re 18 or over.</strong> We don’t keep your date of birth.
         </li>
         <li>
-          <strong>Your goals, mutes and settings</strong>, so your feed shows what you’re learning.
+          <strong>What you choose:</strong> your goal, the channels you follow, what you hide or mark “Not interested”,
+          and your settings, so Home shows what you want to learn.
         </li>
         <li>
-          <strong>Video details from YouTube</strong> (titles, channels), for up to 30 days, then deleted.
+          <strong>What you write:</strong> your notes, marks, doubts and notepad, and where you stopped in each video.
+        </li>
+        <li>
+          <strong>Study groups:</strong> the name you choose in each group, and your posts and replies. Members of that
+          group see them. Reports you make are kept so the group can stay safe.
+        </li>
+        <li>
+          <strong>Feedback</strong> you send from Settings.
+        </li>
+        <li>
+          <strong>AI notes:</strong> made by Google’s Gemini from the public video only. Nothing you type is sent to
+          Gemini. Notes are shared with everyone who opens that video and deleted after 30 days.
+        </li>
+        <li>
+          <strong>Video details from YouTube</strong> (titles, channels), for up to 30 days, then deleted. If you import
+          your YouTube subscriptions, we read them once with your permission and keep only the channels you then
+          follow.
         </li>
         <li>
           <strong>A basic request log</strong> for security, kept 1 year in India. It never lists the videos you watch.
+          Your recent searches stay on your device.
         </li>
       </ul>
       <p>

@@ -19,6 +19,23 @@ export default function Privacy() {
           .
         </li>
       </ul>
+      <h2>Google services we use</h2>
+      <ul>
+        <li>
+          <strong>YouTube</strong> plays every video, through its own player.
+        </li>
+        <li>
+          <strong>Gemini</strong> makes AI notes. We send it only the public video’s link and our fixed request; on the
+          free plan, Google may use what it receives to improve its products.
+        </li>
+        <li>
+          <strong>Google sign-in</strong>, if you choose it. You can remove {APP_NAME}’s access any time in your{' '}
+          <a href="https://myaccount.google.com/permissions" rel="noopener">
+            Google account’s third-party access page
+          </a>
+          .
+        </li>
+      </ul>
       <h2>Where your data is kept</h2>
       <p>Our database is in Mumbai, India. The app server runs in Singapore during testing.</p>
     </section>

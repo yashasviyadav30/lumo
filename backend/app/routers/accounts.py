@@ -21,7 +21,7 @@ from app.security import hash_password, hash_token, new_token, pseudonym, verify
 
 router = APIRouter(prefix="/api", tags=["accounts"])
 
-NOTICE_VERSION = "v1"
+NOTICE_VERSION = "v2"  # v2 (2026-10-05): notes, groups, feedback, AI notes, Google sign-in
 SESSION_LIFETIME = timedelta(days=60)
 INDIA = ZoneInfo("Asia/Kolkata")
 
