@@ -53,13 +53,16 @@ _point = {"type": "OBJECT", "properties": {"title": {"type": "STRING"}, "time": 
 _node = {"type": "OBJECT", "properties": {"id": {"type": "STRING"}, "parent": {"type": "STRING"}, "label": {"type": "STRING"},
                                           "detail": {"type": "STRING"}, "time": _time},
          "required": ["id", "parent", "label", "detail", "time"]}
-SCHEMA = {"type": "OBJECT", "properties": {"summary": {"type": "STRING"}, "points": {"type": "ARRAY", "items": _point},
+SCHEMA = {"type": "OBJECT", "properties": {"summary": {"type": "STRING"}, "brief": {"type": "STRING"},
+                                           "points": {"type": "ARRAY", "items": _point},
                                            "mindmap": {"type": "ARRAY", "items": _node}},
-          "required": ["summary", "points", "mindmap"]}
+          "required": ["summary", "brief", "points", "mindmap"]}
 
 PROMPT = """You are making study notes for a student from this video.
 Write in: {lang}.
-- summary: 3 short lines on what the video teaches.
+- summary: the gist in 1 or 2 sentences (at most 40 words): what the video teaches and why it matters.
+- brief: a brief summary in 2 to 4 short paragraphs (150 to 250 words), separated by a blank line, that a student
+  could read instead of watching: the main idea, how it is explained, the key examples or formulas, the takeaway.
 - points: 6-12 key points in the order they are taught. time = MM:SS (or H:MM:SS) timestamp where the point starts.
   short = one sentence. detail = 2-5 sentences with the explanation, examples or formulas from the video.
 - mindmap: a tree of the ideas. One root (parent ""), 3-6 branches, 2-4 leaves each. Labels max 5 words.
@@ -122,6 +125,7 @@ class _Node(BaseModel):
 
 class _Answer(BaseModel):
     summary: str
+    brief: str = ""
     points: list[_Point]
     mindmap: list[_Node]
 
@@ -157,7 +161,7 @@ def clean(raw: str, duration_s: int | None) -> dict:
     root = next((n.id for n in nodes if not n.parent), nodes[0].id)
     mindmap = [{"id": n.id, "parent": None if n.id == root else (n.parent if n.parent in ids and n.parent != n.id else root),
                 "label": n.label, "detail": n.detail, "seconds": sec(n.time)} for n in nodes]
-    return {"summary": ans.summary.strip(), "points": points, "mindmap": mindmap}
+    return {"summary": ans.summary.strip(), "brief": ans.brief.strip(), "points": points, "mindmap": mindmap}
 
 
 def parts(duration: int | None) -> list[tuple[int, int] | None]:
@@ -176,7 +180,8 @@ def merge(done: list[dict]) -> dict:
             root = n["parent"] is None
             mindmap.append(n | {"id": f"p{i}-{n['id']}", "parent": "all" if root else f"p{i}-{n['parent']}",
                                 "label": f"Part {i}: {n['label']}" if root else n["label"]})
-    return {"summary": "\n".join(f"Part {i}: {d['summary']}" for i, d in enumerate(done, 1)),
+    return {"summary": " ".join(d["summary"] for d in done),
+            "brief": "\n\n".join(f"Part {i}. {d.get('brief') or d['summary']}" for i, d in enumerate(done, 1)),
             "points": [p for d in done for p in d["points"]], "mindmap": mindmap}
 
 

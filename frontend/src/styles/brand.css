@@ -721,3 +721,81 @@ button.danger {
     width: 180px;
   }
 }
+
+/* ---------- summary card: the short summary first, "Brief summary" opens the rest ---------- */
+.sum-card {
+  padding: 18px 18px 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.sum-k {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.sum-k svg {
+  color: var(--primary);
+}
+.sum-short {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.18rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.sum-toggle {
+  margin-top: 12px;
+  min-height: 40px;
+  padding: 0 16px;
+  gap: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  font-size: 0.92rem;
+}
+.sum-toggle:hover:not(:disabled) {
+  border-color: var(--primary);
+  filter: none;
+}
+.sum-toggle svg.flip {
+  transform: rotate(180deg);
+}
+.sum-brief {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.sum-brief p {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text);
+  max-width: 68ch;
+}
+.sum-brief p:last-child {
+  margin-bottom: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sum-brief.open {
+    animation: sum-open 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sum-toggle svg {
+    transition: transform 0.25s ease;
+  }
+}
+@keyframes sum-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}

@@ -15,6 +15,7 @@ VID = "aircAruvnKk"
 
 ANSWER = json.dumps({
     "summary": "What a neural network is.",
+    "brief": "A network of neurons reads digits.\n\nLayers find patterns.",
     "points": [
         {"title": "Digits", "time": "00:04", "short": "Reading digits.", "detail": "Brains do it easily."},
         {"title": "Past the end", "time": "28:35", "short": "Bad time.", "detail": "Gemini guessed."},
@@ -65,6 +66,7 @@ def test_job_becomes_ready_and_records_video_seconds(db):
     assert calls == [(VID, "en")]
     job = db.get(AiNotes, (VID, "en"))
     assert job.data["summary"] == "What a neural network is."
+    assert job.data["brief"].startswith("A network of neurons")
     assert quota.used(db, ai_notes.BUDGET_BUCKET) == 1153
     assert run_due(db, datetime.now(timezone.utc)) is None  # nothing left to do
 
@@ -115,7 +117,8 @@ def test_long_video_is_read_in_parts_and_merged(db):
     assert run_due(db, datetime.now(timezone.utc), call=part_answer(asked)) == "ready"
     assert asked == [(0, 3600), (3600, 7200), (7200, 7800)]
     data = db.get(AiNotes, (VID, "en")).data
-    assert data["summary"].splitlines() == ["Part 1: from 0", "Part 2: from 60", "Part 3: from 120"]
+    assert data["summary"] == "from 0 from 60 from 120"
+    assert data["brief"].split("\n\n") == ["Part 1. from 0", "Part 2. from 60", "Part 3. from 120"]
     assert [p["seconds"] for p in data["points"]] == [5, 3605, 7205]
     nodes = {n["id"]: n for n in data["mindmap"]}
     assert nodes["all"]["parent"] is None and nodes["p2-r"]["parent"] == "all" and nodes["p2-a"]["parent"] == "p2-r"

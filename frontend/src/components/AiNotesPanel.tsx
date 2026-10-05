@@ -1,5 +1,6 @@
 import { ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
-import { LANGS, type AiPoint, type NotesLang } from '../lib/aiNotes'
+import { useState } from 'react'
+import { LANGS, type AiNotesData, type AiPoint, type NotesLang } from '../lib/aiNotes'
 import { printNotes, shareNotes } from '../lib/exportNotes'
 import { clock } from '../lib/study'
 import { notesOf, type AiNotesView, type useAiNotes } from '../lib/useAiNotes'
@@ -99,6 +100,31 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
 const byTime = (points: AiPoint[]) =>
   [...points].sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity))
 
+// The short summary first; "Brief summary" opens the fuller one (older summaries fall back to their key points).
+function SummaryCard({ notes }: { notes: AiNotesData }) {
+  const [open, setOpen] = useState(false)
+  const paragraphs = notes.brief
+    ? notes.brief.split(/\n\s*\n/).filter(Boolean)
+    : notes.points.map((p) => `${p.title}. ${p.detail}`)
+  return (
+    <section className="sum-card" aria-labelledby="sum-title">
+      <p className="sum-k" id="sum-title">
+        <Sparkles size={16} weight="fill" aria-hidden="true" /> Summary
+      </p>
+      <p className="sum-short">{notes.summary}</p>
+      <button className="sum-toggle" aria-expanded={open} aria-controls="sum-brief" onClick={() => setOpen(!open)}>
+        {open ? 'Hide brief summary' : 'Brief summary'}
+        <ChevronDown size={16} weight="bold" aria-hidden="true" className={open ? 'flip' : ''} />
+      </button>
+      <div id="sum-brief" className={`sum-brief${open ? ' open' : ''}`} hidden={!open}>
+        {paragraphs.map((t, i) => (
+          <p key={i}>{t}</p>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function AiLabel({ offline }: { offline?: boolean }) {
   return (
     <p className="ai-label">
@@ -133,8 +159,7 @@ export default function AiNotesPanel({
         <AiNotesStatus view={ai.view} onGenerate={ai.generate} what="summary" />
       ) : (
         <>
-          <h3 className="ai-sub">Brief summary</h3>
-          <p className="ai-summary">{notes.summary}</p>
+          <SummaryCard notes={notes} />
           <h3 className="ai-sub">Key points</h3>
           <ol className="ai-points">
             {byTime(notes.points).map((p, i) => (

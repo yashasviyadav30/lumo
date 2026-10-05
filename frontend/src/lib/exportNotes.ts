@@ -50,7 +50,7 @@ ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
 @media print{body{margin:0}}
 </style></head><body>
 <h1>${esc(title)}</h1><p class="short">Watch: <a href="https://youtu.be/${videoId}">youtu.be/${videoId}</a></p>
-<h2>Brief summary</h2><p class="sum">${esc(notes.summary)}</p>
+<h2>Summary</h2><p class="sum">${esc(notes.summary)}</p>${notes.brief ? `<h2>Brief summary</h2>${notes.brief.split(/\n\s*\n/).map((t) => `<p>${esc(t)}</p>`).join('')}` : ''}
 <h2>Key points</h2><ol>${notes.points
     .map((p) => `<li>${time(p.seconds)}<b>${esc(p.title)}</b><br><span class="short">${esc(p.short)}</span><br>${esc(p.detail)}</li>`)
     .join('')}</ol>
