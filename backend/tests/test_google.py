@@ -17,6 +17,7 @@ def google_ok(monkeypatch):
 
 
 def test_config_shows_the_client_id_only_when_set(client, monkeypatch):
+    monkeypatch.setattr(get_settings(), "google_client_id", "")
     assert client.get("/api/config").json() == {"google_client_id": None}
     monkeypatch.setattr(get_settings(), "google_client_id", CLIENT)
     assert client.get("/api/config").json() == {"google_client_id": CLIENT}
@@ -46,6 +47,7 @@ def test_google_signs_in_an_existing_password_account_with_the_same_email(client
 
 def test_bad_or_unconfigured_google_tokens_are_refused(client, monkeypatch):
     cred = {"credential": "x" * 40}
+    monkeypatch.setattr(get_settings(), "google_client_id", "")
     assert client.post("/api/auth/google", json=cred).json()["detail"] == "google_not_configured"
     monkeypatch.setattr(get_settings(), "google_client_id", CLIENT)
 
