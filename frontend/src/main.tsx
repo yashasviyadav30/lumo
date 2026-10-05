@@ -6,9 +6,21 @@ import './index.css'
 import { wakeServer } from './lib/api'
 import { applyTheme } from './lib/theme'
 import { routes } from './routes'
+import { registerSW } from 'virtual:pwa-register'
 
 applyTheme()
 wakeServer()
+
+// New versions: check whenever the app comes back to the screen, and switch to them at once (autoUpdate
+// reloads the page). Without this, a phone kept the old app until it was fully closed and opened twice.
+registerSW({
+  immediate: true,
+  onRegisteredSW(_url, reg) {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') reg?.update().catch(() => {})
+    })
+  },
+})
 
 const router = createBrowserRouter(routes)
 
