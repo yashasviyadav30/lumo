@@ -42,6 +42,10 @@ export function messageFor(code: string, status = 0): string {
     invalid_date_of_birth: 'Please check your date of birth.',
     database_not_configured: 'The app is being set up. Please try again later.',
     network: 'Can’t reach the server. If you just opened the app, wait a few seconds and try again.',
+    no_account: 'There’s no account for this Google email yet. Create one first: it takes a moment.',
+    invalid_token: 'Google sign-in didn’t work. Try again.',
+    google_not_configured: 'Google sign-in isn’t switched on yet. Use email for now.',
+    google_denied: 'Google didn’t allow access to your YouTube subscriptions.',
     video_unknown: 'Notes work on videos opened from search or the feed. Find this video there first.',
     too_many_notes_today: 'You’ve started 15 new notes today. Try again tomorrow; notes others made still open.',
   }

@@ -1,28 +1,24 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
+import GoogleButton from '../components/GoogleButton'
 import Notice from '../components/Notice'
 import { APP_NAME } from '../config'
 import { ApiError } from '../lib/api'
 import { useSession } from '../lib/session'
 
 export default function SignUp() {
-  const { signUp } = useSession()
+  const { signUp, googleAuth } = useSession()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [dob, setDob] = useState('')
+  const [notice, setNotice] = useState(false)
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
+  async function attempt(work: () => Promise<void>) {
     setBusy(true)
     setError(null)
     try {
-      await signUp({
-        email: String(form.get('email')),
-        password: String(form.get('password')),
-        date_of_birth: String(form.get('dob')),
-        accepted_notice: form.get('notice') === 'on',
-      })
+      await work()
       navigate('/', { replace: true })
     } catch (err) {
       if (err instanceof ApiError && err.code === 'under_18') {
@@ -35,23 +31,41 @@ export default function SignUp() {
     }
   }
 
+  function onGoogle(credential: string) {
+    if (!dob || !notice) {
+      setError('Enter your date of birth and tick the box first, then continue with Google.')
+      return
+    }
+    attempt(() => googleAuth({ credential, date_of_birth: dob, accepted_notice: notice }))
+  }
+
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = new FormData(e.currentTarget)
+    attempt(() =>
+      signUp({ email: String(form.get('email')), password: String(form.get('password')), date_of_birth: dob, accepted_notice: notice }),
+    )
+  }
+
   return (
     <section className="auth card">
       <h1>Create your {APP_NAME} account</h1>
       <Notice />
       <form onSubmit={onSubmit} noValidate={false}>
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" autoComplete="email" required />
-        <label htmlFor="password">Password (at least 8 characters)</label>
-        <input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
         <label htmlFor="dob">Date of birth</label>
-        <input id="dob" name="dob" type="date" required aria-describedby="dob-help" />
+        <input id="dob" name="dob" type="date" required aria-describedby="dob-help" value={dob} onChange={(e) => setDob(e.target.value)} />
         <p id="dob-help" className="help">
           Used once to check you’re 18 or over. We don’t keep it.
         </p>
         <label className="check">
-          <input name="notice" type="checkbox" required /> I’ve read what {APP_NAME} stores and why
+          <input name="notice" type="checkbox" required checked={notice} onChange={(e) => setNotice(e.target.checked)} /> I’ve read what{' '}
+          {APP_NAME} stores and why
         </label>
+        <GoogleButton onCredential={onGoogle} after="or create an account with email" />
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" autoComplete="email" required />
+        <label htmlFor="password">Password (at least 8 characters)</label>
+        <input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
         {error && (
           <p className="error" role="alert">
             {error}

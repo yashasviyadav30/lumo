@@ -1,20 +1,19 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
+import GoogleButton from '../components/GoogleButton'
 import { useSession } from '../lib/session'
 
 export default function SignIn() {
-  const { signIn } = useSession()
+  const { signIn, googleAuth } = useSession()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
+  async function attempt(work: () => Promise<void>) {
     setBusy(true)
     setError(null)
     try {
-      await signIn(String(form.get('email')), String(form.get('password')))
+      await work()
       navigate('/', { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
@@ -23,9 +22,16 @@ export default function SignIn() {
     }
   }
 
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const form = new FormData(e.currentTarget)
+    attempt(() => signIn(String(form.get('email')), String(form.get('password'))))
+  }
+
   return (
     <section className="auth card">
       <h1>Sign in</h1>
+      <GoogleButton onCredential={(credential) => attempt(() => googleAuth({ credential }))} />
       <form onSubmit={onSubmit}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" autoComplete="email" required />

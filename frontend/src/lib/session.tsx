@@ -23,6 +23,7 @@ type SessionValue = {
   signOut(): Promise<void>
   deleteAccount(): Promise<string>
   refresh(): Promise<void>
+  googleAuth(input: { credential: string; date_of_birth?: string; accepted_notice?: boolean }): Promise<void>
 }
 
 const SessionContext = createContext<SessionValue | null>(null)
@@ -87,13 +88,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return r.note
   }, [])
 
+  const googleAuth = useCallback(async (input: { credential: string; date_of_birth?: string; accepted_notice?: boolean }) => {
+    const r = await api<{ token: string; me: Me }>('/api/auth/google', { method: 'POST', body: JSON.stringify(input) })
+    writeToken(r.token)
+    setMe(r.me)
+  }, [])
+
   const refresh = useCallback(async () => {
     setMe(await api<Me>('/api/me'))
   }, [])
 
   const value = useMemo(
-    () => ({ me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh }),
-    [me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh],
+    () => ({ me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh, googleAuth }),
+    [me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh, googleAuth],
   )
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

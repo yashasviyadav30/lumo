@@ -1,6 +1,7 @@
 import { Search as SearchIcon, UserPlus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import ImportSubscriptions from '../components/ImportSubscriptions'
 import VideoItem, { NoticeLine } from '../components/VideoItem'
 import { getShorts, type VideoCard } from '../lib/search'
 import { useVideoActions } from '../lib/useVideoActions'
@@ -41,6 +42,7 @@ export default function Shorts() {
           <UserPlus size={26} aria-hidden="true" />
           <h3>Follow channels to see their Shorts</h3>
           <p>On any video, tap ⋮ and then Follow channel. Their Shorts appear here, and nobody else’s.</p>
+          <ImportSubscriptions onDone={() => getShorts().then(setData).catch(() => setError(true))} />
           <Link to="/search" className="button small" style={{ marginTop: 12 }}>
             <SearchIcon size={16} aria-hidden="true" /> Find channels
           </Link>

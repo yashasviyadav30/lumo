@@ -630,3 +630,39 @@ html[data-text-size='larger'] {
     transform: translateY(8px);
   }
 }
+
+/* ---------- Google sign-in and import ---------- */
+.google-block {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 14px 0 6px;
+}
+.google-btn {
+  min-height: 44px;
+}
+.or-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.or-line::before,
+.or-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.import-subs {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-top: 12px;
+}
+.feed-empty .import-subs {
+  justify-items: center;
+}

@@ -1,4 +1,5 @@
 import { Send } from 'lucide-react'
+import ImportSubscriptions from '../components/ImportSubscriptions'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
@@ -220,6 +221,14 @@ export default function Settings() {
           </button>
         </div>
         <Appearance />
+        <div className="card settings-section">
+          <h2>Your YouTube channels</h2>
+          <p className="help">
+            Follow every channel you subscribe to on YouTube, in one go. Read-only: {APP_NAME} can’t change anything on
+            your YouTube account, and the access isn’t kept.
+          </p>
+          <ImportSubscriptions />
+        </div>
         <Hidden />
         <Feedback />
         <div className="card settings-section">
