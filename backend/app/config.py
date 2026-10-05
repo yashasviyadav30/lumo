@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     cors_origins: str = "https://focuslearn.focuslearn.workers.dev,http://localhost:5173,http://localhost:4173"
     # Search quota for the whole app per Pacific day (R12). Keep a margin below YouTube's 100.
     search_quota_per_day: int = 95
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-3.5-flash-lite"
+    # Free tier allows 8 hours of YouTube video per day (Gemini video docs, 2026-09-23). Keep a margin.
+    gemini_video_s_per_day: int = 7 * 3600
 
     @property
     def sqlalchemy_url(self) -> str:

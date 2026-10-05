@@ -236,6 +236,22 @@ class CardReview(Base):
     at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 
+class AiNotes(Base):
+    """Gemini-made notes and mind map for one video in one language, shared by everyone (plan v3).
+    Made from the video itself, so treated like YouTube data: deleted 30 days after it was made (R1)."""
+
+    __tablename__ = "ai_notes"
+
+    video_id: Mapped[str] = mapped_column(String(11), primary_key=True)
+    lang: Mapped[str] = mapped_column(String(8), primary_key=True)  # en | hi | auto
+    status: Mapped[str] = mapped_column(String(10), default="queued")  # queued | ready | failed | too_long
+    reason: Mapped[str | None] = mapped_column(String(20), nullable=True)  # busy | daily_limit, while queued
+    data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    next_try_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
 # ---------- YouTube data (purged after 30 days, R1) ----------
 
 
