@@ -16,6 +16,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -200,6 +201,18 @@ class PostReport(Base):
     id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
     post_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("group_posts.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[uuid.UUID] = _user_fk()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class NoteImage(Base):
+    """A screenshot pasted into her notepad. Compressed on the phone; deleted with the account."""
+
+    __tablename__ = "note_images"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    mime: Mapped[str] = mapped_column(String(20))
+    data: Mapped[bytes] = mapped_column(LargeBinary)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
