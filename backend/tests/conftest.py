@@ -5,6 +5,7 @@ os.environ["DATABASE_URL"] = "sqlite+pysqlite:///:memory:"
 os.environ["SECRET_KEY"] = "test-secret"
 os.environ["YOUTUBE_API_KEY"] = "test-youtube-key"
 os.environ["GROQ_API_KEY"] = "test-groq-key"
+os.environ["GEMINI_API_KEY"] = "test-gemini-key"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

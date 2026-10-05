@@ -70,7 +70,15 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
           <h3>This video is too long for AI notes</h3>
-          <p>Notes work on videos up to about 2.5 hours for now. Use My notes for this one.</p>
+          <p>AI notes work on videos up to 4 hours. Use My notes for this one.</p>
+        </div>
+      )
+    case 'unavailable':
+      return (
+        <div className="ai-state">
+          <TriangleAlert size={22} aria-hidden="true" />
+          <h3>AI notes aren’t switched on yet</h3>
+          <p>The server isn’t set up for AI notes right now. Use My notes for this video; AI notes will appear here once it’s on.</p>
         </div>
       )
     case 'failed':

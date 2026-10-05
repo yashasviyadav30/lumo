@@ -12,7 +12,7 @@ export type AiPoint = { title: string; seconds: number | null; short: string; de
 export type MapNode = { id: string; parent: string | null; label: string; detail: string; seconds: number | null }
 export type AiNotesData = { summary: string; points: AiPoint[]; mindmap: MapNode[] }
 export type AiNotesState =
-  | { status: 'none' | 'failed' | 'too_long' }
+  | { status: 'none' | 'failed' | 'too_long' | 'unavailable' }
   | { status: 'queued'; reason: 'busy' | 'daily_limit' | null }
   | { status: 'ready'; notes: AiNotesData }
 

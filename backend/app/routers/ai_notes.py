@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app import ai_notes, quota
 from app.auth import current_user
+from app.config import get_settings
 from app.db import get_db
 from app.models import AiNotes, User, YtVideo
 from app.routers.study import VIDEO_ID
@@ -30,6 +31,8 @@ def get_or_request(body: AiNotesIn, request: Request, user: User = Depends(curre
     """Notes if ready; otherwise starts a shared job (or reports its state). The page polls this."""
     request.state.action = "ai_notes"
     job = db.get(AiNotes, (body.video_id, body.lang))
+    if not get_settings().gemini_api_key and (job is None or job.status == "queued"):
+        return {"status": "unavailable"}  # no key on this server: say so instead of queueing forever
     if job is None and not body.create:
         return {"status": "none"}
     if job is None:

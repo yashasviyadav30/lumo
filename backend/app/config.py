@@ -22,7 +22,8 @@ class Settings(BaseSettings):
     # Search quota for the whole app per Pacific day (R12). Keep a margin below YouTube's 100.
     search_quota_per_day: int = 95
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-3.5-flash-lite"
+    # Tried in order; the next one is used when one is overloaded (free models often answer 503).
+    gemini_models: str = "gemini-3.5-flash-lite,gemini-3.8-flash"
     # Free tier allows 8 hours of YouTube video per day (Gemini video docs, 2026-09-23). Keep a margin.
     gemini_video_s_per_day: int = 7 * 3600
 
@@ -34,6 +35,10 @@ class Settings(BaseSettings):
             if url.startswith(prefix):
                 return "postgresql+psycopg://" + url[len(prefix):]
         return url
+
+    @property
+    def gemini_model_list(self) -> list[str]:
+        return [m.strip() for m in self.gemini_models.split(",") if m.strip()]
 
     @property
     def cors_origin_list(self) -> list[str]:
