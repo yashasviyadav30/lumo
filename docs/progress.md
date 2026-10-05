@@ -4,7 +4,14 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
-## Where things stand (2026-10-03)
+## New direction (2026-10-05)
+
+The user did not like the v2 app (look, feel or features). After a design interview they confirmed
+[plan-v3.md](plan-v3.md): keep the backend, rebuild every screen, and centre the app on Gemini-made notes, a
+zoomable mind map and the user's own notepad, then add a YouTube-like feed and study groups. Revision cards
+are removed. Next: step 1, the study page.
+
+## Where things stood (2026-10-03)
 
 - **Live:** https://focuslearn.focuslearn.workers.dev — app and API through one Cloudflare address; backend on Render, database on Supabase.
 - **Built:** accounts (18+), goal parser and topics, filtered search, Home feed, study page (Mark, Doubt, split-screen notepad, −10s, description, comments with tappable times, star), revision cards with 90-second replay, Library (Starred, History), My notes (by video / all notes, search, export), Settings (theme, Shorts, hidden channels, delete my data), visual guide.

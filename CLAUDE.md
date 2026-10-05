@@ -26,6 +26,7 @@ from this file and `docs/progress.md`.
 
 | File | What it holds |
 |---|---|
+| `docs/plan-v3.md` | **Current direction (2026-10-05):** rebuild the screens around AI notes, mind maps and study groups. Start here. |
 | `docs/plan.md` | The plan, stages, and **rules R1–R14** (YouTube policy, DPDP, user decisions). Check every feature against them. |
 | `docs/progress.md` | What is done, decisions with reasons, measurements, what is blocked on the user. Keep it updated. |
 | `docs/ux-review.md` | Opus design review (2026-10-02) with 38 screenshots in `docs/ux-review/`; most of its top 10 is applied. |
