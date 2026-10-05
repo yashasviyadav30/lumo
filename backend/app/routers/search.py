@@ -11,9 +11,11 @@ from sqlalchemy.orm import Session
 from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
-from app.feed import build_feed
+from app.feed import build_feed, build_shorts
 from app.filters import UserRules
-from app.models import Follow, Goal, Mute, User
+from app.filters import DEFAULT_HIDDEN_GROUPS
+from app.models import Follow, Goal, LectureProgress, Mute, NotInterested, User, YtVideo
+from app.routers.study import VIDEO_ID
 from app.routers.goals import view
 from app.search import run_search
 from app.youtube import YouTubeClient, YouTubeError
@@ -38,9 +40,27 @@ def rules_for(db: Session, user: User) -> UserRules:
     return UserRules(
         muted_channels={m.value for m in mutes if m.kind == "channel"},
         muted_phrases=[m.value for m in mutes if m.kind == "phrase"],
-        shorts_enabled=bool(s and s.shorts_enabled),
+        shorts_enabled=False,  # Shorts live in their own tab (plan v3), never in the feed or search results
         trusted_channels=follows,
+        hidden_groups=DEFAULT_HIDDEN_GROUPS if not s or s.hidden_groups is None else frozenset(s.hidden_groups),
+        not_interested=set(db.scalars(select(NotInterested.video_id).where(NotInterested.user_id == user.id))),
     )
+
+
+def progress_for(db: Session, user: User, ids: list[str]) -> dict[str, int]:
+    """Where she stopped in each of these videos, for the red line under the thumbnail (our data, R9)."""
+    if not ids:
+        return {}
+    rows = db.execute(select(LectureProgress.video_id, LectureProgress.position_s)
+                      .where(LectureProgress.user_id == user.id, LectureProgress.video_id.in_(ids)))
+    return dict(rows.all())
+
+
+def watched_channels(db: Session, user: User, skip: set[str], limit: int = 4) -> list[str]:
+    """Channels of videos she watched here recently: the feed treats them like soft follows."""
+    rows = db.scalars(select(YtVideo.channel_id).join(LectureProgress, LectureProgress.video_id == YtVideo.video_id)
+                      .where(LectureProgress.user_id == user.id).order_by(LectureProgress.updated_at.desc()).limit(30))
+    return [c for c in dict.fromkeys(rows) if c not in skip][:limit]
 
 
 class SearchIn(BaseModel):
@@ -71,6 +91,7 @@ def search(
         "searches_left": out.searches_left,
         "note": out.note,
         "timings_ms": out.timings_ms,
+        "progress": progress_for(db, user, [r["video_id"] for r in out.results]),
     }
 
 
@@ -130,17 +151,61 @@ def remove_follow(body: FollowIn, user: User = Depends(current_user), db: Sessio
     db.commit()
 
 
+class FeedIn(BaseModel):
+    # Her last searches, kept on her phone (never stored here) and sent in the body (R11).
+    recent: list[str] = Field(default_factory=list, max_length=5)
+
+
 @router.get("/feed")
-def feed(request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
+def feed_get(request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
+             yt: YouTubeClient = Depends(get_youtube)) -> dict:
+    return feed(FeedIn(), request, user, db, yt)
+
+
+@router.post("/feed")
+def feed(body: FeedIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
          yt: YouTubeClient = Depends(get_youtube)) -> dict:
-    """Home feed: new uploads from followed channels + the goal's searches, with the same hide rules."""
+    """Home feed: followed and recently watched channels, her goal's topics and her recent searches."""
     request.state.action = "feed"
     row = db.scalar(select(Goal).where(Goal.user_id == user.id, Goal.active.is_(True)).order_by(Goal.created_at.desc()))
     goal = view(row) if row else None
+    rules = rules_for(db, user)
     follows = list(db.scalars(select(Follow.channel_id).where(Follow.user_id == user.id).order_by(Follow.id.desc())))
+    channels = follows + watched_channels(db, user, set(follows) | rules.muted_channels)
+    recent = [q.strip()[:200] for q in body.recent if q.strip()]
     language = user.settings.search_language if user.settings else "en"
     try:
-        return build_feed(db, yt, rules_for(db, user), follows, goal["query"] if goal else None,
-                          [t["query"] for t in goal["topics"]] if goal else [], language)
+        out = build_feed(db, yt, rules, channels, goal["query"] if goal else None,
+                         [t["query"] for t in goal["topics"]] if goal else [], language, recent)
     except YouTubeError:
         raise HTTPException(status_code=502, detail="youtube_unavailable") from None
+    return out | {"progress": progress_for(db, user, [r["video_id"] for r in out["results"]])}
+
+
+@router.get("/shorts")
+def shorts(request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
+           yt: YouTubeClient = Depends(get_youtube)) -> dict:
+    """Shorts only from channels she follows (plan v3): the useful reels, without the endless scroll of strangers."""
+    request.state.action = "shorts"
+    follows = list(db.scalars(select(Follow.channel_id).where(Follow.user_id == user.id).order_by(Follow.id.desc())))
+    try:
+        return build_shorts(db, yt, rules_for(db, user), follows)
+    except YouTubeError:
+        raise HTTPException(status_code=502, detail="youtube_unavailable") from None
+
+
+class NotInterestedIn(BaseModel):
+    video_id: str = Field(pattern=VIDEO_ID)
+    undo: bool = False
+
+
+@router.post("/videos/not-interested", status_code=204)
+def not_interested(body: NotInterestedIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> None:
+    if body.undo:
+        db.execute(delete(NotInterested).where(NotInterested.user_id == user.id, NotInterested.video_id == body.video_id))
+    else:
+        db.add(NotInterested(user_id=user.id, video_id=body.video_id))
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # already marked

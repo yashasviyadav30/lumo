@@ -4,8 +4,8 @@ Every rule uses YouTube's own fields or the user's own settings. Nothing here ju
 
 - DROP: videos that can't play in the app (age-restricted, not embeddable, blocked in India). Listed with
   the reason, never playable here.
-- HIDE: videos YouTube itself types as songs, movies, entertainment shows, news or travel vlogs; the user's
-  mutes; Shorts when the user has them off. "Show" reveals them in place.
+- HIDE: videos in a YouTube category group the user hides (gaming, comedy and entertainment by default, plan
+  v3), videos she marked "Not interested", her mutes, and Shorts (they have their own tab). "Show" reveals them.
 Channels the user follows are never hidden by YouTube's type (uploaders choose their own category and are
 sometimes wrong). People & Blogs is shown: podcasts and interviews carry that label too.
 """
@@ -48,24 +48,41 @@ CATEGORY_NAMES = {
     "43": "Shows",
     "44": "Trailers",
 }
-# The user's hide list (2026-10-01): songs, movies, entertainment shows, news channels, vlogs.
-# Documentary (35) and People & Blogs (22, where most podcasts sit) are left out on purpose.
-ENTERTAINMENT_CATEGORIES = {
-    "1", "10", "19", "20", "21", "23", "24", "25",  # Film, Music, Travel vlogs, Gaming, Videoblogging, Comedy, Entertainment, News
-    "18", "30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43", "44",  # movie & show genres
+# Groups of YouTube's own categories a user can hide (plan v3). Gaming, comedy and entertainment are hidden by
+# default; the rest is her choice. Documentary (35) and People & Blogs (22, most podcasts) are never grouped.
+CATEGORY_GROUPS = {
+    "gaming": {"20"},
+    "comedy": {"23", "34"},
+    "entertainment": {"24", "43", "44", "32", "33", "36", "37", "38", "39", "40", "41"},  # shows, trailers, genres
+    "music": {"10"},
+    "films": {"1", "18", "30", "31"},
+    "news": {"25"},
+    "vlogs": {"19", "21"},
+    "sports": {"17"},
 }
+GROUP_LABELS = {
+    "gaming": "Gaming",
+    "comedy": "Comedy",
+    "entertainment": "Entertainment and TV shows",
+    "music": "Music",
+    "films": "Films",
+    "news": "News",
+    "vlogs": "Travel and vlogs",
+    "sports": "Sports",
+}
+DEFAULT_HIDDEN_GROUPS = frozenset({"gaming", "comedy", "entertainment"})
 LEARNING_CATEGORIES = {"26", "27", "28"}
 
-# topicDetails.topicCategories are Wikipedia URLs. These page names mean entertainment.
-ENTERTAINMENT_TOPICS = {
-    "Music": "Music",
-    "Video_game_culture": "Gaming",
-    "Action_game": "Gaming",
-    "Role-playing_video_game": "Gaming",
-    "Humour": "Comedy",
-    "Film": "Films",
-    "Television_program": "TV shows",
-    "Entertainment": "Entertainment",
+# topicDetails.topicCategories are Wikipedia URLs. These page names belong to a group.
+TOPIC_GROUPS = {
+    "Music": "music",
+    "Video_game_culture": "gaming",
+    "Action_game": "gaming",
+    "Role-playing_video_game": "gaming",
+    "Humour": "comedy",
+    "Film": "films",
+    "Television_program": "entertainment",
+    "Entertainment": "entertainment",
 }
 
 SHORTS_MAX_SECONDS = 180  # YouTube Shorts can be up to 3 minutes
@@ -77,6 +94,8 @@ class UserRules:
     muted_phrases: list[str] = field(default_factory=list)
     shorts_enabled: bool = False
     trusted_channels: set[str] = field(default_factory=set)  # channels the user follows
+    hidden_groups: frozenset[str] = DEFAULT_HIDDEN_GROUPS
+    not_interested: set[str] = field(default_factory=set)  # video IDs she dismissed
 
 
 @dataclass
@@ -90,16 +109,18 @@ def _topic_names(topics: list[str] | None) -> list[str]:
     return [t.rsplit("/", 1)[-1] for t in (topics or [])]
 
 
-def youtube_type_reason(category_id: str | None, topics: list[str] | None) -> str | None:
-    """Plain-word reason if YouTube's own fields say this is entertainment, else None."""
-    if category_id in ENTERTAINMENT_CATEGORIES:
-        return f"YouTube lists this as {CATEGORY_NAMES[category_id]}"
+def youtube_type_reason(category_id: str | None, topics: list[str] | None,
+                        hidden_groups: frozenset[str] = DEFAULT_HIDDEN_GROUPS) -> str | None:
+    """Plain-word reason if YouTube's own fields put this video in a group the user hides, else None."""
+    for group, ids in CATEGORY_GROUPS.items():
+        if category_id in ids:
+            return f"YouTube lists this as {CATEGORY_NAMES[category_id]}" if group in hidden_groups else None
     if category_id in LEARNING_CATEGORIES:
         return None  # YouTube calls it Education/Science/How-to: don't second-guess with topics
     for name in _topic_names(topics):
-        for key, label in ENTERTAINMENT_TOPICS.items():
-            if name == key or name.endswith("_music") and key == "Music":
-                return f"YouTube tags this as {label}"
+        group = TOPIC_GROUPS.get(name) or ("music" if name.endswith("_music") else None)
+        if group and group in hidden_groups:
+            return f"YouTube tags this as {GROUP_LABELS[group]}"
     return None
 
 
@@ -126,6 +147,8 @@ def judge(video, rules: UserRules) -> Verdict:
     if reasons:
         return Verdict(visible=False, playable=False, reasons=reasons)
 
+    if video.video_id in rules.not_interested:
+        reasons.append("You said not interested")
     if video.channel_id in rules.muted_channels:
         reasons.append("Your mute: this channel")
     title = (video.title or "").casefold()
@@ -136,7 +159,7 @@ def judge(video, rules: UserRules) -> Verdict:
     if not rules.shorts_enabled and is_short(video):
         reasons.append("Short vertical video, and your Shorts setting is off")
     if video.channel_id not in rules.trusted_channels:
-        type_reason = youtube_type_reason(video.category_id, video.topic_categories)
+        type_reason = youtube_type_reason(video.category_id, video.topic_categories, rules.hidden_groups)
         if type_reason:
             reasons.append(type_reason)
     return Verdict(visible=not reasons, playable=True, reasons=reasons)

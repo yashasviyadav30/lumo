@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from app import quota
-from app.filters import UserRules, judge
+from app.filters import UserRules, is_short, judge
 from app.models import YtSearchCache
 from app.search import MAX_AGE, _aware, _details, _ids_for, video_card
 from app.youtube import QuotaExceeded, YouTubeClient, YouTubeError
@@ -22,6 +22,7 @@ MAX_CHANNELS = 12
 MAX_TOPICS = 3  # besides the goal itself
 SPARE_SEARCHES = 30  # topic searches beyond the first only run while the day's bucket has room
 FEED_SIZE = 60
+MAX_RECENT = 2  # her last searches add to the feed (they are usually in the shared cache already)
 
 
 def _uploads(db: Session, yt: YouTubeClient, channel_id: str, now: datetime) -> list[str]:
@@ -63,11 +64,12 @@ def interleave(sources: list[list[str]], limit: int = FEED_SIZE) -> list[str]:
 
 
 def build_feed(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[str], goal_query: str | None,
-               topic_queries: list[str], language: str) -> dict:
+               topic_queries: list[str], language: str, recent: list[str] | None = None) -> dict:
     now = datetime.now(timezone.utc)
     sources = [_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]]
     others = [q for q in dict.fromkeys(topic_queries) if q != goal_query]
-    queries = ([goal_query] if goal_query else []) + todays_topics(others)
+    searched = [q for q in dict.fromkeys(recent or []) if q not in (goal_query, *others)][:MAX_RECENT]
+    queries = ([goal_query] if goal_query else []) + searched + todays_topics(others)
     for n, q in enumerate(queries):
         if n > 0 and quota.search_left(db) < SPARE_SEARCHES:
             break
@@ -87,3 +89,13 @@ def build_feed(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[s
         else:
             hidden.append({**video_card(v), "reasons": verdict.reasons, "playable": verdict.playable})
     return {"results": results, "hidden": hidden, "hidden_count": len(hidden), "sources": {"channels": len(follows[:MAX_CHANNELS]), "searches": len(sources) - len(follows[:MAX_CHANNELS])}}
+
+
+def build_shorts(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[str]) -> dict:
+    """Short vertical videos from followed channels only, newest first per channel, mixed."""
+    now = datetime.now(timezone.utc)
+    order = interleave([_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]])
+    videos = _details(db, yt, order, now)
+    allow = UserRules(**{**rules.__dict__, "shorts_enabled": True})
+    results = [video_card(v) for vid in order if (v := videos.get(vid)) and is_short(v) and judge(v, allow).visible]
+    return {"results": results, "follows": len(follows)}

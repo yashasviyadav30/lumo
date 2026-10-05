@@ -40,6 +40,7 @@ def test_topics_rotate_by_day():
 
 
 def test_feed_mixes_goal_and_followed_channels_with_the_hide_list(yt, signed_in):
+    signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     signed_in.post("/api/goals", json={"text": "CMA Inter costing"})
     signed_in.post("/api/follows", json={"channel_id": TEACHER})
     feed = signed_in.get("/api/feed").json()
@@ -72,3 +73,41 @@ def test_uploads_are_cached(yt, signed_in):
 def test_shorts_setting_can_be_switched(signed_in):
     assert signed_in.post("/api/me/settings", json={"shorts_enabled": True}).json()["settings"]["shorts_enabled"] is True
     assert signed_in.get("/api/me").json()["settings"]["shorts_enabled"] is True
+
+
+def test_settings_hidden_groups_round_trip_and_reject_unknown(signed_in):
+    assert signed_in.get("/api/me").json()["settings"]["hidden_groups"] == ["comedy", "entertainment", "gaming"]
+    r = signed_in.post("/api/me/settings", json={"hidden_groups": ["news"]})
+    assert r.json()["settings"]["hidden_groups"] == ["news"]
+    assert signed_in.post("/api/me/settings", json={"hidden_groups": ["cats"]}).status_code == 422
+
+
+def test_not_interested_hides_a_video_and_can_be_undone(yt, signed_in):
+    signed_in.post("/api/goals", json={"text": "CMA Inter Cost Accounting"})
+    assert signed_in.post("/api/videos/not-interested", json={"video_id": "podcast0001"}).status_code == 204
+    signed_in.post("/api/videos/not-interested", json={"video_id": "podcast0001"})  # twice is fine
+    feed = signed_in.post("/api/feed", json={"recent": []}).json()
+    assert "podcast0001" not in {v["video_id"] for v in feed["results"]}
+    assert {v["video_id"]: v["reasons"] for v in feed["hidden"]}["podcast0001"] == ["You said not interested"]
+    signed_in.post("/api/videos/not-interested", json={"video_id": "podcast0001", "undo": True})
+    assert "podcast0001" in {v["video_id"] for v in signed_in.post("/api/feed", json={}).json()["results"]}
+
+
+def test_feed_returns_progress_and_refuses_too_many_recent_searches(yt, signed_in):
+    signed_in.post("/api/goals", json={"text": "CMA Inter Cost Accounting"})
+    signed_in.post("/api/feed", json={})  # she sees the lecture in her feed, then watches 5 minutes of it
+    signed_in.post("/api/progress", json={"video_id": "lecture0001", "position_s": 300})
+    feed = signed_in.post("/api/feed", json={"recent": ["cost sheet"]}).json()
+    assert feed["progress"] == {"lecture0001": 300}
+    assert signed_in.post("/api/feed", json={"recent": ["a"] * 6}).status_code == 422
+
+
+def test_shorts_tab_shows_only_vertical_shorts_from_followed_channels(yt, signed_in):
+    assert signed_in.get("/api/shorts").json() == {"results": [], "follows": 0}
+    short = video("short000001", channel_id=TEACHER, duration_s=50, vertical=True)
+    yt.video_map["short000001"] = short
+    yt.playlists["UU" + TEACHER[2:]] = ["short000001", "upload00001"]
+    signed_in.post("/api/follows", json={"channel_id": TEACHER})
+    assert [v["video_id"] for v in signed_in.get("/api/shorts").json()["results"]] == ["short000001"]
+    # The same Short never appears in the Home feed: it has its own tab.
+    assert "short000001" not in {v["video_id"] for v in signed_in.post("/api/feed", json={}).json()["results"]}

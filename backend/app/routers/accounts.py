@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import current_session, current_user
 from app.db import get_db
+from app.filters import CATEGORY_GROUPS, DEFAULT_HIDDEN_GROUPS
 from app.models import AuthSession, Consent, User, UserSettings
 from app.security import hash_password, hash_token, new_token, pseudonym, verify_password
 
@@ -39,6 +40,7 @@ class SettingsOut(BaseModel):
     shorts_enabled: bool
     shorts_daily_limit_min: int | None
     search_language: str
+    hidden_groups: list[str]
 
 
 class MeOut(BaseModel):
@@ -85,6 +87,7 @@ def _me(user: User) -> MeOut:
             shorts_enabled=s.shorts_enabled,
             shorts_daily_limit_min=s.shorts_daily_limit_min,
             search_language=s.search_language,
+            hidden_groups=sorted(DEFAULT_HIDDEN_GROUPS if s.hidden_groups is None else s.hidden_groups),
         ),
     )
 
@@ -154,6 +157,7 @@ def logout(request: Request, session: AuthSession = Depends(current_session), db
 
 class SettingsIn(BaseModel):
     shorts_enabled: bool | None = None
+    hidden_groups: list[str] | None = Field(default=None, max_length=len(CATEGORY_GROUPS))
 
 
 @router.post("/me/settings", response_model=MeOut)
@@ -162,6 +166,10 @@ def update_settings(body: SettingsIn, user: User = Depends(current_user), db: Se
         user.settings = UserSettings(shorts_enabled=False, shorts_daily_limit_min=None, search_language="en")
     if body.shorts_enabled is not None:
         user.settings.shorts_enabled = body.shorts_enabled
+    if body.hidden_groups is not None:
+        if not set(body.hidden_groups) <= CATEGORY_GROUPS.keys():
+            raise HTTPException(status_code=422, detail="unknown_group")
+        user.settings.hidden_groups = sorted(set(body.hidden_groups))
     db.commit()
     return _me(user)
 

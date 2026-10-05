@@ -122,6 +122,19 @@ class UserSettings(Base):
     shorts_enabled: Mapped[bool] = mapped_column(Boolean, default=False)  # off by default for everyone
     shorts_daily_limit_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
     search_language: Mapped[str] = mapped_column(String(8), default="en")
+    hidden_groups: Mapped[list | None] = mapped_column(JSON, nullable=True)  # None = the default groups
+
+
+class NotInterested(Base):
+    """A video she tapped "Not interested" on. Video ID only (R1)."""
+
+    __tablename__ = "not_interested"
+    __table_args__ = (UniqueConstraint("user_id", "video_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    video_id: Mapped[str] = mapped_column(String(11))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
 class AppLog(Base):

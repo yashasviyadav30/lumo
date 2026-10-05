@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy import select
 
 from app.config import get_settings
-from app.filters import UserRules, judge, youtube_type_reason
+from app.filters import CATEGORY_GROUPS, UserRules, judge, youtube_type_reason
 from app.models import AppLog, YtSearchCache, YtVideo
 from app.routers.search import get_youtube
 from app.youtube import blocked_in, parse_duration, parse_video
@@ -73,22 +73,31 @@ def test_parse_video_reads_only_youtube_fields():
 
 
 def test_youtube_type_reason():
-    assert youtube_type_reason("10", []) == "YouTube lists this as Music"
+    everything = frozenset(CATEGORY_GROUPS)
     assert youtube_type_reason("24", []) == "YouTube lists this as Entertainment"
-    assert youtube_type_reason("27", ["https://en.wikipedia.org/wiki/Music"]) is None  # Education wins
-    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Pop_music"]) == "YouTube tags this as Music"
-    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Film"]) == "YouTube tags this as Films"
-    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Knowledge"]) is None
-    assert youtube_type_reason("35", []) is None  # documentaries stay
+    assert youtube_type_reason("20", []) == "YouTube lists this as Gaming"
+    assert youtube_type_reason("10", []) is None  # music shows by default (motivational songs)
+    assert youtube_type_reason("10", [], everything) == "YouTube lists this as Music"
+    assert youtube_type_reason("27", ["https://en.wikipedia.org/wiki/Humour"]) is None  # Education wins
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Humour"]) == "YouTube tags this as Comedy"
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Pop_music"], everything) == "YouTube tags this as Music"
+    assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Knowledge"], everything) is None
+    assert youtube_type_reason("35", [], everything) is None  # documentaries stay
 
 
-def test_users_hide_list_uses_youtube_labels_only():
-    # Songs, movies, entertainment shows, news and travel vlogs: hidden by YouTube's own category.
-    for cat in ("10", "1", "30", "24", "43", "25", "19", "21"):
+def test_default_hide_list_is_gaming_comedy_and_entertainment():
+    for cat in ("20", "23", "24", "43"):
         assert not judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
-    # Podcasts and interviews mostly sit in People & Blogs, so it stays visible; so do lectures.
-    for cat in ("22", "27", "28", "26", "35", "17"):
+    # Music, films, news and vlogs are her choice; podcasts and lectures always show.
+    for cat in ("10", "1", "25", "19", "22", "27", "28", "26", "35", "17"):
         assert judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
+
+
+def test_hidden_groups_and_not_interested():
+    assert not judge(video("x" * 11, category_id="25"), UserRules(hidden_groups=frozenset({"news"}))).visible
+    assert judge(video("x" * 11, category_id="20"), UserRules(hidden_groups=frozenset())).visible
+    verdict = judge(video("n" * 11, category_id="27"), UserRules(not_interested={"n" * 11}))
+    assert not verdict.visible and verdict.reasons == ["You said not interested"]
 
 
 def test_no_built_in_channel_list_overrides_the_filter():
@@ -125,6 +134,8 @@ def test_phrase_mute_and_shorts_setting():
 
 
 def test_search_shows_learning_and_explains_every_hidden_video(yt, signed_in):
+    # She hides music and news herself (they show by default since plan v3).
+    signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     r = signed_in.post("/api/search", json={"q": "cost accounting"})
     assert r.status_code == 200
     body = r.json()
@@ -161,6 +172,8 @@ def test_safe_search_is_always_strict():
 
 
 def test_quota_guard_serves_saved_results(yt, signed_in, db, monkeypatch):
+    # She hides music and news herself (they show by default since plan v3).
+    signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     signed_in.post("/api/search", json={"q": "cost accounting"})
     # Make the saved search a day old (stale but under 30 days) and use up the day's quota.
     row = db.scalar(select(YtSearchCache))
@@ -202,6 +215,8 @@ def test_search_text_and_video_ids_never_reach_the_log(yt, signed_in, db):
 
 
 def test_mutes_and_follows_change_results(yt, signed_in):
+    # She hides music and news herself (they show by default since plan v3).
+    signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     assert signed_in.post("/api/mutes", json={"kind": "channel", "value": TEACHER}).status_code == 201
     r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
     assert "lecture0001" in {h["video_id"] for h in r["hidden"]}
