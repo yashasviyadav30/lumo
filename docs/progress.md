@@ -38,6 +38,15 @@ chip and 2 rotating shared learning searches. Tried and dropped: YouTube's categ
 in India; Science & Tech is gadget unboxings) and "recent, most viewed" search (viral news and drama). Live
 check, UPSC goal: 46 videos in All, 52 in Podcasts & talks.
 
+**Lumo makeover (2026-10-06):** name Lumo; Google sign-in on (public client ID in config.py); Gemini key on
+Render (checked live: a new 20-min video summarised in 30 s). AI "notes" renamed Summary (Brief summary + Key
+points). My notes: paste/drop screenshots (compressed on the phone, stored in `note_images`, PNG/JPEG/WebP checked
+by bytes), coloured underlines, full screen; fixed two data-loss risks (the editor now waits for saved notes, and
+saves when the page closes). Phosphor icons (duotone). Brand: glowing-orb logo (`Logo.tsx`, `public/favicon.svg`,
+PNGs via `node e2e/make-icons.mjs`), glow palette and Bricolage Grotesque headings in `src/styles/brand.css`
+(loaded last), new landing page. Still to do from the user's list: a wording pass on every screen and a
+"nothing missing" walk-through.
+
 **Not built (optional in the plan):** phone push alerts for replies (needs VAPID keys and a push service);
 the in-app badge covers it for now.
 
