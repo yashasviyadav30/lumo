@@ -149,6 +149,60 @@ class Feedback(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+class StudyGroup(Base):
+    """A study group (plan v3, step 4). Joined by invite link. The creator moderates; if the creator leaves or
+    deletes their account, the longest-standing member takes over."""
+
+    __tablename__ = "study_groups"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(80))
+    invite_code: Mapped[str] = mapped_column(String(32), unique=True, index=True)
+    creator_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class GroupMember(Base):
+    """Her membership, with the name she chose for this group (other members never see her email)."""
+
+    __tablename__ = "group_members"
+    __table_args__ = (UniqueConstraint("group_id", "user_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    group_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("study_groups.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    name: Mapped[str] = mapped_column(String(40))
+    joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)  # for the unread badge
+
+
+class GroupPost(Base):
+    """A post in a group's feed (parent_id empty) or a reply in its thread. Deleted with its author's account."""
+
+    __tablename__ = "group_posts"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    group_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("study_groups.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    parent_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("group_posts.id", ondelete="CASCADE"), nullable=True, index=True)
+    kind: Mapped[str] = mapped_column(String(10))  # note | doubt | video | reply
+    text: Mapped[str] = mapped_column(Text, default="")
+    video_id: Mapped[str | None] = mapped_column(String(11), nullable=True)  # video ID only; titles fetched fresh (R1)
+    t_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    attach: Mapped[str | None] = mapped_column(String(10), nullable=True)  # notes | map: open the video on that tab
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+
+
+class PostReport(Base):
+    __tablename__ = "post_reports"
+    __table_args__ = (UniqueConstraint("post_id", "user_id"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    post_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("group_posts.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class AppLog(Base):
     """Request log kept in India for 1 year. Never holds video IDs or titles (R11)."""
 

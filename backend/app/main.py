@@ -13,7 +13,7 @@ from app.db import get_engine
 from app.ai_notes import notes_loop
 from app.purge import purge_loop
 from app.request_log import RequestLogMiddleware
-from app.routers import accounts, ai_notes, goals, search, study
+from app.routers import accounts, ai_notes, goals, groups, search, study
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 # httpx logs every request URL at INFO, and YouTube URLs carry the API key: never let them reach a log.
@@ -43,6 +43,7 @@ def create_app(run_background_jobs: bool = True) -> FastAPI:
     app.include_router(goals.router)
     app.include_router(study.router)
     app.include_router(ai_notes.router)
+    app.include_router(groups.router)
 
     @app.get("/health")
     def health() -> dict[str, str]:
