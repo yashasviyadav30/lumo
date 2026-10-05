@@ -52,8 +52,8 @@ export function messageFor(code: string, status = 0): string {
     too_many_groups: 'You’re in 20 groups already. Leave one to join another.',
     not_allowed: 'Only the group owner can do that.',
     post_not_found: 'That post was deleted.',
-    video_unknown: 'Notes work on videos opened from search or the feed. Find this video there first.',
-    too_many_notes_today: 'You’ve started 15 new notes today. Try again tomorrow; notes others made still open.',
+    video_unknown: 'Summaries work on videos opened from search or the feed. Find this video there first.',
+    too_many_notes_today: 'You’ve started 15 new summaries today. Try again tomorrow; summaries others made still open.',
   }
   return messages[code] ?? (status >= 500 ? 'Something went wrong on our side. Please try again.' : 'Please check the form and try again.')
 }

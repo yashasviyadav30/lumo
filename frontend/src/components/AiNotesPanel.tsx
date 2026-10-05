@@ -41,8 +41,8 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
       return (
         <div className="ai-state ai-start">
           <Sparkles size={24} aria-hidden="true" />
-          <h3>Short notes and a mind map for this video</h3>
-          <p>Made by AI from the video in about a minute. Everyone who opens this video gets them too.</p>
+          <h3>A summary and a mind map of this video</h3>
+          <p>Made by AI from the video in about a minute. Everyone who opens this video gets it too.</p>
           <button onClick={onGenerate}>
             <Sparkles size={17} aria-hidden="true" /> Generate {what}
           </button>
@@ -53,12 +53,12 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
           <h3>Queued for tomorrow</h3>
-          <p>Today’s free AI limit is used up. Your notes will be ready by tomorrow. Take your own notes in My notes meanwhile.</p>
+          <p>Today’s free AI limit is used up. Your summary will be ready by tomorrow. Take your own notes in My notes meanwhile.</p>
         </div>
       ) : (
         <div className="ai-state" role="status">
           <Hourglass size={22} aria-hidden="true" className="ai-spin" />
-          <h3>Making your notes…</h3>
+          <h3>Making your summary…</h3>
           <p>
             {view.reason === 'busy'
               ? 'The AI is busy right now, so it will try again by itself. Keep watching; this page updates on its own.'
@@ -70,23 +70,23 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
       return (
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
-          <h3>This video is too long for AI notes</h3>
-          <p>AI notes work on videos up to 4 hours. Use My notes for this one.</p>
+          <h3>This video is too long for an AI summary</h3>
+          <p>AI summaries work on videos up to 4 hours. Use My notes for this one.</p>
         </div>
       )
     case 'unavailable':
       return (
         <div className="ai-state">
           <TriangleAlert size={22} aria-hidden="true" />
-          <h3>AI notes aren’t switched on yet</h3>
-          <p>The server isn’t set up for AI notes right now. Use My notes for this video; AI notes will appear here once it’s on.</p>
+          <h3>AI summaries aren’t switched on yet</h3>
+          <p>The server isn’t set up for AI summaries right now. Use My notes for this video; the summary will appear here once it’s on.</p>
         </div>
       )
     case 'failed':
       return (
         <div className="ai-state">
           <TriangleAlert size={22} aria-hidden="true" />
-          <h3>Couldn’t make notes for this video</h3>
+          <h3>Couldn’t make a summary of this video</h3>
           <p>The AI couldn’t read it after several tries. Use My notes for this one.</p>
         </div>
       )
@@ -130,10 +130,12 @@ export default function AiNotesPanel({
         <LangPicker lang={ai.lang} onPick={ai.chooseLang} />
       </div>
       {!notes ? (
-        <AiNotesStatus view={ai.view} onGenerate={ai.generate} what="notes" />
+        <AiNotesStatus view={ai.view} onGenerate={ai.generate} what="summary" />
       ) : (
         <>
+          <h3 className="ai-sub">Brief summary</h3>
           <p className="ai-summary">{notes.summary}</p>
+          <h3 className="ai-sub">Key points</h3>
           <ol className="ai-points">
             {byTime(notes.points).map((p, i) => (
               <li key={i}>

@@ -29,8 +29,8 @@ export default function Notice() {
           <strong>Feedback</strong> you send from Settings.
         </li>
         <li>
-          <strong>AI notes:</strong> made by Google’s Gemini from the public video only. Nothing you type is sent to
-          Gemini. Notes are shared with everyone who opens that video and deleted after 30 days.
+          <strong>AI summaries:</strong> made by Google’s Gemini from the public video only. Nothing you type is sent to
+          Gemini. Summaries are shared with everyone who opens that video and deleted after 30 days.
         </li>
         <li>
           <strong>Video details from YouTube</strong> (titles, channels), for up to 30 days, then deleted. If you import

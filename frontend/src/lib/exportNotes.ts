@@ -7,7 +7,7 @@ const at = (videoId: string, s: number) => `https://youtu.be/${videoId}?t=${s}`
 
 export function notesText(title: string, videoId: string, notes: AiNotesData): string {
   const points = notes.points.map((p) => `• ${p.seconds !== null ? `${clock(p.seconds)} ` : ''}${p.title}: ${p.short}`)
-  return [title, '', notes.summary, '', ...points, '', `Watch: https://youtu.be/${videoId}`, `Notes made with Lumo: ${APP_URL}`].join('\n')
+  return [title, '', notes.summary, '', ...points, '', `Watch: https://youtu.be/${videoId}`, `Summary made with Lumo: ${APP_URL}`].join('\n')
 }
 
 export async function shareNotes(title: string, videoId: string, notes: AiNotesData): Promise<'shared' | 'whatsapp'> {
@@ -39,7 +39,7 @@ function outline(nodes: MapNode[], parent: string | null, seen = new Set<string>
 export function printableHtml(title: string, videoId: string, notes: AiNotesData): string {
   const time = (s: number | null) => (s === null ? '' : `<a href="${at(videoId, s)}">${clock(s)}</a> `)
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(title)} - notes</title>
+<title>${esc(title)} - summary</title>
 <style>
 body{font:15px/1.6 system-ui,'Segoe UI',Roboto,'Noto Sans Devanagari',sans-serif;color:#1b2130;background:#fff;max-width:720px;margin:32px auto;padding:0 20px}
 h1{font-size:22px;line-height:1.3;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}
@@ -50,7 +50,7 @@ ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
 @media print{body{margin:0}}
 </style></head><body>
 <h1>${esc(title)}</h1><p class="short">Watch: <a href="https://youtu.be/${videoId}">youtu.be/${videoId}</a></p>
-<h2>Summary</h2><p class="sum">${esc(notes.summary)}</p>
+<h2>Brief summary</h2><p class="sum">${esc(notes.summary)}</p>
 <h2>Key points</h2><ol>${notes.points
     .map((p) => `<li>${time(p.seconds)}<b>${esc(p.title)}</b><br><span class="short">${esc(p.short)}</span><br>${esc(p.detail)}</li>`)
     .join('')}</ol>

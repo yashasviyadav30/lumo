@@ -69,7 +69,7 @@ function Appearance() {
         }}
       />
       <label className="help" htmlFor="notes-lang" style={{ display: 'block' }}>
-        AI notes language
+        Summary language
       </label>
       <select
         id="notes-lang"
@@ -263,7 +263,7 @@ export default function Settings() {
         <div className="card settings-section">
           <h2>About</h2>
           <p>
-            {APP_NAME} shows YouTube videos through YouTube’s own player. It’s not made by YouTube or Google. AI notes
+            {APP_NAME} shows YouTube videos through YouTube’s own player. It’s not made by YouTube or Google. AI summaries
             are made by Google’s Gemini from the video. We try to hide distracting content, but no filter is perfect.{' '}
             <Link to="/privacy">Privacy</Link>
           </p>

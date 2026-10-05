@@ -25,7 +25,7 @@ export default function Privacy() {
           <strong>YouTube</strong> plays every video, through its own player.
         </li>
         <li>
-          <strong>Gemini</strong> makes AI notes. We send it only the public video’s link and our fixed request; on the
+          <strong>Gemini</strong> makes AI summaries. We send it only the public video’s link and our fixed request; on the
           free plan, Google may use what it receives to improve its products.
         </li>
         <li>

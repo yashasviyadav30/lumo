@@ -162,7 +162,7 @@ export default function ShareToGroup({
                           setAttach(e.target.value as "" | "notes" | "map")
                         }
                       >
-                        <option value="notes">AI notes</option>
+                        <option value="notes">AI summary</option>
                         <option value="map">Mind map</option>
                         <option value="">Just the video</option>
                       </select>

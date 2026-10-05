@@ -928,3 +928,11 @@ html[data-text-size='larger'] {
 .share-sheet .ai-lang {
   width: 100%;
 }
+
+.ai-sub {
+  margin: 4px 0 -4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}

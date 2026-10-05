@@ -114,7 +114,7 @@ describe('study page', () => {
       'POST /api/progress': () => ({ status: 204 }),
     })
     renderAt(`/watch/${VID}`)
-    await userEvent.click(await screen.findByRole('button', { name: /Generate notes/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Generate summary/ }))
     expect(await screen.findByText('What CSR rules say.')).toBeInTheDocument()
     expect(calls.filter((c) => c.path === '/api/ai-notes').map((c) => c.body)).toEqual([
       { video_id: VID, lang: 'en', create: false },

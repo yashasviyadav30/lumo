@@ -73,7 +73,7 @@ function PostBody({ post }: { post: Post }) {
                   <Play size={12} aria-hidden="true" /> at {clock(post.t_seconds)}
                 </>
               )}
-              {post.attach && (post.t_seconds !== null ? ' · ' : '') + (post.attach === 'notes' ? 'with AI notes' : 'with the mind map')}
+              {post.attach && (post.t_seconds !== null ? ' · ' : '') + (post.attach === 'notes' ? 'with the AI summary' : 'with the mind map')}
             </span>
           </span>
         </Link>

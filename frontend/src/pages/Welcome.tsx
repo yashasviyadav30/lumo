@@ -6,7 +6,7 @@ import { useSession } from '../lib/session'
 
 const FEATURES = [
   { Icon: EyeOff, title: 'All of YouTube’s learning', text: 'Search anything and watch it here. Games, comedy, entertainment and songs stay hidden; you choose the rest. You always see what was hidden.' },
-  { Icon: Network, title: 'Notes and a mind map in one tap', text: 'Short notes and a zoomable mind map of any video, made by AI. Tap a time to jump to that part.' },
+  { Icon: Network, title: 'A summary and mind map in one tap', text: 'A brief summary, key points and a zoomable mind map of any video, made by AI. Tap a time to jump to that part.' },
   { Icon: StickyNote, title: 'Your own notes beside the video', text: 'Write while you watch, stamp the time, copy the AI’s points in. Download as PDF or share on WhatsApp.' },
 ]
 
@@ -63,8 +63,8 @@ export default function Welcome() {
             Study <span className="hl">smarter</span> on YouTube, <span className="dim">without the rabbit holes.</span>
           </h1>
           <p className="lead">
-            {APP_NAME} is YouTube for learning: everything useful, nothing distracting, with short notes and a mind
-            map for every video.
+            {APP_NAME} is YouTube for learning: everything useful, nothing distracting, with a summary and a mind
+            map of every video.
           </p>
           <div className="actions">
             <Link className="button gradient" to="/sign-up">

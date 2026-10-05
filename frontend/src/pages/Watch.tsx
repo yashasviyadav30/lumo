@@ -258,7 +258,7 @@ function StudyPage({ videoId }: { videoId: string }) {
     <div className="study-tabs">
       <div className="tabs" role="tablist" aria-label="Study this video">
         <button role="tab" aria-selected={tab === 'notes'} className={tab === 'notes' ? 'on' : ''} onClick={() => setTab('notes')}>
-          <Sparkles size={15} aria-hidden="true" /> Notes
+          <Sparkles size={15} aria-hidden="true" /> Summary
         </button>
         <button role="tab" aria-selected={tab === 'map'} className={tab === 'map' ? 'on' : ''} onClick={() => setTab('map')}>
           <Network size={15} aria-hidden="true" /> Mind map
@@ -602,7 +602,7 @@ function StudyHint() {
     <div className="study-hint" role="note">
       <Sparkles size={18} aria-hidden="true" />
       <p>
-        Tap <b>Generate notes</b> for short notes and a mind map of this video. Your own notes go in <b>My notes</b>.
+        Tap <b>Generate summary</b> for a brief summary and a mind map of this video. Your own notes go in <b>My notes</b>.
       </p>
       <button
         className="link"
