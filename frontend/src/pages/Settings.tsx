@@ -9,12 +9,12 @@ import { listMutes, unmuteChannel } from '../lib/search'
 import { useSession } from '../lib/session'
 import { getTextSize, getTheme, setTextSize, setTheme, type TextSize, type Theme } from '../lib/theme'
 
-// YouTube's own category groups (R3). Gaming, comedy and entertainment are hidden by default (plan v3).
+// YouTube's own category groups (R3). Gaming, comedy, entertainment and music are hidden by default.
 const GROUPS: Array<[string, string, string]> = [
   ['gaming', 'Gaming', 'Video games and game streams'],
   ['comedy', 'Comedy', 'Stand-up, sketches and pranks'],
   ['entertainment', 'Entertainment and TV shows', 'Serials, reality shows, trailers'],
-  ['music', 'Music', 'Songs, including motivational ones'],
+  ['music', 'Music', 'Songs. Channels you follow still show theirs, so follow the ones that motivate you'],
   ['films', 'Films', 'Movies and animation'],
   ['news', 'News', 'News channels and politics'],
   ['vlogs', 'Travel and vlogs', 'Travel, daily-life vlogs'],
@@ -93,7 +93,7 @@ function Appearance() {
 
 function Hidden() {
   const { me, refresh } = useSession()
-  const [hidden, setHidden] = useState<string[]>(me?.settings.hidden_groups ?? ['comedy', 'entertainment', 'gaming'])
+  const [hidden, setHidden] = useState<string[]>(me?.settings.hidden_groups ?? ['comedy', 'entertainment', 'gaming', 'music'])
   const [channels, setChannels] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {

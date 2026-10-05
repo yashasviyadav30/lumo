@@ -5,7 +5,7 @@ import { pendingJoin } from '../lib/groups'
 import { useSession } from '../lib/session'
 
 const FEATURES = [
-  { Icon: EyeOff, title: 'All of YouTube’s learning', text: 'Search anything and watch it here. Games, comedy and entertainment stay hidden; you choose the rest. You always see what was hidden.' },
+  { Icon: EyeOff, title: 'All of YouTube’s learning', text: 'Search anything and watch it here. Games, comedy, entertainment and songs stay hidden; you choose the rest. You always see what was hidden.' },
   { Icon: Network, title: 'Notes and a mind map in one tap', text: 'Short notes and a zoomable mind map of any video, made by AI. Tap a time to jump to that part.' },
   { Icon: StickyNote, title: 'Your own notes beside the video', text: 'Write while you watch, stamp the time, copy the AI’s points in. Download as PDF or share on WhatsApp.' },
 ]

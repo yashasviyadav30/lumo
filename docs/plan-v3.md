@@ -27,7 +27,7 @@ provider is affordable.
 
 ## What stays out
 
-- Gaming, comedy and entertainment hidden by default, using YouTube's own category labels only (R3).
+- Gaming, comedy, entertainment and (since 2026-10-05, after a feed full of songs) music hidden by default, using YouTube's own category labels only (R3).
   Users can switch any category back on.
 - The rest is the user's choice: follow creators (always shown), "Not interested" on a video,
   "Don't show this channel".

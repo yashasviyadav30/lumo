@@ -76,7 +76,7 @@ def test_shorts_setting_can_be_switched(signed_in):
 
 
 def test_settings_hidden_groups_round_trip_and_reject_unknown(signed_in):
-    assert signed_in.get("/api/me").json()["settings"]["hidden_groups"] == ["comedy", "entertainment", "gaming"]
+    assert signed_in.get("/api/me").json()["settings"]["hidden_groups"] == ["comedy", "entertainment", "gaming", "music"]
     r = signed_in.post("/api/me/settings", json={"hidden_groups": ["news"]})
     assert r.json()["settings"]["hidden_groups"] == ["news"]
     assert signed_in.post("/api/me/settings", json={"hidden_groups": ["cats"]}).status_code == 422

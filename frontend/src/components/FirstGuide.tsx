@@ -7,7 +7,7 @@ const STEPS = [
   {
     Icon: Sparkles,
     title: `Everything to learn on YouTube, nothing to distract you`,
-    text: 'Search anything and watch it here, in YouTube’s own player. Games, comedy and entertainment stay hidden; you choose the rest in Settings.',
+    text: 'Search anything and watch it here, in YouTube’s own player. Games, comedy, entertainment and songs stay hidden; you choose the rest in Settings.',
   },
   {
     Icon: Network,

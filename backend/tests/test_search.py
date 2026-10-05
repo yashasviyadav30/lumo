@@ -76,7 +76,8 @@ def test_youtube_type_reason():
     everything = frozenset(CATEGORY_GROUPS)
     assert youtube_type_reason("24", []) == "YouTube lists this as Entertainment"
     assert youtube_type_reason("20", []) == "YouTube lists this as Gaming"
-    assert youtube_type_reason("10", []) is None  # music shows by default (motivational songs)
+    assert youtube_type_reason("10", []) == "YouTube lists this as Music"  # songs hidden by default
+    assert youtube_type_reason("10", [], frozenset({"gaming"})) is None  # unless she switches Music on
     assert youtube_type_reason("10", [], everything) == "YouTube lists this as Music"
     assert youtube_type_reason("27", ["https://en.wikipedia.org/wiki/Humour"]) is None  # Education wins
     assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Humour"]) == "YouTube tags this as Comedy"
@@ -86,10 +87,10 @@ def test_youtube_type_reason():
 
 
 def test_default_hide_list_is_gaming_comedy_and_entertainment():
-    for cat in ("20", "23", "24", "43"):
+    for cat in ("20", "23", "24", "43", "10"):
         assert not judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
-    # Music, films, news and vlogs are her choice; podcasts and lectures always show.
-    for cat in ("10", "1", "25", "19", "22", "27", "28", "26", "35", "17"):
+    # Films, news and vlogs are her choice; podcasts and lectures always show.
+    for cat in ("1", "25", "19", "22", "27", "28", "26", "35", "17"):
         assert judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
 
 

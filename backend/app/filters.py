@@ -48,8 +48,9 @@ CATEGORY_NAMES = {
     "43": "Shows",
     "44": "Trailers",
 }
-# Groups of YouTube's own categories a user can hide (plan v3). Gaming, comedy and entertainment are hidden by
-# default; the rest is her choice. Documentary (35) and People & Blogs (22, most podcasts) are never grouped.
+# Groups of YouTube's own categories a user can hide (plan v3). Gaming, comedy, entertainment and music are hidden
+# by default (music added 2026-10-05: a feed full of songs; YouTube labels every song "Music", so motivational
+# songs come from channels she follows, which are never hidden). The rest is her choice. Documentary (35) and People & Blogs (22, most podcasts) are never grouped.
 CATEGORY_GROUPS = {
     "gaming": {"20"},
     "comedy": {"23", "34"},
@@ -70,7 +71,7 @@ GROUP_LABELS = {
     "vlogs": "Travel and vlogs",
     "sports": "Sports",
 }
-DEFAULT_HIDDEN_GROUPS = frozenset({"gaming", "comedy", "entertainment"})
+DEFAULT_HIDDEN_GROUPS = frozenset({"gaming", "comedy", "entertainment", "music"})
 LEARNING_CATEGORIES = {"26", "27", "28"}
 
 # topicDetails.topicCategories are Wikipedia URLs. These page names belong to a group.
