@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { clock, notebookMarkdown, type Note } from '../lib/study'
@@ -58,6 +58,7 @@ describe('study page', () => {
     expect(await screen.findByRole('status')).toHaveTextContent('Marked at 42:10')
     expect(calls.find((c) => c.path === '/api/notes')?.body).toMatchObject({ video_id: VID, t_seconds: 2530 })
 
+    await userEvent.click(screen.getByRole('tab', { name: /My notes/ }))
     expect(screen.getByText('1 mark to fill in')).toBeInTheDocument()
     await userEvent.type(screen.getByRole('textbox', { name: 'Note at 42:10' }), 'CSR spend = 2% of profit')
     await userEvent.click(screen.getByRole('button', { name: 'Definition' }))
@@ -76,6 +77,7 @@ describe('study page', () => {
     renderAt(`/watch/${VID}`)
     await waitFor(() => expect(yt.created).toHaveLength(1))
     await new Promise((r) => setTimeout(r, 0))
+    await userEvent.click(await screen.findByRole('tab', { name: /My notes/ }))
     await userEvent.click(await screen.findByRole('button', { name: 'Jump to 10:00' }))
     expect(yt.seeks).toContain(600)
   })
@@ -94,20 +96,37 @@ describe('study page', () => {
     expect(yt.created[1].playerVars).not.toHaveProperty('start')
   })
 
-  it('makes a card by hiding the words she taps', async () => {
-    fakeYouTube()
+  it('makes AI notes on request, jumps to their times and copies them to My notes', async () => {
+    const yt = fakeYouTube()
+    const notes = {
+      summary: 'What CSR rules say.',
+      points: [{ title: 'Who must spend', seconds: 760, short: 'Big companies spend 2%.', detail: 'Net worth over 500 crore.' }],
+      mindmap: [{ id: 'r', parent: null, label: 'CSR', detail: '', seconds: 0 }],
+    }
+    let made = false
     const { calls } = signInForTest({
-      'POST /api/study/open': () => ({ status: 200, body: { video: VIDEO, position_s: 0, notes: [note({ text: 'CSR spend = 2% of profit' })] } }),
-      'POST /api/cards': () => ({ status: 201, body: {} }),
+      'POST /api/study/open': () => ({ status: 200, body: { video: VIDEO, position_s: 0, notes: [], notepad: null } }),
+      'POST /api/ai-notes': (init) => {
+        if (JSON.parse(String(init.body)).create) made = true
+        return { status: 200, body: made ? { status: 'ready', notes } : { status: 'none' } }
+      },
+      'POST /api/notepad/save': () => ({ status: 200, body: {} }),
       'POST /api/progress': () => ({ status: 204 }),
     })
     renderAt(`/watch/${VID}`)
-    await userEvent.click(await screen.findByRole('button', { name: 'Make a card' }))
-    const sheet = screen.getByRole('dialog', { name: 'Make a card' })
-    await userEvent.click(within(sheet).getByRole('button', { name: '2%' }))
-    await userEvent.click(within(sheet).getByRole('button', { name: 'Save card' }))
-    expect(await screen.findByText(/Card made/)).toBeInTheDocument()
-    expect(calls.find((c) => c.path === '/api/cards')?.body).toEqual({ note_id: 'n1', blanks: ['2%'] })
+    await userEvent.click(await screen.findByRole('button', { name: /Generate notes/ }))
+    expect(await screen.findByText('What CSR rules say.')).toBeInTheDocument()
+    expect(calls.filter((c) => c.path === '/api/ai-notes').map((c) => c.body)).toEqual([
+      { video_id: VID, lang: 'en', create: false },
+      { video_id: VID, lang: 'en', create: true },
+    ])
+    expect(screen.getByText(/Made by AI from the video/)).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Play from 12:40' }))
+    expect(yt.seeks).toContain(760)
+    await userEvent.click(screen.getByText('Who must spend'))
+    await userEvent.click(screen.getByRole('button', { name: /Copy to my notes/ }))
+    await waitFor(() => expect(calls.find((c) => c.path === '/api/notepad/save')?.body).toMatchObject({ video_id: VID, text: '[12:40] Who must spend: Big companies spend 2%.' }))
   })
 
   it('never puts the video ID in a URL (R11)', async () => {

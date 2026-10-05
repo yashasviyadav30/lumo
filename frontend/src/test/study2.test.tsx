@@ -70,12 +70,12 @@ describe('study page extras', () => {
       'POST /api/progress': () => ({ status: 204 }),
     })
     renderAt(`/watch/${VID}`)
-    await userEvent.click(await screen.findByRole('tab', { name: /Description/ }))
+    await userEvent.click(await screen.findByText('Description'))
     await new Promise((r) => setTimeout(r, 0))
     await userEvent.click(screen.getByRole('button', { name: 'Jump to 12:40' }))
     expect(yt.seeks).toContain(760)
 
-    await userEvent.click(screen.getByRole('tab', { name: /Comments/ }))
+    await userEvent.click(screen.getByText('Comments'))
     await userEvent.click(await screen.findByRole('button', { name: 'Jump to 25:10' }))
     expect(yt.seeks).toContain(1510)
     await userEvent.click(screen.getByRole('button', { name: /With times/ }))

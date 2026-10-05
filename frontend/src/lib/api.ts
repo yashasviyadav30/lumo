@@ -42,6 +42,8 @@ export function messageFor(code: string, status = 0): string {
     invalid_date_of_birth: 'Please check your date of birth.',
     database_not_configured: 'The app is being set up. Please try again later.',
     network: 'Can’t reach the server. If you just opened the app, wait a few seconds and try again.',
+    video_unknown: 'Notes work on videos opened from search or the feed. Find this video there first.',
+    too_many_notes_today: 'You’ve started 15 new notes today. Try again tomorrow; notes others made still open.',
   }
   return messages[code] ?? (status >= 500 ? 'Something went wrong on our side. Please try again.' : 'Please check the form and try again.')
 }
@@ -49,7 +51,7 @@ export function messageFor(code: string, status = 0): string {
 // The free server sleeps after 15 idle minutes and takes up to a minute to wake (also during a redeploy).
 // Requests that are safe to repeat wait for it, with a "waking up" banner, instead of failing at once.
 const WAKE_LIMIT_MS = 75_000
-const SAFE_POSTS = ['/api/auth/login', '/api/auth/signup', '/api/search', '/api/notebook', '/api/study/open', '/api/study/comments']
+const SAFE_POSTS = ['/api/auth/login', '/api/auth/signup', '/api/search', '/api/notebook', '/api/study/open', '/api/study/comments', '/api/ai-notes']
 let wakingCount = 0
 function setWaking(on: boolean) {
   wakingCount = Math.max(0, wakingCount + (on ? 1 : -1))

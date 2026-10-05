@@ -33,7 +33,11 @@ export function mockApi(handlers: Record<string, Handler>) {
 
 export function signInForTest(extra: Record<string, Handler> = {}) {
   localStorage.setItem('focuslearn.token', 'test-token')
-  return mockApi({ 'GET /api/me': () => ({ status: 200, body: ME }), ...extra })
+  return mockApi({
+    'GET /api/me': () => ({ status: 200, body: ME }),
+    'POST /api/ai-notes': () => ({ status: 200, body: { status: 'none' } }),
+    ...extra,
+  })
 }
 
 // Renders the real app routes at a given path.

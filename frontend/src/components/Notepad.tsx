@@ -195,10 +195,11 @@ export default function Notepad({
   onChange?: (content: string) => void
   getTime: () => number
   onSeek: (t: number) => void
-  onClose: () => void
+  onClose?: () => void
 }) {
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const timer = useRef<number | undefined>(undefined)
+  const pending = useRef<(() => void) | null>(null)
 
   const editor = useEditor({
     extensions: notepadExtensions,
@@ -216,15 +217,24 @@ export default function Notepad({
       onChange?.(JSON.stringify(e.getJSON()))
       setStatus('saving')
       window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => {
+      pending.current = () => {
+        pending.current = null
         saveNotepad(videoId, JSON.stringify(e.getJSON()), e.getText())
           .then(() => setStatus('saved'))
           .catch(() => setStatus('error'))
-      }, 800)
+      }
+      timer.current = window.setTimeout(() => pending.current?.(), 800)
     },
   })
 
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+  // Leaving the tab (or the page) right after typing still saves.
+  useEffect(
+    () => () => {
+      window.clearTimeout(timer.current)
+      pending.current?.()
+    },
+    [],
+  )
 
   if (!editor) return null
   const insertTime = () => {
@@ -242,7 +252,7 @@ export default function Notepad({
   return (
     <div className="notepad">
       <div className="np-head">
-        <h2>Notepad</h2>
+        <h2>{onClose ? 'Notepad' : 'My notes'}</h2>
         <span className={`np-status ${status}`} role="status">
           {status === 'saving' && 'Saving…'}
           {status === 'saved' && (
@@ -252,9 +262,11 @@ export default function Notepad({
           )}
           {status === 'error' && 'Not saved: check your connection'}
         </span>
-        <button className="np-close" onClick={onClose} aria-label="Close notepad" title="Close notepad">
-          <X size={18} />
-        </button>
+        {onClose && (
+          <button className="np-close" onClick={onClose} aria-label="Close notepad" title="Close notepad">
+            <X size={18} />
+          </button>
+        )}
       </div>
       <Toolbar editor={editor} onTime={insertTime} />
       <EditorContent editor={editor} className="np-body" />

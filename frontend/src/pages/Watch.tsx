@@ -2,21 +2,25 @@ import {
   AlignLeft,
   Check,
   CircleHelp,
-  Layers,
   MapPin,
   MessageSquare,
+  Network,
+  NotebookPen,
   Pencil,
   RotateCcw,
+  Sparkles,
   Star,
-  StickyNote,
   Trash2,
 } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
+import AiNotesPanel from '../components/AiNotesPanel'
 import Comments from '../components/Comments'
 import Description from '../components/Description'
 import Player from '../components/Player'
+import { appendToDoc, copyLine } from '../lib/aiNotes'
+import { useAiNotes } from '../lib/useAiNotes'
 import { ago } from '../lib/search'
 import { VIDEO_ID, type YTPlayer } from '../lib/youtube'
 import {
@@ -26,8 +30,8 @@ import {
   clock,
   deleteNote,
   lectureTitle,
-  makeCard,
   openLecture,
+  saveNotepad,
   saveProgress,
   starVideo,
   updateNote,
@@ -36,8 +40,9 @@ import {
   type Tag,
 } from '../lib/study'
 
-// The rich-text editor is big, so it loads only when the notepad is first opened.
+// The rich-text editor and the map library are big, so each loads only when its tab first opens.
 const Notepad = lazyWithReload(() => import('../components/Notepad'))
+const MindMap = lazyWithReload(() => import('../components/MindMap'))
 
 const PROGRESS_EVERY_MS = 15000
 
@@ -63,11 +68,13 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [ready, setReady] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [doubtFor, setDoubtFor] = useState<Note | null>(null)
-  const [cardFor, setCardFor] = useState<Note | null>(null)
   const [starred, setStarred] = useState(false)
   const [pop, setPop] = useState(false)
-  const [padOpen, setPadOpen] = useState(false)
-  const [tab, setTab] = useState<'notes' | 'about' | 'comments'>('notes')
+  const [tab, setTab] = useState<'notes' | 'map' | 'mine'>('notes')
+  const [padVersion, setPadVersion] = useState(0) // bumps when a copy changes the saved notepad
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [commentsOpen, setCommentsOpen] = useState(false)
+  const ai = useAiNotes(videoId)
   const padContent = useRef<string | null>(null)
   // A time tapped in the notebook opens the lecture at that note.
   const noteAt = (useLocation().state as { t?: number } | null)?.t
@@ -162,7 +169,7 @@ function StudyPage({ videoId }: { videoId: string }) {
     player.current?.playVideo()
   }
 
-  // Laptop shortcuts: N = mark, D = doubt, S = star the video, P = notepad (not while typing).
+  // Laptop shortcuts: N = mark, D = doubt, S = star the video, P = My notes (not while typing).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement
@@ -171,7 +178,7 @@ function StudyPage({ videoId }: { videoId: string }) {
       if (key === 'n') mark()
       else if (key === 'd') doubt()
       else if (key === 's') toggleStar()
-      else if (key === 'p') setPadOpen((o) => !o)
+      else if (key === 'p') setTab('mine')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -226,52 +233,74 @@ function StudyPage({ videoId }: { videoId: string }) {
               await deleteNote(n.id)
               setNotes((all) => all.filter((x) => x.id !== n.id))
             }}
-            onMakeCard={() => setCardFor(n)}
           />
         ))}
       </ul>
     </>
   )
 
+  // "Copy to my notes": add to the saved notepad (works even while the editor isn't open).
+  const copyToNotes = async (heading: string, body: string, seconds: number | null) => {
+    const next = appendToDoc(padContent.current, [copyLine(heading, body, seconds)])
+    padContent.current = next.content
+    setPadVersion((v) => v + 1)
+    try {
+      await saveNotepad(videoId, next.content, next.text)
+      flash('Copied to My notes.')
+    } catch {
+      flash('Couldn’t save to My notes. Check your connection.')
+    }
+  }
+
   const tabs = (
     <div className="study-tabs">
-      <div className="tabs" role="tablist" aria-label="About this lecture">
+      <div className="tabs" role="tablist" aria-label="Study this video">
+        <button role="tab" aria-selected={tab === 'notes'} className={tab === 'notes' ? 'on' : ''} onClick={() => setTab('notes')}>
+          <Sparkles size={15} aria-hidden="true" /> Notes
+        </button>
+        <button role="tab" aria-selected={tab === 'map'} className={tab === 'map' ? 'on' : ''} onClick={() => setTab('map')}>
+          <Network size={15} aria-hidden="true" /> Mind map
+        </button>
         <button
           role="tab"
-          aria-selected={tab === 'notes'}
-          className={tab === 'notes' ? 'on' : ''}
-          onClick={() => setTab('notes')}
+          aria-selected={tab === 'mine'}
+          className={tab === 'mine' ? 'on' : ''}
+          onClick={() => setTab('mine')}
+          aria-keyshortcuts="P"
         >
-          <MapPin size={15} aria-hidden="true" /> Marks
+          <NotebookPen size={15} aria-hidden="true" /> My notes
           {shown.length + empty.length > 0 && <span className="count">{shown.length + empty.length}</span>}
-        </button>
-        <button
-          role="tab"
-          aria-selected={tab === 'about'}
-          className={tab === 'about' ? 'on' : ''}
-          onClick={() => setTab('about')}
-        >
-          <AlignLeft size={15} aria-hidden="true" /> Description
-        </button>
-        <button
-          role="tab"
-          aria-selected={tab === 'comments'}
-          className={tab === 'comments' ? 'on' : ''}
-          onClick={() => setTab('comments')}
-        >
-          <MessageSquare size={15} aria-hidden="true" /> Comments
         </button>
       </div>
       <div role="tabpanel" className="tab-panel">
-        {tab === 'notes' && notesPanel}
-        {tab === 'about' && <Description text={data?.description ?? ''} onSeek={jump} />}
-        {tab === 'comments' && <Comments videoId={videoId} onSeek={jump} />}
+        {tab === 'notes' && <AiNotesPanel ai={ai} onSeek={jump} onCopy={copyToNotes} />}
+        {tab === 'map' && (
+          <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
+            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} />
+          </Suspense>
+        )}
+        {tab === 'mine' && (
+          <>
+            <Suspense fallback={<div className="notepad skeleton" aria-busy="true" />}>
+              <Notepad
+                key={padVersion}
+                videoId={videoId}
+                initial={padContent.current}
+                onChange={(c) => (padContent.current = c)}
+                getTime={() => player.current?.getCurrentTime() ?? 0}
+                onSeek={jump}
+              />
+            </Suspense>
+            <h3 className="marks-head">Marks and doubts</h3>
+            {notesPanel}
+          </>
+        )}
       </div>
     </div>
   )
 
   return (
-    <section className={`study${padOpen ? ' split' : ''}`}>
+    <section className="study">
       <div className="study-main">
         <div className="player-wrap">
           {ready ? (
@@ -280,7 +309,7 @@ function StudyPage({ videoId }: { videoId: string }) {
             <div className="player-frame" aria-busy="true" />
           )}
         </div>
-        {start && !padOpen && (
+        {start && (
           <p className="resume-line">
             {noteAt !== undefined
               ? `Opening at your note (${clock(noteAt)}).`
@@ -291,28 +320,26 @@ function StudyPage({ videoId }: { videoId: string }) {
           </p>
         )}
 
-        {!padOpen && (
-          <div className="title-block">
-            <div>
-              <h1 className="lecture-title">{title}</h1>
-              {data?.video && (
-                <p className="lecture-channel">
-                  {[data.video.channel_title, ago(data.video.published_at)].filter(Boolean).join(' · ')}
-                </p>
-              )}
-            </div>
-            <button
-              className={`star-video${starred ? ' on' : ''}${pop ? ' pop' : ''}`}
-              onClick={toggleStar}
-              aria-pressed={starred}
-              aria-keyshortcuts="S"
-              title={starred ? 'Starred (in Library)' : 'Star this video'}
-            >
-              <Star size={20} fill={starred ? 'currentColor' : 'none'} aria-hidden="true" />
-              {starred ? 'Starred' : 'Star'}
-            </button>
+        <div className="title-block">
+          <div>
+            <h1 className="lecture-title">{title}</h1>
+            {data?.video && (
+              <p className="lecture-channel">
+                {[data.video.channel_title, ago(data.video.published_at)].filter(Boolean).join(' · ')}
+              </p>
+            )}
           </div>
-        )}
+          <button
+            className={`star-video${starred ? ' on' : ''}${pop ? ' pop' : ''}`}
+            onClick={toggleStar}
+            aria-pressed={starred}
+            aria-keyshortcuts="S"
+            title={starred ? 'Starred (in Library)' : 'Star this video'}
+          >
+            <Star size={20} fill={starred ? 'currentColor' : 'none'} aria-hidden="true" />
+            {starred ? 'Starred' : 'Star'}
+          </button>
+        </div>
         <div className="capture" role="toolbar" aria-label="Capture while you watch">
           <button className="mark" onClick={() => mark()} aria-keyshortcuts="N" title="Save this second (N)">
             <span className="ic" aria-hidden="true">
@@ -325,18 +352,6 @@ function StudyPage({ videoId }: { videoId: string }) {
               <CircleHelp size={19} />
             </span>
             Doubt
-          </button>
-          <button
-            className={`pad${padOpen ? ' on' : ''}`}
-            onClick={() => setPadOpen(!padOpen)}
-            aria-pressed={padOpen}
-            aria-keyshortcuts="P"
-            title="Open the notepad beside the video (P)"
-          >
-            <span className="ic" aria-hidden="true">
-              <StickyNote size={19} />
-            </span>
-            Notepad
           </button>
           <button className="back" onClick={back10} title="Back 10 seconds">
             <span className="ic" aria-hidden="true">
@@ -351,41 +366,31 @@ function StudyPage({ videoId }: { videoId: string }) {
           </p>
         )}
 
-        {padOpen && tabs}
       </div>
 
       <div className="study-side">
-        {padOpen ? (
-          <Suspense fallback={<div className="notepad skeleton" aria-busy="true" />}>
-            <Notepad
-              videoId={videoId}
-              initial={padContent.current}
-              onChange={(c) => (padContent.current = c)}
-              getTime={() => player.current?.getCurrentTime() ?? 0}
-              onSeek={jump}
-              onClose={() => setPadOpen(false)}
-            />
-          </Suspense>
-        ) : (
-          tabs
-        )}
-        {cardFor && (
-          <CardMaker
-            note={cardFor}
-            onClose={() => setCardFor(null)}
-            onMade={() => {
-              upsert({ ...cardFor, cards: cardFor.cards + 1 })
-              setCardFor(null)
-              flash('Card made. It will come back for review.')
-            }}
-          />
-        )}
+        {tabs}
         <p className="attribution">
           Video plays from YouTube.{' '}
           <a href={`https://www.youtube.com/watch?v=${videoId}`} rel="noopener">
             Watch on YouTube
           </a>
         </p>
+      </div>
+
+      <div className="study-more">
+        <details className="fold" onToggle={(e) => e.currentTarget.open && setAboutOpen(true)}>
+          <summary>
+            <AlignLeft size={16} aria-hidden="true" /> Description
+          </summary>
+          {aboutOpen && <Description text={data?.description ?? ''} onSeek={jump} />}
+        </details>
+        <details className="fold" onToggle={(e) => e.currentTarget.open && setCommentsOpen(true)}>
+          <summary>
+            <MessageSquare size={16} aria-hidden="true" /> Comments
+          </summary>
+          {commentsOpen && <Comments videoId={videoId} onSeek={jump} />}
+        </details>
       </div>
     </section>
   )
@@ -478,13 +483,11 @@ function NoteRow({
   onJump,
   onChange,
   onDelete,
-  onMakeCard,
 }: {
   note: Note
   onJump: () => void
   onChange: (n: Note) => void
   onDelete: () => void
-  onMakeCard: () => void
 }) {
   const [editing, setEditing] = useState(false)
   const [text, setText] = useState(note.text)
@@ -562,12 +565,6 @@ function NoteRow({
           </div>
         )}
         <div className="note-actions">
-          {note.text && !isDoubt && (
-            <button className="make" onClick={onMakeCard}>
-              <Layers size={14} aria-hidden="true" />
-              {note.cards ? `Make another card (${note.cards})` : 'Make a card'}
-            </button>
-          )}
           {editing && (
             <button onClick={() => setEditing(false)}>
               <Pencil size={14} aria-hidden="true" /> Cancel
@@ -583,48 +580,3 @@ function NoteRow({
 }
 
 // Tap the words to hide; the card asks her to recall them (her own words only).
-export function CardMaker({ note, onClose, onMade }: { note: Note; onClose: () => void; onMade: () => void }) {
-  const words = note.text.split(/\s+/).filter(Boolean)
-  const [picked, setPicked] = useState<number[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const toggle = (i: number) =>
-    setPicked((p) => (p.includes(i) ? p.filter((x) => x !== i) : p.length < 5 ? [...p, i] : p))
-  const clean = (w: string) => w.replace(/^[^\p{L}\p{N}₹%]+|[^\p{L}\p{N}%]+$/gu, '')
-  const save = async () => {
-    try {
-      await makeCard(note.id, picked.map((i) => clean(words[i])).filter(Boolean))
-      onMade()
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Couldn’t make the card.')
-    }
-  }
-  return (
-    <div className="sheet" role="dialog" aria-modal="true" aria-label="Make a card">
-      <div className="sheet-inner">
-        <h2>Make a card</h2>
-        <p className="help">Tap the words to hide. You’ll try to recall them later.</p>
-        <p className="word-pick">
-          {words.map((w, i) => (
-            <button
-              key={i}
-              className={`word${picked.includes(i) ? ' on' : ''}`}
-              aria-pressed={picked.includes(i)}
-              onClick={() => toggle(i)}
-            >
-              {picked.includes(i) ? '_____' : w}
-            </button>
-          ))}
-        </p>
-        {error && <p className="error">{error}</p>}
-        <div className="row">
-          <button onClick={save} disabled={picked.length === 0}>
-            Save card
-          </button>
-          <button className="secondary" onClick={onClose}>
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
