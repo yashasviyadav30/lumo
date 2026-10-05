@@ -1,72 +1,75 @@
-/* Lumo brand (2026-10-06). Loaded last, so it wins over index.css and v3.css.
-   One accent: the glow (amber to coral), on cool neutrals by day and a deep violet night.
-   Buttons carry the glow with dark ink text, which stays readable (white on orange fails contrast). */
+/* Lumo brand. Loaded last, so it wins over index.css and v3.css. */
+/* Palette v2 (2026-10-06, after the user's review): midnight and starlight. Quiet colour, one mood, like the
+   reference sites she liked: buttons are plain pills (ink by day, white by night), the accent is a soft starlight
+   blue used sparingly. No orange. */
 :root {
-  --bg: #f6f6f9;
+  --bg: #f5f7fb;
   --surface: #ffffff;
-  --surface-2: #eeeef3;
-  --text: #17151f;
-  --muted: #5e5b6d;
-  --line: #e3e2ea;
-  --primary: #c2410c;
-  --primary-2: #9a3412;
-  --primary-ink: #1b1006;
-  --primary-soft: rgb(255 122 61 / 0.12);
-  --info: #c2410c;
-  --info-soft: rgb(255 122 61 / 0.12);
-  --focus: #e8590c;
-  --np-blue: #2563eb;
+  --surface-2: #edf1f7;
+  --text: #0e1422;
+  --muted: #556074;
+  --line: #dfe5ee;
+  --primary: #2a4fb8;
+  --primary-2: #1d3d99;
+  --primary-ink: #ffffff;
+  --primary-soft: rgb(42 79 184 / 0.09);
+  --info: #2a4fb8;
+  --info-soft: rgb(42 79 184 / 0.09);
+  --focus: #2a4fb8;
+  --np-blue: #2a4fb8;
   --watched: #f04438;
-  --lumo-glow: linear-gradient(135deg, #ffc24d 0%, #ff8a3d 52%, #f2542d 100%);
-  --glow-soft: rgb(255 138 61 / 0.18);
-  --shadow: 0 1px 2px rgb(23 21 31 / 0.05), 0 6px 18px rgb(23 21 31 / 0.06);
-  --shadow-lg: 0 18px 44px rgb(23 21 31 / 0.14);
-  --btn-shadow: 0 6px 20px rgb(242 84 45 / 0.28);
+  --lumo-glow: #0e1422;
+  --glow-soft: rgb(120 150 230 / 0.16);
+  --shadow: 0 1px 2px rgb(14 20 34 / 0.05), 0 8px 24px rgb(14 20 34 / 0.06);
+  --shadow-lg: 0 24px 60px rgb(14 20 34 / 0.14);
+  --btn-shadow: 0 6px 18px rgb(14 20 34 / 0.18);
   --display: 'Bricolage Grotesque Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --radius-sm: 12px;
   --radius: 16px;
   --radius-lg: 22px;
 }
 :root[data-theme='dark'] {
-  --bg: #0f0d15;
-  --surface: #18151f;
-  --surface-2: #221e2c;
-  --text: #f1eff6;
-  --muted: #a9a5b8;
-  --line: #2e2a3a;
-  --primary: #ffa25c;
-  --primary-2: #ff8a3d;
-  --primary-ink: #1b1006;
-  --primary-soft: rgb(255 162 92 / 0.14);
-  --info: #ffa25c;
-  --info-soft: rgb(255 162 92 / 0.14);
-  --focus: #ffa25c;
-  --np-blue: #8ab4ff;
-  --glow-soft: rgb(255 138 61 / 0.16);
-  --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
-  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.55);
-  --btn-shadow: 0 8px 26px rgb(255 122 61 / 0.25);
+  --bg: #070a12;
+  --surface: #0f1420;
+  --surface-2: #161d2c;
+  --text: #eef2fa;
+  --muted: #9aa4b8;
+  --line: #232c3e;
+  --primary: #9fc1ff;
+  --primary-2: #7fa8f5;
+  --primary-ink: #0b0f1a;
+  --primary-soft: rgb(159 193 255 / 0.13);
+  --info: #9fc1ff;
+  --info-soft: rgb(159 193 255 / 0.13);
+  --focus: #9fc1ff;
+  --np-blue: #9fc1ff;
+  --lumo-glow: #f2f5fb;
+  --glow-soft: rgb(110 150 255 / 0.14);
+  --shadow: 0 10px 30px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 30px 70px rgb(0 0 0 / 0.55);
+  --btn-shadow: 0 8px 26px rgb(159 193 255 / 0.16);
 }
 @media (prefers-color-scheme: dark) {
   :root[data-theme='system'] {
-    --bg: #0f0d15;
-    --surface: #18151f;
-    --surface-2: #221e2c;
-    --text: #f1eff6;
-    --muted: #a9a5b8;
-    --line: #2e2a3a;
-    --primary: #ffa25c;
-    --primary-2: #ff8a3d;
-    --primary-ink: #1b1006;
-    --primary-soft: rgb(255 162 92 / 0.14);
-    --info: #ffa25c;
-    --info-soft: rgb(255 162 92 / 0.14);
-    --focus: #ffa25c;
-    --np-blue: #8ab4ff;
-    --glow-soft: rgb(255 138 61 / 0.16);
-    --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
-    --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.55);
-    --btn-shadow: 0 8px 26px rgb(255 122 61 / 0.25);
+    --bg: #070a12;
+    --surface: #0f1420;
+    --surface-2: #161d2c;
+    --text: #eef2fa;
+    --muted: #9aa4b8;
+    --line: #232c3e;
+    --primary: #9fc1ff;
+    --primary-2: #7fa8f5;
+    --primary-ink: #0b0f1a;
+    --primary-soft: rgb(159 193 255 / 0.13);
+    --info: #9fc1ff;
+    --info-soft: rgb(159 193 255 / 0.13);
+    --focus: #9fc1ff;
+    --np-blue: #9fc1ff;
+    --lumo-glow: #f2f5fb;
+    --glow-soft: rgb(110 150 255 / 0.14);
+    --shadow: 0 10px 30px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 30px 70px rgb(0 0 0 / 0.55);
+    --btn-shadow: 0 8px 26px rgb(159 193 255 / 0.16);
   }
 }
 
@@ -94,7 +97,7 @@ h3,
 }
 .logo-tile {
   border-radius: 9px;
-  box-shadow: 0 4px 14px rgb(242 84 45 / 0.22);
+  box-shadow: 0 4px 16px rgb(110 150 255 / 0.25);
 }
 
 /* ---------- buttons: the glow ---------- */
@@ -385,7 +388,7 @@ button.danger {
   top: -6%;
   right: -4%;
   width: min(46%, 260px);
-  filter: drop-shadow(0 0 50px rgb(255 122 61 / 0.5));
+  filter: drop-shadow(0 0 60px rgb(150 185 255 / 0.55));
   z-index: 0;
 }
 .lp-orb svg {
@@ -480,11 +483,11 @@ button.danger {
   font: 600 12px var(--display);
 }
 .lp-node.root rect {
-  fill: #ff8a3d;
+  fill: var(--lumo-glow);
   stroke: none;
 }
 .lp-node.root text {
-  fill: #1b1006;
+  fill: var(--primary-ink);
   font-size: 13px;
   font-weight: 750;
 }

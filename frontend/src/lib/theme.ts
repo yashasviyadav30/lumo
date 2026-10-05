@@ -16,7 +16,7 @@ export function applyTheme(t: Theme = getTheme()) {
   const light = t === 'light' || (t === 'system' && matchMedia('(prefers-color-scheme: light)').matches)
   document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
     m.removeAttribute('media')
-    m.setAttribute('content', light ? '#f6f6f9' : '#0f0d15')
+    m.setAttribute('content', light ? '#f5f7fb' : '#070a12')
   })
 }
 
