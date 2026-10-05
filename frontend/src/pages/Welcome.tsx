@@ -1,12 +1,12 @@
-import { ArrowUpRight, EyeOff, Layers, Play, ShieldCheck, StickyNote } from 'lucide-react'
+import { ArrowUpRight, EyeOff, Network, Play, ShieldCheck, StickyNote } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
 import { useSession } from '../lib/session'
 
 const FEATURES = [
-  { Icon: EyeOff, title: 'Only study videos', text: 'All of YouTube minus songs, movies, shows, news and vlogs. You always see what was hidden.' },
-  { Icon: StickyNote, title: 'Notes beside the lecture', text: 'Mark a second in one tap, or open the notepad beside the video. Every note jumps back to its moment.' },
-  { Icon: Layers, title: 'Cards that come back', text: 'Your notes return as cards right before you forget. Forgot one? Re-watch just those 90 seconds.' },
+  { Icon: EyeOff, title: 'All of YouTube’s learning', text: 'Search anything and watch it here. Games, comedy and entertainment stay hidden; you choose the rest. You always see what was hidden.' },
+  { Icon: Network, title: 'Notes and a mind map in one tap', text: 'Short notes and a zoomable mind map of any video, made by AI. Tap a time to jump to that part.' },
+  { Icon: StickyNote, title: 'Your own notes beside the video', text: 'Write while you watch, stamp the time, copy the AI’s points in. Download as PDF or share on WhatsApp.' },
 ]
 
 // A drawing of the study page, so people see the app before signing up. Decorative only.
@@ -21,10 +21,9 @@ function PhoneMock() {
           <Play size={26} fill="currentColor" />
         </div>
         <div className="bar">
-          <span>Mark</span>
-          <span>Doubt</span>
-          <span>Notepad</span>
-          <span>−10s</span>
+          <span>Notes</span>
+          <span>Mind map</span>
+          <span>My notes</span>
         </div>
         <div className="n">
           <b>12:40</b> CSR spend = 2% of average net profit
@@ -33,9 +32,9 @@ function PhoneMock() {
           <b>18:05</b> BRSR is for the top 1000 listed companies
         </div>
         <div className="n">
-          <b>24:31</b> <i>Doubt: does Section 8 count?</i>
+          <b>24:31</b> Section 8 companies: who must report
         </div>
-        <div className="due">Tonight: 5 cards to review →</div>
+        <div className="due">Mind map ready →</div>
       </div>
     </div>
   )
@@ -53,13 +52,13 @@ export default function Welcome() {
       )}
       <div className="landing-hero">
         <div>
-          <p className="kicker">Keep your study focused</p>
+          <p className="kicker">Learn anything, without the distractions</p>
           <h1>
             Study <span className="hl">smarter</span> on YouTube, <span className="dim">without the rabbit holes.</span>
           </h1>
           <p className="lead">
-            {APP_NAME} turns YouTube lectures into a study desk: clean search, notes on the exact second, doubts, and
-            revision cards that come back on time.
+            {APP_NAME} is YouTube for learning: everything useful, nothing distracting, with short notes and a mind
+            map for every video.
           </p>
           <div className="actions">
             <Link className="button gradient" to="/sign-up">

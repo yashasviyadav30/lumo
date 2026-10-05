@@ -369,6 +369,7 @@ function StudyPage({ videoId }: { videoId: string }) {
       </div>
 
       <div className="study-side">
+        <StudyHint />
         {tabs}
         <p className="attribution">
           Video plays from YouTube.{' '}
@@ -580,3 +581,37 @@ function NoteRow({
 }
 
 // Tap the words to hide; the card asks her to recall them (her own words only).
+
+// One-time hint on the first study page (plan v3: first-time guide).
+function StudyHint() {
+  const KEY = 'focuslearn.studyHintSeen'
+  const [open, setOpen] = useState(() => {
+    try {
+      return localStorage.getItem(KEY) !== '1'
+    } catch {
+      return false
+    }
+  })
+  if (!open) return null
+  return (
+    <div className="study-hint" role="note">
+      <Sparkles size={18} aria-hidden="true" />
+      <p>
+        Tap <b>Generate notes</b> for short notes and a mind map of this video. Your own notes go in <b>My notes</b>.
+      </p>
+      <button
+        className="link"
+        onClick={() => {
+          try {
+            localStorage.setItem(KEY, '1')
+          } catch {
+            // private mode
+          }
+          setOpen(false)
+        }}
+      >
+        Got it
+      </button>
+    </div>
+  )
+}

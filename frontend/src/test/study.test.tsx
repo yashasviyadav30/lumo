@@ -160,45 +160,15 @@ it('asks to press play before marking at 0:00', async () => {
   expect(calls.some((c) => c.path === '/api/notes')).toBe(false)
 })
 
-describe('cards review', () => {
-  const CARD = { id: 'c1', note_id: 'n1', front: 'CSR spend = _____ of profit', answer: 'CSR spend = 2% of profit', blanks: ['2%'], video_id: VID, t_seconds: 2530, replay: { start: 2500, end: 2590 }, video: VIDEO }
-
-  it('replays only the bit around the note when she forgot', async () => {
-    const yt = fakeYouTube()
-    const { calls } = signInForTest({
-      'GET /api/cards/due': () => ({ status: 200, body: { cards: [CARD] } }),
-      'POST /api/cards/grade': () => ({ status: 200, body: { retired: false, due_at: '', replay: CARD.replay } }),
-    })
-    renderAt('/cards')
-    expect(await screen.findByText('CSR spend = _____ of profit')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Show answer' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Forgot' }))
-    expect(await screen.findByRole('heading', { name: 'Watch this bit' })).toBeInTheDocument()
-    await waitFor(() => expect(yt.created).toHaveLength(1))
-    expect(yt.created[0].playerVars).toMatchObject({ start: 2500, end: 2590, autoplay: 0 })
-    expect(calls.find((c) => c.path === '/api/cards/grade')?.body).toEqual({ id: 'c1', grade: 'forgot' })
-
-    // The forgotten card comes back once more in this session; then she's done.
-    await userEvent.click(screen.getByRole('button', { name: 'Ask me again later' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Show answer' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Knew it' }))
-    expect(await screen.findByRole('heading', { name: 'Done. Sleep well.' })).toBeInTheDocument()
-    expect(screen.queryByText(/streak|points|score/i)).not.toBeInTheDocument() // R8
-  })
-})
-
 describe('home and personal', () => {
-  it('opens Home on one thing to do: resume the lecture', async () => {
+  it('opens Home with Continue watching for the last lecture', async () => {
     signInForTest({
       'GET /api/home/summary': () => ({ status: 200, body: { resume: { video_id: VID, position_s: 2530, video: VIDEO }, cards_due: 3, doubts_open: 1, marks_to_fill: 0, week: { reviews: 32, notes: 5 }, totals: { notes: 9, lectures: 2, cards: 4 } } }),
       'GET /api/goals/active': () => ({ status: 200, body: null }),
     })
     renderAt('/')
     expect(await screen.findByRole('link', { name: /ESG Lecture 6/ })).toHaveAttribute('href', `/watch/${VID}`)
-    expect(screen.getByRole('link', { name: 'Review 3 cards due' })).toHaveAttribute('href', '/cards')
-    // Every study tool is visible from Home.
-    // One next step only (UX review): no tool grid or stats competing with it.
-    expect(screen.queryByText(/cards reviewed this week/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/card/i)).not.toBeInTheDocument() // revision cards are gone (plan v3)
   })
 
   it('searches her notes and filters doubts, all in the request body', async () => {

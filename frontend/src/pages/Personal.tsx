@@ -1,12 +1,10 @@
 import {
   Download,
-  Layers,
   LayoutList,
   MapPin,
   NotebookPen,
   PlaySquare,
   Search,
-  Settings,
   Star,
   StickyNote,
 } from 'lucide-react'
@@ -15,12 +13,10 @@ import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useNavigate } from 'react-router'
 import {
   clock,
-  homeSummary,
   lectureTitle,
   notebook,
   notebookMarkdown,
   tagLabel,
-  type HomeSummary,
   type Note,
   type Notebook,
 } from '../lib/study'
@@ -74,11 +70,10 @@ function NoteItem({ n, videoId, source }: { n: Note; videoId: string; source?: s
   )
 }
 
-// "My notes": everything she wrote, first thing on the screen. Settings sit behind the gear.
+// "My notes": everything she wrote, first thing on the screen. Settings are in the top bar.
 export default function Personal() {
   const navigate = useNavigate()
   const [book, setBook] = useState<Notebook | null>(null)
-  const [summary, setSummary] = useState<HomeSummary | null>(null)
   const [q, setQ] = useState('')
   const start = (useLocation().state as { only?: Filter } | null)?.only ?? 'all'
   const [filter, setFilter] = useState<Filter>(start)
@@ -102,12 +97,6 @@ export default function Personal() {
       .then((b) => ticket === latest.current && setBook(b))
       .catch(() => setError('Couldn’t load your notes.'))
   }
-
-  useEffect(() => {
-    homeSummary()
-      .then(setSummary)
-      .catch(() => setSummary(null))
-  }, [])
 
   // Search as she types (a short pause first), in the request body (R11).
   useEffect(() => {
@@ -141,18 +130,8 @@ export default function Personal() {
           <button className="icon-btn" onClick={exportMd} aria-label="Export my notes" title="Export my notes (.md)">
             <Download size={20} aria-hidden="true" />
           </button>
-          <Link to="/settings" className="icon-btn" aria-label="Settings" title="Settings">
-            <Settings size={20} aria-hidden="true" />
-          </Link>
         </div>
       </div>
-
-      {summary && summary.cards_due > 0 && (
-        <Link to="/cards" className="pill-link" style={{ marginBottom: 12 }}>
-          <Layers size={16} aria-hidden="true" /> Review {summary.cards_due} card{summary.cards_due === 1 ? '' : 's'}{' '}
-          due
-        </Link>
-      )}
 
       <div className="search-form" role="search">
         <label htmlFor="note-q" className="visually-hidden">

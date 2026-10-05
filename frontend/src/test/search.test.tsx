@@ -85,7 +85,7 @@ describe('search (Stage 3)', () => {
     expect(screen.getByRole('link', { name: /Lecture lecture0001/ })).toBeInTheDocument()
   })
 
-  it('mutes a channel with one tap and searches again', async () => {
+  it('hides a channel with one tap', async () => {
     let muted = false
     const { calls } = signInForTest({
       'POST /api/mutes': () => {
@@ -97,8 +97,8 @@ describe('search (Stage 3)', () => {
     renderAt('/search')
     await search()
     await userEvent.click((await screen.findAllByRole('button', { name: 'More actions' }))[0])
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Hide channel' }))
-    expect(await screen.findByText(/Channel hidden/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Don’t show this channel' }))
+    expect(await screen.findByText(/won’t see this channel again/)).toBeInTheDocument()
     expect(calls.find((c) => c.path === '/api/mutes')!.body).toEqual({ kind: 'channel', value: 'UC' + 'a'.repeat(22) })
   })
 

@@ -9,11 +9,11 @@ describe('app shell (1.1)', () => {
     signInForTest()
   })
 
-  it('shows our own name and the four tabs', async () => {
+  it('shows our own name and the four tabs (Home, Shorts, Library, My notes)', async () => {
     renderAt('/')
     expect(await screen.findByText(APP_NAME)).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Main' })
-    for (const label of ['Home', 'Search', 'Library', 'My notes']) {
+    for (const label of ['Home', 'Shorts', 'Library', 'My notes']) {
       expect(nav).toHaveTextContent(label)
     }
   })
@@ -28,7 +28,7 @@ describe('app shell (1.1)', () => {
   it('marks the current tab as active', async () => {
     renderAt('/personal')
     expect(await screen.findByRole('link', { name: 'My notes' })).toHaveAttribute('aria-current', 'page')
-    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings')
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings') // in the top bar
   })
 
   it('says it is not made by YouTube (R9)', async () => {

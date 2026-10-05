@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import '@fontsource-variable/plus-jakarta-sans'
 import './index.css'
+import './styles/v3.css'
 import { wakeServer } from './lib/api'
-import { applyTheme } from './lib/theme'
+import { applyTextSize, applyTheme } from './lib/theme'
 import { routes } from './routes'
 import { registerSW } from 'virtual:pwa-register'
 
 applyTheme()
+applyTextSize()
 wakeServer()
 
 // New versions: check whenever the app comes back to the screen, and switch to them at once (autoUpdate

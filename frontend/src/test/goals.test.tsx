@@ -31,7 +31,7 @@ describe('goal on Home (Stage 4A)', () => {
     })
     renderAt('/')
     await userEvent.type(await screen.findByLabelText('Your learning goal'), 'CMA Inter costing')
-    await userEvent.click(screen.getByRole('button', { name: 'Set goal' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Start' }))
     expect(await screen.findByText('CMA · CMA Intermediate · Paper 8: Cost Accounting')).toBeInTheDocument()
     expect(calls.find((c) => c.path === '/api/goals')!.body).toEqual({ text: 'CMA Inter costing' })
     expect(await screen.findByRole('button', { name: 'Material cost' })).toBeInTheDocument() // topics join the feed's chip bar

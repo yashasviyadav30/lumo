@@ -4,7 +4,12 @@ import { api, ApiError, readToken, writeToken } from './api'
 export type Me = {
   email: string
   created_at: string
-  settings: { shorts_enabled: boolean; shorts_daily_limit_min: number | null; search_language: string }
+  settings: {
+    shorts_enabled: boolean
+    shorts_daily_limit_min: number | null
+    search_language: string
+    hidden_groups: string[]
+  }
 }
 
 type SignUpInput = { email: string; password: string; date_of_birth: string; accepted_notice: boolean }
@@ -17,6 +22,7 @@ type SessionValue = {
   signIn(email: string, password: string): Promise<void>
   signOut(): Promise<void>
   deleteAccount(): Promise<string>
+  refresh(): Promise<void>
 }
 
 const SessionContext = createContext<SessionValue | null>(null)
@@ -81,9 +87,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return r.note
   }, [])
 
+  const refresh = useCallback(async () => {
+    setMe(await api<Me>('/api/me'))
+  }, [])
+
   const value = useMemo(
-    () => ({ me, loading, farewell, signUp, signIn, signOut, deleteAccount }),
-    [me, loading, farewell, signUp, signIn, signOut, deleteAccount],
+    () => ({ me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh }),
+    [me, loading, farewell, signUp, signIn, signOut, deleteAccount, refresh],
   )
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

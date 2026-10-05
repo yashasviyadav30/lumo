@@ -1,4 +1,4 @@
-import { Layers, Pencil, Play } from 'lucide-react'
+import { Play } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import Feed from '../components/Feed'
@@ -6,188 +6,151 @@ import { APP_NAME } from '../config'
 import { chooseMeaning, getActiveGoal, goalSummary, setGoal, type Goal } from '../lib/goals'
 import { clock, homeSummary, lectureTitle, type HomeSummary } from '../lib/study'
 
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
-
-function greeting(d = new Date()) {
-  const h = d.getHours()
-  return h < 5 ? 'Up late' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
-}
-
-// One next step (UX review): continue the last lecture, and today's cards if any. Nothing else competes.
+// The last lecture, one tap away (like YouTube's "continue watching").
 function Continue({ s }: { s: HomeSummary }) {
-  const cards = s.cards_due > 0 && (
-    <Link to="/cards" className="pill-link">
-      <Layers size={16} aria-hidden="true" /> Review {plural(s.cards_due, 'card')} due
-    </Link>
-  )
-  if (!s.resume) return cards ? <div className="hero plain">{cards}</div> : null
+  if (!s.resume) return null
   const v = s.resume.video
-  const total = v?.duration_s ?? 0
+  const to = `/watch/${s.resume.video_id}`
+  const pct = v?.duration_s ? Math.min(100, (s.resume.position_s / v.duration_s) * 100) : 0
   return (
-    <div className="hero">
-      <Link to={`/watch/${s.resume.video_id}`} className="hero-thumb" aria-hidden="true" tabIndex={-1}>
-        {v?.thumbnail_url && <img src={v.thumbnail_url} alt="" />}
-      </Link>
-      <div>
-        <p className="hero-kicker">Continue</p>
-        <Link to={`/watch/${s.resume.video_id}`} className="hero-main">
-          <span className="t">{lectureTitle(v, s.resume.video_id)}</span>
-          <span className="s">
-            {v?.channel_title ? `${v.channel_title} · ` : ''}stopped at {clock(s.resume.position_s)}
-          </span>
-        </Link>
-        {total > 0 && (
-          <span className="hero-progress" aria-hidden="true">
-            <span style={{ width: `${Math.min(100, (s.resume.position_s / total) * 100)}%` }} />
+    <div className="continue">
+      <Link to={to} aria-hidden="true" tabIndex={-1} className="vcard-link">
+        <div className="vcard-thumb">{v?.thumbnail_url && <img src={v.thumbnail_url} alt="" width={168} height={94} />}</div>
+        {pct > 0 && (
+          <span className="vcard-watched">
+            <span style={{ width: `${pct}%` }} />
           </span>
         )}
-        <div className="hero-actions">
-          <Link to={`/watch/${s.resume.video_id}`} className="button small">
-            <Play size={16} aria-hidden="true" /> Resume
-          </Link>
-          {cards}
-        </div>
+      </Link>
+      <div>
+        <p className="continue-k">Continue watching</p>
+        <Link to={to} className="t">
+          {lectureTitle(v, s.resume.video_id)}
+        </Link>
+        <p className="s">
+          {v?.channel_title ? `${v.channel_title} · ` : ''}stopped at {clock(s.resume.position_s)}
+        </p>
+        <Link to={to} className="button small" style={{ marginTop: 8 }}>
+          <Play size={15} aria-hidden="true" /> Resume
+        </Link>
       </div>
     </div>
   )
 }
 
-function HowItWorks() {
-  const steps = [
-    ['Pick a lecture', 'From your feed or Search.'],
-    ['Mark while you watch', 'One tap saves that second.'],
-    ['Review tonight', 'Your notes come back as cards.'],
-  ]
-  return (
-    <div className="steps">
-      {steps.map(([title, text]) => (
-        <div key={title} className="step">
-          <div>
-            <h3>{title}</h3>
-            <p>{text}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-export default function Home() {
-  const [goal, setGoalState] = useState<Goal | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState(false)
+// First visit: one question, so the feed has something to start from. Searching or following works too.
+function GoalCard({ onSaved, editing, onCancel }: { onSaved: (g: Goal) => void; editing: boolean; onCancel: () => void }) {
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [summary, setSummary] = useState<HomeSummary | null>(null)
-
-  useEffect(() => {
-    // Draw Home once both are in, so the top card never flashes the wrong thing.
-    Promise.allSettled([
-      homeSummary().then(setSummary),
-      getActiveGoal().then((g) => setGoalState(g && g.id ? g : null)),
-    ]).finally(() => setLoading(false))
-  }, [])
-
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     if (!text.trim()) return
     setBusy(true)
     setError(null)
     try {
-      setGoalState(await setGoal(text.trim()))
-      setEditing(false)
+      onSaved(await setGoal(text.trim()))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Couldn’t save your goal.')
+      setError(err instanceof Error ? err.message : 'Couldn’t save that. Try again.')
     } finally {
       setBusy(false)
     }
   }
+  return (
+    <div className="start-card">
+      <h1>What do you want to learn?</h1>
+      <p>Anything: a subject, an exam, a skill, a language. Home fills with videos for it. You can change it any time.</p>
+      <form className="inline-form" onSubmit={onSubmit}>
+        <label htmlFor="goal" className="visually-hidden">
+          Your learning goal
+        </label>
+        <input
+          id="goal"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="e.g. class 10 physics, spoken English, CA Inter…"
+          autoComplete="off"
+        />
+        <button type="submit" disabled={busy || !text.trim()}>
+          {busy ? 'Saving…' : 'Start'}
+        </button>
+        {editing && (
+          <button type="button" className="secondary" onClick={onCancel}>
+            Cancel
+          </button>
+        )}
+      </form>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
 
-  async function onChoose(index: number) {
-    if (!goal) return
-    setGoalState(await chooseMeaning(goal.id, index))
-  }
+export default function Home() {
+  const [goal, setGoalState] = useState<Goal | null>(null)
+  const [summary, setSummary] = useState<HomeSummary | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState(false)
 
-  if (loading) return <div className="skeleton" style={{ height: 160, marginTop: 16 }} aria-busy="true" />
+  useEffect(() => {
+    // Draw Home once both are in, so the top never flashes the wrong thing.
+    Promise.allSettled([homeSummary().then(setSummary), getActiveGoal().then((g) => setGoalState(g && g.id ? g : null))]).finally(
+      () => setLoading(false),
+    )
+  }, [])
 
-  const isNew = !summary?.totals || (summary.totals.notes === 0 && !summary.resume)
-  const goalReady = goal && !editing && goal.did_you_mean.length === 0
+  if (loading)
+    return (
+      <div aria-busy="true" aria-label="Loading">
+        <div className="skeleton" style={{ height: 40, margin: '12px 0' }} />
+        <div className="skeleton" style={{ aspectRatio: '16 / 6' }} />
+      </div>
+    )
 
   return (
     <section>
-      <header className="greet">
-        <h1>
-          {greeting()}, <span className="hl">let’s study.</span>
-        </h1>
-      </header>
-
+      <h1 className="visually-hidden">Home</h1>
       {(!goal || editing) && (
-        <div className="card goal-card">
-          {isNew && !editing && <HowItWorks />}
-          <h2 style={{ marginTop: isNew && !editing ? 18 : 0 }}>What are you studying?</h2>
-          <form className="search-form" onSubmit={onSubmit}>
-            <label htmlFor="goal" className="visually-hidden">
-              Your learning goal
-            </label>
-            <input
-              id="goal"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="e.g. CMA Inter costing, NEET biology"
-              autoComplete="off"
-            />
-            <button type="submit" disabled={busy || !text.trim()}>
-              {busy ? 'Saving…' : 'Set goal'}
-            </button>
-          </form>
-          {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
-          )}
-        </div>
+        <GoalCard
+          editing={editing}
+          onCancel={() => setEditing(false)}
+          onSaved={(g) => {
+            setGoalState(g)
+            setEditing(false)
+          }}
+        />
       )}
-
       {goal && !editing && goal.did_you_mean.length > 0 && (
-        <div className="card goal-card">
-          <h2 style={{ marginTop: 0 }}>Did you mean…</h2>
-          <p className="help">“{goal.text}” can mean more than one thing.</p>
+        <div className="start-card">
+          <h2>Did you mean…</h2>
+          <p>“{goal.text}” can mean more than one thing.</p>
           <div className="chips">
             {goal.did_you_mean.map((c) => (
-              <button key={c.index} className="chip" onClick={() => onChoose(c.index)}>
+              <button key={c.index} className="chip" onClick={async () => setGoalState(await chooseMeaning(goal.id, c.index))}>
                 {c.label}
               </button>
             ))}
           </div>
         </div>
       )}
-
       {summary && <Continue s={summary} />}
-
-      {goalReady && (
-        <>
-          <p className="goal-line">
-            <span className="goal-label">Your goal:</span> <strong>{goalSummary(goal)}</strong>{' '}
-            <button
-              className="link"
-              aria-label="Change"
-              onClick={() => {
-                setText(goal.text)
-                setEditing(true)
-              }}
-            >
-              <Pencil size={14} aria-hidden="true" /> Change
-            </button>
-          </p>
-          {goal.minor_signals.length > 0 && (
-            <p className="notice-line" role="note">
-              This goal mentions school (“{goal.minor_signals[0]}”). {APP_NAME} is for ages 18 and over for now.
-            </p>
-          )}
-        </>
+      {goal && !editing && (
+        <p className="page-sub">
+          Learning: <b>{goalSummary(goal)}</b>{' '}
+          <button className="link" onClick={() => setEditing(true)}>
+            Change
+          </button>
+        </p>
       )}
-      <Feed key={goal?.id ?? 'none'} topics={goalReady ? goal.topics : []} />
+      {goal && goal.minor_signals.length > 0 && (
+        <p className="notice-line" role="note">
+          This goal mentions school (“{goal.minor_signals[0]}”). {APP_NAME} is for ages 18 and over for now.
+        </p>
+      )}
+      <Feed key={goal?.id ?? 'none'} topics={goal && !editing ? goal.topics : []} />
     </section>
   )
 }

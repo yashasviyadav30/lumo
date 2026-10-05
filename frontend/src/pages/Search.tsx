@@ -1,52 +1,52 @@
-import { EyeOff, Search as SearchIcon } from 'lucide-react'
-import { useEffect, useState, type FormEvent } from 'react'
+import { History, Search as SearchIcon, X } from 'lucide-react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useLocation } from 'react-router'
 import HiddenLine from '../components/HiddenLine'
-import VideoItem from '../components/VideoItem'
+import VideoItem, { NoticeLine } from '../components/VideoItem'
 import { getActiveGoal, type Goal } from '../lib/goals'
-import { starVideo } from '../lib/study'
-import { followChannel, muteChannel, searchVideos, unmuteChannel, type SearchResponse } from '../lib/search'
+import { forgetSearches, recentSearches, rememberSearch, searchVideos, type SearchResponse } from '../lib/search'
+import { useVideoActions } from '../lib/useVideoActions'
 
 export default function Search() {
-  const location = useLocation()
-  const handedOver = (location.state as { q?: string } | null)?.q ?? ''
+  const handedOver = (useLocation().state as { q?: string } | null)?.q ?? ''
   const [query, setQuery] = useState(handedOver)
   const [data, setData] = useState<SearchResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [showHidden, setShowHidden] = useState(false)
-  const [notice, setNotice] = useState<string | null>(null)
-  const [lastHidden, setLastHidden] = useState<string | null>(null)
+  const [recent, setRecent] = useState(recentSearches)
   const [goal, setGoal] = useState<Goal | null>(null)
+  const input = useRef<HTMLInputElement>(null)
+  const { actions, visible, notice, undo } = useVideoActions()
 
-  // Topic ideas for the empty screen come from her own goal.
   useEffect(() => {
     getActiveGoal()
       .then((g) => setGoal(g && g.id ? g : null))
       .catch(() => setGoal(null))
   }, [])
 
-  async function run(q: string, keepNotice = false) {
-    if (!q.trim()) return
+  async function run(q: string) {
+    const text = q.trim()
+    if (!text) return
+    setQuery(text)
     setBusy(true)
     setError(null)
-    if (!keepNotice) {
-      setNotice(null)
-      setLastHidden(null)
-    }
     setShowHidden(false)
+    rememberSearch(text)
+    setRecent(recentSearches())
     try {
-      setData(await searchVideos(q.trim()))
+      setData(await searchVideos(text))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search failed.')
+      setError(err instanceof Error ? err.message : 'Search failed. Try again.')
     } finally {
       setBusy(false)
     }
   }
 
-  // A topic tapped on Home arrives in memory (not in the URL) and runs straight away.
+  // A search typed in the top bar arrives in memory (never in the URL, R11) and runs straight away.
   useEffect(() => {
     if (handedOver) run(handedOver)
+    else input.current?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handedOver])
 
@@ -55,132 +55,109 @@ export default function Search() {
     run(query)
   }
 
-  async function onMute(channelId: string) {
-    await muteChannel(channelId)
-    setNotice('Channel hidden. It won’t appear in your search or feed again.')
-    setLastHidden(channelId)
-    run(query, true)
-  }
-
-  async function onUndoHide() {
-    if (!lastHidden) return
-    await unmuteChannel(lastHidden)
-    setLastHidden(null)
-    setNotice('Channel is back.')
-    run(query, true)
-  }
-
-  async function onStar(videoId: string) {
-    await starVideo(videoId, true)
-    setLastHidden(null)
-    setNotice('Starred. Find it in Library → Starred.')
-  }
-
-  async function onFollow(channelId: string) {
-    await followChannel(channelId)
-    setNotice('Following this channel. Its new videos come to your Home feed.')
-  }
-
   return (
     <section>
-      <div className="page-head">
-        <h1>Search</h1>
-      </div>
-      <form className="search-form" role="search" onSubmit={onSubmit}>
-        <label htmlFor="q" className="visually-hidden">
-          Search a topic
-        </label>
-        <div className="search-box">
-          <SearchIcon size={20} aria-hidden="true" />
+      <h1 className="visually-hidden">Search</h1>
+      <form className="search-top" role="search" onSubmit={onSubmit}>
+        <label className="field">
+          <SearchIcon size={19} aria-hidden="true" />
+          <span className="visually-hidden">Search a topic</span>
           <input
-            id="q"
+            ref={input}
             type="search"
-            placeholder="e.g. CMA Inter cost accounting"
+            name="q"
+            placeholder="Search anything you want to learn…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             enterKeyHint="search"
+            autoComplete="off"
           />
-        </div>
+        </label>
         <button type="submit" disabled={busy || !query.trim()}>
           {busy ? 'Searching…' : 'Search'}
         </button>
       </form>
-
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
-      {notice && (
-        <p className="notice-line" role="status">
-          {notice}{' '}
-          {lastHidden && (
-            <button className="link" onClick={onUndoHide}>
-              Undo
-            </button>
-          )}
-        </p>
-      )}
+      <NoticeLine notice={notice} onUndo={undo} />
       {data?.note && <p className="notice-line">{data.note}</p>}
 
       {!data && !busy && (
         <>
+          {recent.length > 0 && (
+            <>
+              <div className="ai-head" style={{ justifyContent: 'space-between' }}>
+                <h2 className="page-title" style={{ fontSize: '1.05rem' }}>
+                  Recent
+                </h2>
+                <button
+                  className="link"
+                  onClick={() => {
+                    forgetSearches()
+                    setRecent([])
+                  }}
+                >
+                  <X size={14} aria-hidden="true" /> Clear
+                </button>
+              </div>
+              <ul className="recent-list">
+                {recent.map((q) => (
+                  <li key={q}>
+                    <button onClick={() => run(q)}>
+                      <History size={18} aria-hidden="true" /> {q}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="help">Kept on this device only.</p>
+            </>
+          )}
           {goal && goal.topics.length > 0 && (
             <>
-              <h2>Topics for your goal</h2>
+              <h2 className="page-title" style={{ fontSize: '1.05rem' }}>
+                Topics for “{goal.text}”
+              </h2>
               <div className="chips">
                 {goal.topics.map((t) => (
-                  <button
-                    key={t.id}
-                    className="chip"
-                    onClick={() => {
-                      setQuery(t.query)
-                      run(t.query)
-                    }}
-                  >
+                  <button key={t.id} className="chip" onClick={() => run(t.query)}>
                     {t.name}
                   </button>
                 ))}
               </div>
             </>
           )}
-          <div className="card empty">
-            <span className="icon-circle">
-              <EyeOff size={22} aria-hidden="true" />
-            </span>
-            <h3>A calmer YouTube</h3>
-            <p className="help">No Shorts, no entertainment, no autoplay. Open any lecture to take notes on it.</p>
-          </div>
         </>
       )}
+
       {busy && !data && (
-        <ul className="video-list" aria-hidden="true">
+        <ul className="vgrid" aria-busy="true" aria-label="Searching">
           {[0, 1, 2, 3].map((i) => (
-            <li key={i} className="skeleton" style={{ aspectRatio: '16 / 12' }} />
+            <li key={i}>
+              <div className="skeleton" style={{ aspectRatio: '16 / 9' }} />
+            </li>
           ))}
         </ul>
       )}
-
       {data && (
         <>
-          <ul className="video-list" aria-label="Results">
-            {data.results.map((v) => (
-              <VideoItem key={v.video_id} video={v} onMute={onMute} onFollow={onFollow} onStar={onStar} />
+          {data.results.length === 0 && (
+            <div className="feed-empty">
+              <h3>No videos to show for this search</h3>
+              <p>Try other words, or tap Show below to see what was hidden.</p>
+            </div>
+          )}
+          <ul className="vgrid" aria-label="Results">
+            {data.results.filter(visible).map((v) => (
+              <VideoItem key={v.video_id} video={v} progress={data.progress?.[v.video_id]} actions={actions} />
             ))}
             {showHidden &&
               data.hidden.map((v) => (
-                <VideoItem
-                  key={v.video_id}
-                  video={v}
-                  hiddenBecause={v.reasons}
-                  playable={v.playable}
-                  onFollow={onFollow}
-                />
+                <VideoItem key={v.video_id} video={v} hiddenBecause={v.reasons} playable={v.playable} actions={{ onFollow: actions.onFollow }} />
               ))}
           </ul>
-          {data.results.length === 0 && data.hidden.length === 0 && data.mode !== 'quota_exhausted' && (
-            <p>No results. Try different words.</p>
-          )}
           <HiddenLine hidden={data.hidden} shown={showHidden} onToggleShow={() => setShowHidden(!showHidden)} />
         </>
       )}

@@ -14,6 +14,9 @@ export type VideoCard = {
 
 export type HiddenCard = VideoCard & { reasons: string[]; playable: boolean }
 
+// Where she stopped in each video (seconds), for the red line under the thumbnail.
+export type Progress = Record<string, number>
+
 export type SearchResponse = {
   mode: 'live' | 'cache' | 'cache_stale' | 'quota_exhausted'
   results: VideoCard[]
@@ -21,6 +24,7 @@ export type SearchResponse = {
   hidden_count: number
   searches_left: number
   note: string | null
+  progress?: Progress
 }
 
 export function searchVideos(q: string): Promise<SearchResponse> {
@@ -28,10 +32,44 @@ export function searchVideos(q: string): Promise<SearchResponse> {
   return api<SearchResponse>('/api/search', { method: 'POST', body: JSON.stringify({ q }) })
 }
 
-export type FeedResponse = { results: VideoCard[]; hidden: HiddenCard[]; hidden_count: number }
+export type FeedResponse = { results: VideoCard[]; hidden: HiddenCard[]; hidden_count: number; progress?: Progress }
 
-// Home feed: new uploads from channels she follows + her goal's topics, with the same hide list as search.
-export const getFeed = () => api<FeedResponse>('/api/feed')
+// Home feed: followed and recently watched channels, her goal's topics and her recent searches (sent from this
+// device; the server never stores search history).
+export const getFeed = (recent: string[] = []) =>
+  api<FeedResponse>('/api/feed', { method: 'POST', body: JSON.stringify({ recent }) })
+
+// Shorts only from channels she follows.
+export const getShorts = () => api<{ results: VideoCard[]; follows: number }>('/api/shorts')
+
+export const notInterested = (video_id: string, undo = false) =>
+  api('/api/videos/not-interested', { method: 'POST', body: JSON.stringify({ video_id, undo }) })
+
+// Her last 5 searches, on this device only.
+const RECENT_KEY = 'focuslearn.recentSearches'
+export function recentSearches(): string[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(RECENT_KEY) ?? '[]')
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string').slice(0, 5) : []
+  } catch {
+    return []
+  }
+}
+export function rememberSearch(q: string) {
+  const next = [q, ...recentSearches().filter((x) => x.toLowerCase() !== q.toLowerCase())].slice(0, 5)
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(next))
+  } catch {
+    // private mode: nothing remembered
+  }
+}
+export function forgetSearches() {
+  try {
+    localStorage.removeItem(RECENT_KEY)
+  } catch {
+    // nothing to forget
+  }
+}
 
 export function muteChannel(channelId: string) {
   return api('/api/mutes', { method: 'POST', body: JSON.stringify({ kind: 'channel', value: channelId }) })
