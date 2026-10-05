@@ -15,7 +15,7 @@ describe('accounts (Stage 2)', () => {
   it('sends signed-out visitors to the welcome page', async () => {
     mockApi({})
     const { router } = renderAt('/')
-    await screen.findByRole('link', { name: 'Get started' })
+    expect((await screen.findAllByRole('link', { name: /Start free/ })).length).toBeGreaterThan(0)
     expect(router.state.location.pathname).toBe('/welcome')
   })
 

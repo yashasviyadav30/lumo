@@ -12,12 +12,12 @@ export default defineConfig({
       manifest: {
         name: 'Lumo',
         short_name: 'Lumo',
-        description: 'Study on YouTube without the distractions.',
+        description: 'Learn anything from YouTube, without the noise.',
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#f8f8f5',
-        theme_color: '#3550d8',
+        background_color: '#0f0d15',
+        theme_color: '#ff7a3d',
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },

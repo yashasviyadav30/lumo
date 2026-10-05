@@ -31,7 +31,7 @@ const shot = async (page, name) => {
 async function signUp(p, path = '/welcome') {
   const { page } = p
   await page.goto(BASE + path)
-  await page.getByRole('link', { name: 'Get started' }).click()
+  await page.getByRole('link', { name: /Start free/ }).first().click()
   await page.getByLabel('Date of birth').fill('1999-02-02')
   await page.getByLabel(/I’ve read what/).check()
   await page.getByLabel('Email').fill(`${p.label}-${Date.now()}@example.com`)
@@ -82,7 +82,7 @@ try {
   await ravi.page.goto(BASE + '/join/' + code)
   await ravi.page.getByText(/invited to a study group/).waitFor({ timeout: 60_000 })
   await shot(ravi.page, 'phone-invited-welcome')
-  await ravi.page.getByRole('link', { name: 'Get started' }).click()
+  await ravi.page.getByRole('link', { name: /Start free/ }).first().click()
   await ravi.page.getByLabel('Date of birth').fill('1998-03-03')
   await ravi.page.getByLabel(/I’ve read what/).check()
   await ravi.page.getByLabel('Email').fill(`ravi-${Date.now()}@example.com`)

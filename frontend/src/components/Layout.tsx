@@ -123,12 +123,16 @@ export default function Layout() {
       <nav className="tabbar" aria-label="Main" style={{ '--tabs': tabs.length } as CSSProperties}>
         {tabs.map(({ to, label, end, Icon }) => (
           <NavLink key={to} to={to} end={end} className="tab">
+            {({ isActive }) => (
+              <>
             <span className="tab-icon">
-              <Icon size={24} aria-hidden="true" />
+              <Icon size={24} weight={isActive ? 'fill' : 'duotone'} aria-hidden="true" />
               {to === '/groups' && unread > 0 && <span className="tab-badge">{unread > 9 ? '9+' : unread}</span>}
             </span>
             {label}
             {to === '/groups' && unread > 0 && <span className="visually-hidden">, {unread} new</span>}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

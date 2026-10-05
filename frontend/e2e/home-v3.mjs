@@ -30,7 +30,7 @@ const setTheme = async (t) => {
 try {
   await page.goto(BASE + '/welcome')
   await shot('phone-welcome')
-  await page.getByRole('link', { name: 'Get started' }).click()
+  await page.getByRole('link', { name: /Start free/ }).first().click()
   await page.getByLabel('Email').fill(`v3home-${Date.now()}@example.com`)
   await page.getByLabel(/Password/).fill('v3 test password 1')
   await page.getByLabel('Date of birth').fill('1999-02-02')

@@ -33,7 +33,7 @@ const setTheme = async (t) => {
 
 try {
   await page.goto(BASE + '/welcome')
-  await page.getByRole('link', { name: 'Get started' }).click()
+  await page.getByRole('link', { name: /Start free/ }).first().click()
   await page.getByLabel('Email').fill(`v3-${Date.now()}@example.com`)
   await page.getByLabel(/Password/).fill('v3 test password 1')
   await page.getByLabel('Date of birth').fill('1999-02-02')
@@ -47,7 +47,7 @@ try {
   await page.locator('.ai-skeleton').waitFor({ state: 'detached' })
   await shot('phone-light-start', { fullPage: true })
 
-  const generate = page.getByRole('button', { name: /Generate notes/ })
+  const generate = page.getByRole('button', { name: /Generate summary/ })
   if (await generate.count()) await generate.click()
   await page.waitForTimeout(1500)
   await shot('phone-light-making', { fullPage: true })
@@ -78,7 +78,7 @@ try {
   await page.locator('.mm-node').first().waitFor()
   await shot('phone-dark-map', { fullPage: true })
   await page.setViewportSize(LAPTOP)
-  await tab(/^Notes/).click()
+  await tab(/^Summary/).click()
   await page.locator('.ai-summary').waitFor()
   await shot('laptop-dark-notes')
   await setTheme('light')

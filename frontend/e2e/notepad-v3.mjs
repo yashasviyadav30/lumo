@@ -24,7 +24,7 @@ const shot = async (name) => {
 
 try {
   await page.goto(BASE + '/welcome')
-  await page.getByRole('link', { name: 'Get started' }).click()
+  await page.getByRole('link', { name: /Start free/ }).first().click()
   await page.getByLabel('Date of birth').fill('1999-02-02')
   await page.getByLabel(/I’ve read what/).check()
   await page.getByLabel('Email').fill(`pad-${Date.now()}@example.com`)

@@ -1,0 +1,723 @@
+/* Lumo brand (2026-10-06). Loaded last, so it wins over index.css and v3.css.
+   One accent: the glow (amber to coral), on cool neutrals by day and a deep violet night.
+   Buttons carry the glow with dark ink text, which stays readable (white on orange fails contrast). */
+:root {
+  --bg: #f6f6f9;
+  --surface: #ffffff;
+  --surface-2: #eeeef3;
+  --text: #17151f;
+  --muted: #5e5b6d;
+  --line: #e3e2ea;
+  --primary: #c2410c;
+  --primary-2: #9a3412;
+  --primary-ink: #1b1006;
+  --primary-soft: rgb(255 122 61 / 0.12);
+  --info: #c2410c;
+  --info-soft: rgb(255 122 61 / 0.12);
+  --focus: #e8590c;
+  --np-blue: #2563eb;
+  --watched: #f04438;
+  --lumo-glow: linear-gradient(135deg, #ffc24d 0%, #ff8a3d 52%, #f2542d 100%);
+  --glow-soft: rgb(255 138 61 / 0.18);
+  --shadow: 0 1px 2px rgb(23 21 31 / 0.05), 0 6px 18px rgb(23 21 31 / 0.06);
+  --shadow-lg: 0 18px 44px rgb(23 21 31 / 0.14);
+  --btn-shadow: 0 6px 20px rgb(242 84 45 / 0.28);
+  --display: 'Bricolage Grotesque Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --radius-sm: 12px;
+  --radius: 16px;
+  --radius-lg: 22px;
+}
+:root[data-theme='dark'] {
+  --bg: #0f0d15;
+  --surface: #18151f;
+  --surface-2: #221e2c;
+  --text: #f1eff6;
+  --muted: #a9a5b8;
+  --line: #2e2a3a;
+  --primary: #ffa25c;
+  --primary-2: #ff8a3d;
+  --primary-ink: #1b1006;
+  --primary-soft: rgb(255 162 92 / 0.14);
+  --info: #ffa25c;
+  --info-soft: rgb(255 162 92 / 0.14);
+  --focus: #ffa25c;
+  --np-blue: #8ab4ff;
+  --glow-soft: rgb(255 138 61 / 0.16);
+  --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.55);
+  --btn-shadow: 0 8px 26px rgb(255 122 61 / 0.25);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    --bg: #0f0d15;
+    --surface: #18151f;
+    --surface-2: #221e2c;
+    --text: #f1eff6;
+    --muted: #a9a5b8;
+    --line: #2e2a3a;
+    --primary: #ffa25c;
+    --primary-2: #ff8a3d;
+    --primary-ink: #1b1006;
+    --primary-soft: rgb(255 162 92 / 0.14);
+    --info: #ffa25c;
+    --info-soft: rgb(255 162 92 / 0.14);
+    --focus: #ffa25c;
+    --np-blue: #8ab4ff;
+    --glow-soft: rgb(255 138 61 / 0.16);
+    --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.55);
+    --btn-shadow: 0 8px 26px rgb(255 122 61 / 0.25);
+  }
+}
+
+/* ---------- type ---------- */
+h1,
+h2,
+h3,
+.page-title,
+.brand,
+.lecture-title,
+.ai-state h3,
+.guide h2,
+.start-card h1,
+.start-card h2 {
+  font-family: var(--display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.brand {
+  font-weight: 750;
+  font-size: 1.28rem;
+}
+.brand::after {
+  content: none;
+}
+.logo-tile {
+  border-radius: 9px;
+  box-shadow: 0 4px 14px rgb(242 84 45 / 0.22);
+}
+
+/* ---------- buttons: the glow ---------- */
+.button,
+button {
+  background: var(--lumo-glow);
+  color: var(--primary-ink);
+  box-shadow: var(--btn-shadow);
+}
+.button:hover:not(:disabled),
+button:hover:not(:disabled) {
+  filter: brightness(1.05) saturate(1.05);
+}
+button.secondary,
+.button.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line);
+  box-shadow: none;
+}
+button.secondary:hover:not(:disabled),
+.button.secondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  filter: none;
+}
+button.link,
+button.danger-link,
+.chip,
+.chips .chip,
+.chipbar .chip,
+.tabs button,
+.menu button,
+.np-tool,
+.np-swatch,
+.icon-btn,
+.menu-btn,
+.mm-close,
+.mm-full-btn,
+.np-close,
+.ts-chip,
+.segmented button,
+.recent-list button,
+.back-btn,
+.top-search button,
+.reply-form .icon-btn,
+.tab {
+  box-shadow: none;
+  filter: none;
+}
+button.link,
+button.danger-link,
+.tabs button,
+.menu button,
+.icon-btn,
+.menu-btn,
+.mm-close,
+.np-close,
+.recent-list button,
+.back-btn,
+.np-tool {
+  background: transparent;
+}
+.mm-full-btn,
+.top-search button {
+  background: var(--surface);
+}
+.ts-chip {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.ts-chip:hover {
+  background: var(--lumo-glow);
+  color: var(--primary-ink);
+}
+button.danger {
+  background: var(--danger);
+  color: #ffffff;
+  box-shadow: none;
+}
+.segmented button {
+  background: transparent;
+  color: var(--muted);
+}
+.segmented button.on {
+  background: var(--surface);
+  color: var(--text);
+}
+.chipbar .chip.on,
+.chips .chip.on {
+  background: var(--text);
+  color: var(--bg);
+}
+.chipbar .chip,
+.chips .chip {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ---------- shell ---------- */
+.app.signed-in .tab.active svg {
+  color: var(--primary);
+}
+.app.signed-in .tab.active {
+  color: var(--text);
+}
+@media (min-width: 960px) {
+  .app.signed-in .tab.active {
+    background: var(--primary-soft);
+  }
+}
+/* A soft aurora behind the top of every signed-in page: warmth without decoration in the way. */
+.app.signed-in::before,
+.landing-page::before {
+  content: '';
+  position: fixed;
+  inset: -20vh -10vw auto auto;
+  width: 70vw;
+  height: 60vh;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(closest-side, var(--glow-soft), transparent);
+  filter: blur(10px);
+}
+.app.signed-in > *,
+.landing-page > * {
+  position: relative;
+  z-index: 1;
+}
+.app.signed-in > .topbar,
+.landing-page > .topbar {
+  z-index: 10;
+}
+.app.signed-in > .tabbar {
+  z-index: 15;
+  position: fixed;
+}
+@media (min-width: 960px) {
+  .app.signed-in > .tabbar {
+    position: sticky;
+  }
+}
+
+/* ---------- cards and feed ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .vcard-thumb img {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .vcard:hover .vcard-thumb img {
+    transform: scale(1.04);
+  }
+}
+.vcard-thumb {
+  border-radius: 14px;
+}
+.continue {
+  border: 0;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--lumo-glow) border-box;
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow);
+}
+.continue-k {
+  color: var(--primary);
+}
+.start-card {
+  box-shadow: var(--shadow);
+}
+
+/* ---------- study page ---------- */
+.study-tabs .tabs {
+  border-bottom: 0;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--surface-2);
+}
+.study-tabs .tabs button {
+  flex: 1;
+  border-radius: 11px;
+  border-bottom: 0;
+  margin: 0;
+  justify-content: center;
+  font-weight: 600;
+}
+.study-tabs .tabs button.on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.study-tabs .tabs button.on svg {
+  color: var(--primary);
+}
+.ai-summary {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--lumo-glow) border-box;
+  box-shadow: 0 10px 30px var(--glow-soft);
+  font-size: 1.02rem;
+}
+.ai-points details[open] {
+  border-color: var(--primary);
+}
+.ai-state > svg {
+  color: var(--primary);
+}
+.mm-node.d0 {
+  background: var(--lumo-glow);
+  color: var(--primary-ink);
+  border-color: transparent;
+  box-shadow: var(--btn-shadow);
+}
+.mm-node.d1 {
+  background: var(--primary-soft);
+}
+.capture button .ic {
+  border-radius: 12px;
+}
+
+/* ---------- landing page ---------- */
+.landing-page .topbar {
+  justify-content: space-between;
+}
+.lp-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lp-nav a:not(.button) {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.landing-page .content {
+  max-width: 1180px;
+}
+.lp {
+  padding-top: 8px;
+}
+.lp-hero {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+  min-height: min(78dvh, 720px);
+  padding: 12px 0 32px;
+}
+@media (min-width: 900px) {
+  .lp-hero {
+    grid-template-columns: 1.05fr 1fr;
+    gap: 40px;
+  }
+}
+.lp-hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1.04;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+.lp-glow-text {
+  color: var(--primary);
+}
+.lp-lead {
+  margin: 0 0 26px;
+  max-width: 34ch;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.lp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.lp-cta {
+  min-height: 54px;
+  padding: 0 26px;
+  font-size: 1.05rem;
+}
+.lp-stage {
+  position: relative;
+  min-height: 440px;
+}
+.lp-orb {
+  position: absolute;
+  top: -6%;
+  right: -4%;
+  width: min(46%, 260px);
+  filter: drop-shadow(0 0 50px rgb(255 122 61 / 0.5));
+  z-index: 0;
+}
+.lp-orb svg {
+  width: 100%;
+  height: auto;
+}
+.lp-float {
+  z-index: 1;
+}
+.lp-float {
+  position: absolute;
+  width: min(300px, 74%);
+}
+.lp-float.one {
+  top: 4%;
+  left: 0;
+}
+.lp-float.two {
+  bottom: 2%;
+  right: 0;
+}
+.lp-card {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  box-shadow: var(--shadow-lg);
+}
+.lp-card-k {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.lp-summary-text {
+  margin: 0 0 10px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.lp-summary ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.lp-summary li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.lp-summary li span:last-child {
+  display: grid;
+  font-size: 0.88rem;
+}
+.lp-summary small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.lp-time {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.lp-map {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.lp-edge {
+  fill: none;
+  stroke: var(--muted);
+  stroke-opacity: 0.55;
+  stroke-width: 1.6;
+}
+.lp-node rect {
+  fill: var(--surface);
+  stroke: var(--line);
+}
+.lp-node text {
+  fill: var(--text);
+  font: 600 12px var(--display);
+}
+.lp-node.root rect {
+  fill: #ff8a3d;
+  stroke: none;
+}
+.lp-node.root text {
+  fill: #1b1006;
+  font-size: 13px;
+  font-weight: 750;
+}
+.lp-section-title {
+  margin: 56px 0 20px;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.12;
+  max-width: 22ch;
+}
+.lp-bento {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .lp-bento {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .lp-tile.big {
+    grid-column: span 4;
+  }
+  .lp-tile.tall {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .lp-tile.stat {
+    grid-column: span 2;
+  }
+  .lp-tile.wide {
+    grid-column: span 2;
+  }
+  .lp-tile {
+    grid-column: span 3;
+  }
+}
+@media (min-width: 900px) {
+  .lp-bento .lp-tile:nth-child(5),
+  .lp-bento .lp-tile:nth-child(6) {
+    grid-column: span 3;
+  }
+}
+.lp-tile {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+.lp-tile h3 {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+}
+.lp-tile p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.lp-tile .lp-card {
+  margin-top: 10px;
+  box-shadow: var(--shadow);
+}
+.lp-tile.big {
+  background:
+    radial-gradient(120% 90% at 100% 0%, var(--glow-soft), transparent 60%),
+    var(--surface);
+}
+.lp-tile.stat {
+  background:
+    radial-gradient(100% 100% at 0% 100%, var(--glow-soft), transparent 70%),
+    var(--surface);
+}
+.lp-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--lumo-glow);
+  color: var(--primary-ink);
+  box-shadow: var(--btn-shadow);
+}
+.lp-stat {
+  margin: 6px 0 -6px !important;
+  font: 750 4.2rem/1 var(--display);
+  color: var(--text) !important;
+  letter-spacing: -0.04em;
+}
+.lp-chat {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.lp-bubble {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--surface-2);
+  color: var(--text) !important;
+  font-size: 0.9rem;
+  max-width: 92%;
+}
+.lp-bubble.me {
+  justify-self: end;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--primary-soft);
+}
+.lp-bubble b {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--primary);
+}
+.lp-icons-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px !important;
+  color: var(--primary) !important;
+}
+.lp-final {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin: 64px 0 28px;
+  padding: 40px 20px;
+  border-radius: 28px;
+  text-align: center;
+  background:
+    radial-gradient(60% 80% at 50% 0%, var(--glow-soft), transparent 70%),
+    var(--surface);
+  border: 1px solid var(--line);
+}
+.lp-final h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.6vw, 2.3rem);
+  max-width: 24ch;
+}
+.lp-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  justify-content: space-between;
+  padding: 8px 0 32px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* motion: the orb breathes, the cards float, the map draws itself; all off with reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .lp-orb svg {
+    animation: lp-breathe 6s ease-in-out infinite;
+  }
+  .lp-float.one {
+    animation: lp-float 7s ease-in-out infinite;
+  }
+  .lp-float.two {
+    animation: lp-float 8s ease-in-out -3s infinite;
+  }
+  .lp-edge {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: lp-draw 1s ease-out forwards;
+  }
+  .lp-node:not(.root) {
+    opacity: 0;
+    animation: lp-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .lp-hero-text > * {
+    animation: lp-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .lp-hero-text > :nth-child(2) {
+    animation-delay: 0.08s;
+  }
+  .lp-hero-text > :nth-child(3) {
+    animation-delay: 0.16s;
+  }
+}
+@keyframes lp-breathe {
+  50% {
+    transform: scale(1.05);
+    opacity: 0.92;
+  }
+}
+@keyframes lp-float {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes lp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes lp-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* Phones: the two previews stack (no card covers another's text); the orb glows behind the first. */
+@media (max-width: 899px) {
+  .lp-stage {
+    min-height: 0;
+    display: grid;
+    gap: 14px;
+    padding-top: 8px;
+  }
+  .lp-float,
+  .lp-float.one,
+  .lp-float.two {
+    position: relative;
+    inset: auto;
+    width: 100%;
+  }
+  .lp-float.two {
+    width: 88%;
+    justify-self: end;
+  }
+  .lp-orb {
+    top: -40px;
+    right: -30px;
+    width: 180px;
+  }
+}
