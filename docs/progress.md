@@ -31,6 +31,13 @@ for the whole plan to be built before they judge it. All four steps are built, t
 - **Tests:** backend 117, frontend 56. Live checks: `e2e/study-v3.mjs`, `e2e/home-v3.mjs`, `e2e/groups-v3.mjs`
   (two people), all passing on the live site with throwaway accounts that are deleted.
 
+**After the user's first look (2026-10-05/06):** songs hidden by default (a feed full of songs); any goal now
+gets 6-8 topics from the LLM (her words only, R4), including topper interviews and podcasts for that path
+(before, only AI/CMA/CS/NEET had topics, so other goals got one search); every Home gets a "Podcasts & talks"
+chip and 2 rotating shared learning searches. Tried and dropped: YouTube's category charts (no Education chart
+in India; Science & Tech is gadget unboxings) and "recent, most viewed" search (viral news and drama). Live
+check, UPSC goal: 46 videos in All, 52 in Podcasts & talks.
+
 **Not built (optional in the plan):** phone push alerts for replies (needs VAPID keys and a push service);
 the in-app badge covers it for now.
 
