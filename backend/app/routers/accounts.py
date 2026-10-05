@@ -11,7 +11,9 @@ from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app import google
 from app.auth import current_session, current_user
+from app.config import get_settings
 from app.db import get_db
 from app.filters import CATEGORY_GROUPS, DEFAULT_HIDDEN_GROUPS
 from app.models import AuthSession, Consent, Feedback, User, UserSettings
@@ -104,21 +106,21 @@ def _start_session(db: Session, user: User) -> str:
     return token
 
 
-@router.post("/auth/signup", response_model=TokenOut, status_code=201)
-def signup(body: SignupIn, request: Request, db: Session = Depends(get_db)) -> TokenOut:
-    request.state.action = "signup"
+def _check_adult(date_of_birth: date, accepted_notice: bool, request: Request) -> None:
     today = today_in_india()
-    if body.date_of_birth > today or body.date_of_birth.year < 1900:
+    if date_of_birth > today or date_of_birth.year < 1900:
         raise HTTPException(status_code=422, detail="invalid_date_of_birth")
-    if age_on(body.date_of_birth, today) < 18:
+    if age_on(date_of_birth, today) < 18:
         # R10: refuse, and store nothing about this person (no row, no email in the log).
         request.state.action = "signup_refused_under_18"
         raise HTTPException(status_code=403, detail="under_18")
-    if not body.accepted_notice:
+    if not accepted_notice:
         raise HTTPException(status_code=422, detail="notice_not_accepted")
 
+
+def _create_user(db: Session, email: str, password_hash: str) -> User:
     now = datetime.now(timezone.utc)
-    user = User(email=body.email.lower(), password_hash=hash_password(body.password), adult_confirmed_at=now)
+    user = User(email=email, password_hash=password_hash, adult_confirmed_at=now)
     user.settings = UserSettings(shorts_enabled=False, shorts_daily_limit_min=None, search_language="en")
     user.consents.append(Consent(kind="notice", version=NOTICE_VERSION, granted_at=now))
     db.add(user)
@@ -127,6 +129,51 @@ def signup(body: SignupIn, request: Request, db: Session = Depends(get_db)) -> T
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=409, detail="email_taken") from None
+    return user
+
+
+@router.post("/auth/signup", response_model=TokenOut, status_code=201)
+def signup(body: SignupIn, request: Request, db: Session = Depends(get_db)) -> TokenOut:
+    request.state.action = "signup"
+    _check_adult(body.date_of_birth, body.accepted_notice, request)
+    user = _create_user(db, body.email.lower(), hash_password(body.password))
+    token = _start_session(db, user)
+    db.commit()
+    request.state.actor = pseudonym(user.id)
+    return TokenOut(token=token, me=_me(user))
+
+
+# Google accounts have no password: this is not a valid hash, so password sign-in always fails for them.
+NO_PASSWORD = "!google"
+
+
+class GoogleIn(BaseModel):
+    credential: str = Field(min_length=20, max_length=4096)
+    # Only for a new account: Google doesn't tell us her age, so she confirms 18+ here (R10).
+    date_of_birth: date | None = None
+    accepted_notice: bool = False
+
+
+@router.get("/config")
+def public_config() -> dict:
+    return {"google_client_id": get_settings().google_client_id or None}
+
+
+@router.post("/auth/google", response_model=TokenOut)
+def google_auth(body: GoogleIn, request: Request, db: Session = Depends(get_db)) -> TokenOut:
+    """Continue with Google: signs in an existing account, or creates one when 18+ and the notice are confirmed."""
+    request.state.action = "google_auth"
+    try:
+        info = google.verify_id_token(body.credential)
+    except google.GoogleError as e:
+        code = str(e)
+        raise HTTPException(status_code=503 if code == "google_not_configured" else 401, detail=code) from None
+    user = db.scalar(select(User).where(User.email == info["email"]))
+    if user is None:
+        if body.date_of_birth is None:
+            raise HTTPException(status_code=404, detail="no_account")
+        _check_adult(body.date_of_birth, body.accepted_notice, request)
+        user = _create_user(db, info["email"], NO_PASSWORD)
     token = _start_session(db, user)
     db.commit()
     request.state.actor = pseudonym(user.id)

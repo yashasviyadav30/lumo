@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     # Search quota for the whole app per Pacific day (R12). Keep a margin below YouTube's 100.
     search_quota_per_day: int = 95
     gemini_api_key: str = ""
+    # OAuth client ID (Web) from Google Cloud. Empty = the "Continue with Google" buttons stay hidden.
+    google_client_id: str = ""
     # Tried in order; the next one is used when one is overloaded (free models often answer 503).
     gemini_models: str = "gemini-3.5-flash-lite,gemini-3.8-flash"
     # Free tier allows 8 hours of YouTube video per day (Gemini video docs, 2026-09-23). Keep a margin.

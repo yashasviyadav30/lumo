@@ -8,6 +8,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app import google, quota
 from app.auth import current_user
 from app.config import get_settings
 from app.db import get_db
@@ -126,6 +127,30 @@ def add_mute(body: MuteIn, user: User = Depends(current_user), db: Session = Dep
 def remove_mute(body: MuteIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> None:
     db.execute(delete(Mute).where(Mute.user_id == user.id, Mute.kind == body.kind, Mute.value == body.value.strip()))
     db.commit()
+
+
+class ImportIn(BaseModel):
+    # A short-lived token from Google, used once and never stored.
+    access_token: str = Field(min_length=20, max_length=4096)
+
+
+@router.post("/follows/import")
+def import_follows(body: ImportIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    """Follow every channel she subscribes to on YouTube (plan v3). She can unfollow any of them later."""
+    request.state.action = "follows_import"
+    try:
+        channels = [c for c in dict.fromkeys(google.subscription_channels(body.access_token)) if CHANNEL_ID.match(c)]
+    except google.GoogleError as e:
+        raise HTTPException(status_code=400 if str(e) == "google_denied" else 502, detail=str(e)) from None
+    quota.record(db, "general", max(1, -(-len(channels) // 50)))
+    have = set(db.scalars(select(Follow.channel_id).where(Follow.user_id == user.id)))
+    new = [c for c in channels if c not in have]
+    db.add_all(Follow(user_id=user.id, channel_id=c) for c in new)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # a double tap: the other request saved them
+    return {"imported": len(new), "subscriptions": len(channels)}
 
 
 @router.get("/follows")
