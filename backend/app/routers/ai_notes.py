@@ -22,6 +22,7 @@ _new_jobs: dict[tuple, int] = defaultdict(int)
 class AiNotesIn(BaseModel):
     video_id: str = Field(pattern=VIDEO_ID)
     lang: str = Field(default="en", pattern=r"^(en|hi|auto)$")
+    create: bool = True  # False = only look; the page peeks on open and starts a job on "Generate notes"
 
 
 @router.post("/ai-notes")
@@ -29,6 +30,8 @@ def get_or_request(body: AiNotesIn, request: Request, user: User = Depends(curre
     """Notes if ready; otherwise starts a shared job (or reports its state). The page polls this."""
     request.state.action = "ai_notes"
     job = db.get(AiNotes, (body.video_id, body.lang))
+    if job is None and not body.create:
+        return {"status": "none"}
     if job is None:
         video = db.get(YtVideo, body.video_id)  # only videos the app already showed (R5 filters ran on them)
         if video is None or not video.embeddable or video.age_restricted:

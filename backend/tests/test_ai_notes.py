@@ -107,6 +107,8 @@ def test_endpoint_shares_one_job_between_users(signed_in, db):
     notes_router._new_jobs.clear()
     assert signed_in.post("/api/ai-notes", json={"video_id": VID}).status_code == 404  # never shown by the app
     add_video(db)
+    assert signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json() == {"status": "none"}
+    assert db.query(AiNotes).count() == 0
     r = signed_in.post("/api/ai-notes", json={"video_id": VID, "lang": "en"})
     assert r.json() == {"status": "queued", "reason": None}
     run_due(db, datetime.now(timezone.utc), call=lambda v, lang: ANSWER)
