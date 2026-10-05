@@ -7,7 +7,7 @@ const at = (videoId: string, s: number) => `https://youtu.be/${videoId}?t=${s}`
 
 export function notesText(title: string, videoId: string, notes: AiNotesData): string {
   const points = notes.points.map((p) => `• ${p.seconds !== null ? `${clock(p.seconds)} ` : ''}${p.title}: ${p.short}`)
-  return [title, '', notes.summary, '', ...points, '', `Watch: https://youtu.be/${videoId}`, `Notes made with FocusLearn: ${APP_URL}`].join('\n')
+  return [title, '', notes.summary, '', ...points, '', `Watch: https://youtu.be/${videoId}`, `Notes made with Lumo: ${APP_URL}`].join('\n')
 }
 
 export async function shareNotes(title: string, videoId: string, notes: AiNotesData): Promise<'shared' | 'whatsapp'> {
@@ -55,7 +55,7 @@ ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
     .map((p) => `<li>${time(p.seconds)}<b>${esc(p.title)}</b><br><span class="short">${esc(p.short)}</span><br>${esc(p.detail)}</li>`)
     .join('')}</ol>
 <h2>Mind map</h2>${outline(notes.mindmap, null)}
-<p class="note">Made by AI from the video, not by YouTube or the teacher. Check with the video. FocusLearn: ${APP_URL}</p>
+<p class="note">Made by AI from the video, not by YouTube or the teacher. Check with the video. Lumo: ${APP_URL}</p>
 <script>window.onload=()=>setTimeout(()=>print(),300)</script>
 </body></html>`
 }

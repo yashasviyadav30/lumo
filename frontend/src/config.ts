@@ -1,5 +1,5 @@
-// App-wide settings. The name is a working name until the user picks one (R9: own name and look).
-export const APP_NAME = 'FocusLearn'
+// App-wide settings. Name chosen by the user on 2026-10-06 (R9: own name and look).
+export const APP_NAME = 'Lumo'
 export const APP_TAGLINE = 'Study on YouTube without the distractions'
 
 // Backend address. Empty means "same origin" (the Vite dev server proxies /api to the backend).

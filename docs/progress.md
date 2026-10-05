@@ -123,7 +123,7 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 
 ## Blocked on the user
 
-- **App name** (R9): "FocusLearn" is a placeholder.
+- ~~**App name** (R9)~~: the user chose **Lumo** (2026-10-06).
 - ~~Render environment variables~~: done by the user 2026-09-29 ("Import from .env"); `/api/me` now answers 401 instead of 503. The Cloudflare address is allowed through the backend's CORS default; setting `CORS_ORIGINS` on Render would override it.
 - **Rotate all secrets before Test 1** (plan step 6.7): an old screenshot showed them.
 - **Device checks (1.3, 1.4):** iPhone playback from the installed PWA; where player links go on Android and iPhone.
@@ -139,7 +139,7 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 - Shorts rule: "≤ 3 min AND vertical (YouTube's embed size)" over "≤ 3 min only". Duration alone hid 17 of 25 results for a maths query, many of them short horizontal lessons; unknown shape → shown.
 - Entertainment by YouTube's type: its entertainment categories (incl. non-assignable ones like Movies, Trailers, Shows) + entertainment topics, but topics are ignored when YouTube itself says Education/Science/How-to. Documentary is never hidden. Curated and followed channels are exempt.
 - Frontend hosting: this wrangler version sends Pages commands to Workers, so the frontend is deployed as Workers static assets (no Worker code, same static build): portable. Account subdomain `focuslearn` registered.
-- App name: working name "FocusLearn" in `frontend/src/config.ts` until the user picks a real one.
+- App name: **Lumo** (`frontend/src/config.ts`), chosen 2026-10-06.
 
 - Goal parser: rules (96%, ~3 ms) vs LLM-only vs hybrid (98%, LLM on 1 of 66 goals). LLM-only is refused by Groq's free tier (HTTP 429) because our catalogue prompt is ~5,500 tokens; hybrid falls back to rules when that happens. Picked hybrid.
 - Query builder: CS/CMA papers use the stage + full paper name (codes like CMSL/CRVI are rarely in video titles); units use the search term closest to what the user typed; up to 2 user words kept ("one shot", "botany"). All 20 real test searches were on topic by eye.

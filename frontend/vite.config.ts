@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.png'],
       manifest: {
-        name: 'FocusLearn',
-        short_name: 'FocusLearn',
+        name: 'Lumo',
+        short_name: 'Lumo',
         description: 'Study on YouTube without the distractions.',
         start_url: '/',
         scope: '/',

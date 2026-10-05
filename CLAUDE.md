@@ -1,9 +1,9 @@
-# FocusLearn — project guide for Claude
+# Lumo (formerly FocusLearn) — project guide for Claude
 
 "YouTube for learning" for adults (18+): everything useful on YouTube, nothing distracting, played through
 YouTube's official embedded player. v3 (2026-10-05, see `docs/plan-v3.md`): a YouTube-style Home/Search/Shorts,
 Gemini-made notes and a zoomable mind map for any video, your own notepad, and study groups with threads.
-Working name "FocusLearn" (the user hasn't picked the real name yet).
+Name: **Lumo** (chosen by the user 2026-10-06). The web address and browser storage keys still say `focuslearn` on purpose: changing them would sign everyone out and break the Google sign-in origin.
 
 - Live app: https://focuslearn.focuslearn.workers.dev (Cloudflare Worker + static assets)
 - Backend: https://focus-app-6fb9.onrender.com (Render free, Singapore, Docker) — phones never call it directly;
