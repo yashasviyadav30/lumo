@@ -137,6 +137,18 @@ class NotInterested(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+class Feedback(Base):
+    """What a user wrote with the in-app feedback button. Deleted with the account."""
+
+    __tablename__ = "feedback"
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
+    user_id: Mapped[uuid.UUID] = _user_fk()
+    text: Mapped[str] = mapped_column(Text)
+    page: Mapped[str] = mapped_column(String(40), default="")  # route template, e.g. /watch/:id (never a video ID)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class AppLog(Base):
     """Request log kept in India for 1 year. Never holds video IDs or titles (R11)."""
 

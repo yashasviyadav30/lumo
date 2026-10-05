@@ -100,3 +100,15 @@ def test_delete_my_data_removes_everything(signed_in, db):
     for model in (User, AuthSession, Consent, Goal, Mute, Follow, UserSettings):
         assert count(db, model) == 0, model.__name__
     assert signed_in.get("/api/me").status_code == 401
+
+
+def test_feedback_is_saved_and_deleted_with_the_account(signed_in, db):
+    from app.models import Feedback
+
+    assert signed_in.post("/api/feedback", json={"text": "The mind map is great", "page": "/watch/:id"}).status_code == 201
+    assert signed_in.post("/api/feedback", json={"text": "x", "page": ""}).status_code == 422
+    assert signed_in.post("/api/feedback", json={"text": "no ids", "page": "/watch/abcdefghijk"}).status_code == 422
+    assert [f.text for f in db.query(Feedback)] == ["The mind map is great"]
+    signed_in.delete("/api/me")
+    db.expire_all()
+    assert db.query(Feedback).count() == 0

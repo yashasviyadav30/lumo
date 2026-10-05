@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from app.auth import current_session, current_user
 from app.db import get_db
 from app.filters import CATEGORY_GROUPS, DEFAULT_HIDDEN_GROUPS
-from app.models import AuthSession, Consent, User, UserSettings
+from app.models import AuthSession, Consent, Feedback, User, UserSettings
 from app.security import hash_password, hash_token, new_token, pseudonym, verify_password
 
 router = APIRouter(prefix="/api", tags=["accounts"])
@@ -172,6 +172,22 @@ def update_settings(body: SettingsIn, user: User = Depends(current_user), db: Se
         user.settings.hidden_groups = sorted(set(body.hidden_groups))
     db.commit()
     return _me(user)
+
+
+FEEDBACK_PAGES = r"^(|/|/search|/shorts|/library|/personal|/settings|/watch/:id|/groups|/groups/:id)$"
+
+
+class FeedbackIn(BaseModel):
+    text: str = Field(min_length=3, max_length=2000)
+    page: str = Field(default="", pattern=FEEDBACK_PAGES)  # a known route template only, never an ID (R11)
+
+
+@router.post("/feedback", status_code=201)
+def feedback(body: FeedbackIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    request.state.action = "feedback"
+    db.add(Feedback(user_id=user.id, text=body.text.strip(), page=body.page))
+    db.commit()
+    return {"ok": True}
 
 
 @router.get("/me", response_model=MeOut)
