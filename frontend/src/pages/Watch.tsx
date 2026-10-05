@@ -273,7 +273,7 @@ function StudyPage({ videoId }: { videoId: string }) {
         </button>
       </div>
       <div role="tabpanel" className="tab-panel">
-        {tab === 'notes' && <AiNotesPanel ai={ai} onSeek={jump} onCopy={copyToNotes} />}
+        {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onToast={flash} />}
         {tab === 'map' && (
           <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
             <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} />

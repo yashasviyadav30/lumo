@@ -1,5 +1,6 @@
-import { ChevronDown, Clock3, CopyPlus, Hourglass, Sparkles, TriangleAlert } from 'lucide-react'
+import { ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from 'lucide-react'
 import { LANGS, type AiPoint, type NotesLang } from '../lib/aiNotes'
+import { printNotes, shareNotes } from '../lib/exportNotes'
 import { clock } from '../lib/study'
 import { notesOf, type AiNotesView, type useAiNotes } from '../lib/useAiNotes'
 
@@ -109,12 +110,18 @@ export function AiLabel({ offline }: { offline?: boolean }) {
 
 export default function AiNotesPanel({
   ai,
+  title,
+  videoId,
   onSeek,
   onCopy,
+  onToast,
 }: {
   ai: ReturnType<typeof useAiNotes>
+  title: string
+  videoId: string
   onSeek: (t: number) => void
   onCopy: (title: string, body: string, seconds: number | null) => void
+  onToast: (msg: string) => void
 }) {
   const notes = notesOf(ai.view)
   return (
@@ -158,6 +165,20 @@ export default function AiNotesPanel({
               </li>
             ))}
           </ol>
+          <div className="ai-export">
+            <button
+              className="small secondary"
+              onClick={() => printNotes(title, videoId, notes) || onToast('Allow pop-ups for this site to save the PDF.')}
+            >
+              <FileDown size={16} aria-hidden="true" /> Download PDF
+            </button>
+            <button
+              className="small secondary"
+              onClick={async () => (await shareNotes(title, videoId, notes)) === 'whatsapp' && onToast('Opening WhatsApp…')}
+            >
+              <Share2 size={16} aria-hidden="true" /> Share
+            </button>
+          </div>
           <AiLabel offline={'kind' in ai.view && ai.view.kind === 'offline'} />
         </>
       )}

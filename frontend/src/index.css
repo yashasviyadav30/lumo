@@ -2723,6 +2723,11 @@ details[open] .ai-chev {
   background: var(--primary);
   color: var(--primary-ink);
 }
+.ai-export {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .ai-label {
   margin: 0;
   display: flex;

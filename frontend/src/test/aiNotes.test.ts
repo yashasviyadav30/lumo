@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ROW_H, appendToDoc, copyLine, layoutTree, type MapNode } from '../lib/aiNotes'
+import { notesText, printableHtml } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
 
@@ -42,5 +43,30 @@ describe('Copy to my notes', () => {
 
   it('starts fresh when the saved notepad is unreadable', () => {
     expect(JSON.parse(appendToDoc('not json', [copyLine('X', 'y', null)]).content).content).toHaveLength(1)
+  })
+})
+
+describe('export', () => {
+  const notes = {
+    summary: 'Line one',
+    points: [{ title: 'Ohm <law>', seconds: 760, short: 'V = IR', detail: 'Current & voltage.' }],
+    mindmap: [
+      { id: 'r', parent: null, label: 'Circuits', detail: '', seconds: 0 },
+      { id: 'a', parent: 'r', label: 'Ohm', detail: 'V = IR', seconds: 760 },
+    ],
+  }
+
+  it('shares plain text with times and links', () => {
+    const text = notesText('Lecture 1', 'abcdefghijk', notes)
+    expect(text).toContain('• 12:40 Ohm <law>: V = IR')
+    expect(text).toContain('Watch: https://youtu.be/abcdefghijk')
+  })
+
+  it('escapes AI text in the printable page and links each time to that second', () => {
+    const html = printableHtml('Lecture <1>', 'abcdefghijk', notes)
+    expect(html).toContain('Ohm &lt;law&gt;')
+    expect(html).not.toContain('<law>')
+    expect(html).toContain('href="https://youtu.be/abcdefghijk?t=760"')
+    expect(html).toContain('<li><b>Circuits</b><ul><li><b>Ohm</b>: V = IR</li></ul></li>')
   })
 })
