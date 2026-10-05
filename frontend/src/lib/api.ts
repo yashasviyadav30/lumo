@@ -46,6 +46,12 @@ export function messageFor(code: string, status = 0): string {
     invalid_token: 'Google sign-in didn’t work. Try again.',
     google_not_configured: 'Google sign-in isn’t switched on yet. Use email for now.',
     google_denied: 'Google didn’t allow access to your YouTube subscriptions.',
+    invite_not_found: 'This invite link doesn’t work any more. Ask your friend for a new one.',
+    group_full: 'This group is full (50 members).',
+    group_not_found: 'This group isn’t available. You may have left or been removed.',
+    too_many_groups: 'You’re in 20 groups already. Leave one to join another.',
+    not_allowed: 'Only the group owner can do that.',
+    post_not_found: 'That post was deleted.',
     video_unknown: 'Notes work on videos opened from search or the feed. Find this video there first.',
     too_many_notes_today: 'You’ve started 15 new notes today. Try again tomorrow; notes others made still open.',
   }

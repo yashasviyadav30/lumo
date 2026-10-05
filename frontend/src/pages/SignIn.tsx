@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import GoogleButton from '../components/GoogleButton'
+import { nextAfterSignIn } from '../lib/groups'
 import { useSession } from '../lib/session'
 
 export default function SignIn() {
@@ -14,7 +15,7 @@ export default function SignIn() {
     setError(null)
     try {
       await work()
-      navigate('/', { replace: true })
+      navigate(nextAfterSignIn(), { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
     } finally {

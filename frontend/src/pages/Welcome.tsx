@@ -1,6 +1,7 @@
 import { ArrowUpRight, EyeOff, Network, Play, ShieldCheck, StickyNote } from 'lucide-react'
 import { Link, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
+import { pendingJoin } from '../lib/groups'
 import { useSession } from '../lib/session'
 
 const FEATURES = [
@@ -48,6 +49,11 @@ export default function Welcome() {
       {note && (
         <p className="notice-line" role="status">
           {note}
+        </p>
+      )}
+      {pendingJoin() && (
+        <p className="notice-line" role="status">
+          You’ve been invited to a study group. Sign up or sign in, and you’ll join it straight away.
         </p>
       )}
       <div className="landing-hero">

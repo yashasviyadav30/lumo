@@ -1,7 +1,8 @@
-import { ArrowLeft, House, Library, Moon, NotebookPen, Search, Settings, SquarePlay, Sun, SunMoon } from 'lucide-react'
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { ArrowLeft, House, Library, Moon, NotebookPen, Search, Settings, SquarePlay, Sun, SunMoon, UsersRound } from 'lucide-react'
+import { useEffect, useState, type CSSProperties, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
+import { myGroups } from '../lib/groups'
 import { getTheme, nextTheme, setTheme, type Theme } from '../lib/theme'
 import FirstGuide from './FirstGuide'
 import Logo from './Logo'
@@ -10,6 +11,7 @@ import WakingBanner from './WakingBanner'
 const tabs = [
   { to: '/', label: 'Home', end: true, Icon: House },
   { to: '/shorts', label: 'Shorts', end: false, Icon: SquarePlay },
+  { to: '/groups', label: 'Groups', end: false, Icon: UsersRound },
   { to: '/library', label: 'Library', end: false, Icon: Library },
   { to: '/personal', label: 'My notes', end: false, Icon: NotebookPen },
 ]
@@ -59,8 +61,28 @@ function TopSearch() {
   )
 }
 
+const UNREAD_EVERY_MS = 2 * 60_000
+
+// New posts and replies in her groups: a quiet in-app badge, checked when the app comes back and every 2 minutes.
+function useGroupUnread(pathname: string): number {
+  const [unread, setUnread] = useState(0)
+  useEffect(() => {
+    const check = () => myGroups().then((r) => setUnread(r.unread)).catch(() => undefined)
+    check()
+    const timer = window.setInterval(check, UNREAD_EVERY_MS)
+    const onShow = () => document.visibilityState === 'visible' && check()
+    document.addEventListener('visibilitychange', onShow)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onShow)
+    }
+  }, [pathname])
+  return unread
+}
+
 export default function Layout() {
   const { pathname } = useLocation()
+  const unread = useGroupUnread(pathname)
   const navigate = useNavigate()
   const subPage = !TAB_PATHS.includes(pathname)
   const watching = pathname.startsWith('/watch/')
@@ -101,8 +123,12 @@ export default function Layout() {
       <nav className="tabbar" aria-label="Main" style={{ '--tabs': tabs.length } as CSSProperties}>
         {tabs.map(({ to, label, end, Icon }) => (
           <NavLink key={to} to={to} end={end} className="tab">
-            <Icon size={22} strokeWidth={2} aria-hidden="true" />
+            <span className="tab-icon">
+              <Icon size={22} strokeWidth={2} aria-hidden="true" />
+              {to === '/groups' && unread > 0 && <span className="tab-badge">{unread > 9 ? '9+' : unread}</span>}
+            </span>
             {label}
+            {to === '/groups' && unread > 0 && <span className="visually-hidden">, {unread} new</span>}
           </NavLink>
         ))}
       </nav>

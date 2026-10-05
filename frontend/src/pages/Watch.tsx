@@ -16,6 +16,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
 import AiNotesPanel from '../components/AiNotesPanel'
+import ShareToGroup from '../components/ShareToGroup'
 import Comments from '../components/Comments'
 import Description from '../components/Description'
 import Player from '../components/Player'
@@ -70,7 +71,8 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [doubtFor, setDoubtFor] = useState<Note | null>(null)
   const [starred, setStarred] = useState(false)
   const [pop, setPop] = useState(false)
-  const [tab, setTab] = useState<'notes' | 'map' | 'mine'>('notes')
+  const askedTab = (useLocation().state as { tab?: string } | null)?.tab
+  const [tab, setTab] = useState<'notes' | 'map' | 'mine'>(askedTab === 'map' ? 'map' : askedTab === 'mine' ? 'mine' : 'notes')
   const [padVersion, setPadVersion] = useState(0) // bumps when a copy changes the saved notepad
   const [aboutOpen, setAboutOpen] = useState(false)
   const [commentsOpen, setCommentsOpen] = useState(false)
@@ -329,6 +331,8 @@ function StudyPage({ videoId }: { videoId: string }) {
               </p>
             )}
           </div>
+          <div className="title-actions">
+          <ShareToGroup videoId={videoId} getTime={() => player.current?.getCurrentTime() ?? 0} />
           <button
             className={`star-video${starred ? ' on' : ''}${pop ? ' pop' : ''}`}
             onClick={toggleStar}
@@ -339,6 +343,7 @@ function StudyPage({ videoId }: { videoId: string }) {
             <Star size={20} fill={starred ? 'currentColor' : 'none'} aria-hidden="true" />
             {starred ? 'Starred' : 'Star'}
           </button>
+          </div>
         </div>
         <div className="capture" role="toolbar" aria-label="Capture while you watch">
           <button className="mark" onClick={() => mark()} aria-keyshortcuts="N" title="Save this second (N)">

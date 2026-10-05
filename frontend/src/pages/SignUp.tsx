@@ -4,6 +4,7 @@ import GoogleButton from '../components/GoogleButton'
 import Notice from '../components/Notice'
 import { APP_NAME } from '../config'
 import { ApiError } from '../lib/api'
+import { nextAfterSignIn } from '../lib/groups'
 import { useSession } from '../lib/session'
 
 export default function SignUp() {
@@ -19,7 +20,7 @@ export default function SignUp() {
     setError(null)
     try {
       await work()
-      navigate('/', { replace: true })
+      navigate(nextAfterSignIn(), { replace: true })
     } catch (err) {
       if (err instanceof ApiError && err.code === 'under_18') {
         navigate('/not-yet', { replace: true })

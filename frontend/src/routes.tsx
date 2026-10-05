@@ -4,6 +4,9 @@ import PublicLayout from './components/PublicLayout'
 import RequireAccount from './components/RequireAccount'
 import { SessionProvider } from './lib/session'
 import Home from './pages/Home'
+import Group from './pages/Group'
+import Groups from './pages/Groups'
+import Join from './pages/Join'
 import Library from './pages/Library'
 import NotFound from './pages/NotFound'
 import NotYet from './pages/NotYet'
@@ -47,6 +50,9 @@ export const routes: RouteObject[] = [
               { path: 'library', element: <Library /> },
               { path: 'personal', element: <Personal /> },
               { path: 'shorts', element: <Shorts /> },
+              { path: 'groups', element: <Groups /> },
+              { path: 'groups/:groupId', element: <Group /> },
+              { path: 'join/:code', element: <Join /> },
               { path: 'settings', element: <Settings /> },
               { path: 'watch/:videoId', element: <Watch /> },
               { path: '*', element: <NotFound /> },
