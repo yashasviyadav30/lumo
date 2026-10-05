@@ -1,9 +1,9 @@
 # FocusLearn — project guide for Claude
 
-A focused YouTube study app for Indian students (18+). It plays lectures through YouTube's official embedded
-player and adds a study layer: clean search and feed, marks and doubts on the exact second, a split-screen
-notepad, revision cards that replay the forgotten 90 seconds, and a notebook. Working name "FocusLearn" (the
-user hasn't picked the real name yet).
+"YouTube for learning" for adults (18+): everything useful on YouTube, nothing distracting, played through
+YouTube's official embedded player. v3 (2026-10-05, see `docs/plan-v3.md`): a YouTube-style Home/Search/Shorts,
+Gemini-made notes and a zoomable mind map for any video, your own notepad, and study groups with threads.
+Working name "FocusLearn" (the user hasn't picked the real name yet).
 
 - Live app: https://focuslearn.focuslearn.workers.dev (Cloudflare Worker + static assets)
 - Backend: https://focus-app-6fb9.onrender.com (Render free, Singapore, Docker) — phones never call it directly;
@@ -68,23 +68,30 @@ Full chat history of the build (first commit 2026-09-27, to 2026-10-03):
 - `frontend/` — React 19, Vite 8, TypeScript, react-router 7, lucide-react, TipTap (notepad, lazy-loaded),
   vite-plugin-pwa. Pages in `src/pages`, theme tokens at the top of `src/index.css`, API client `src/lib/api.ts`
   (waits up to 75 s for a sleeping server on safe requests), Worker in `frontend/worker/index.js`.
-- Tabs: Home (Continue card + feed) · Search · Library (Starred, History) · My notes (route `/personal`).
-  Study page `/watch/:id`: Mark · Doubt · Notepad · −10s; tabs Marks / Description / Comments; ☆ Star video.
+- Tabs: Home (chips + video grid) · Shorts (followed channels only) · Groups (`/groups`, `/groups/:id`,
+  invites `/join/:code`) · Library · My notes (`/personal`). Top bar: search, theme switch, Settings.
+  Study page `/watch/:id`: tabs Notes · Mind map · My notes; Mark · Doubt · −10s; Share (to a group) and Star;
+  Description and Comments fold-outs. New look in `src/styles/v3.css` (teal accent), loaded after `index.css`.
+- New backend parts: `app/ai_notes.py` (Gemini jobs), `app/google.py` (sign-in, subscriptions),
+  `app/routers/groups.py`, `app/routers/ai_notes.py`. Env vars: `GEMINI_API_KEY`, `GEMINI_MODELS`,
+  `GOOGLE_CLIENT_ID` (empty = Google buttons hidden).
 
 ## Commands
 
 ```
 # backend
-cd backend && uv run pytest -q                      # 85 tests
+cd backend && uv run pytest -q                      # 117 tests
 cd backend && uv run uvicorn app.main:app --port 8000 --no-access-log
 cd backend && uv run alembic revision --autogenerate -m "..." && uv run alembic upgrade head   # check for drops first
 # frontend
-cd frontend && npx tsc -b && npm run lint && npx vitest run   # 45 tests
+cd frontend && npx tsc -b && npm run lint && npx vitest run   # 56 tests
 cd frontend && npx vite --port 5173                   # proxies /api to :8000
 cd frontend && npm run build && npx wrangler deploy   # deploy app + Worker
 # end-to-end + visual guide (throwaway account, always deleted)
 cd frontend && node e2e/guide.mjs && node e2e/guide-build.mjs                                   # local
-cd frontend && E2E_BASE=https://focuslearn.focuslearn.workers.dev node e2e/guide.mjs            # live
+cd frontend && E2E_BASE=https://focuslearn.focuslearn.workers.dev node e2e/guide.mjs            # live (v2 guide, out of date)
+# v3 screenshots + live checks (throwaway accounts, always deleted); add E2E_BASE=<live url> for the live site
+cd frontend && node e2e/study-v3.mjs && node e2e/home-v3.mjs && node e2e/groups-v3.mjs
 ```
 Render deploys automatically on push and runs `alembic upgrade head` on start.
 
@@ -94,6 +101,10 @@ Render deploys automatically on push and runs `alembic upgrade head` on start.
   Python script file in the scratchpad. In Python strings, `\b` becomes a backspace: use raw strings.
 - `npx vite` sometimes outlives Stop-Process by command line; free the port by its listening PID.
 - Playwright typing into TipTap needs ~150 ms after moving the cursor before Enter (the editor reads it late).
-- Concurrent first-inserts (comments cache, star, notepad) are guarded with `IntegrityError` handling.
+- Concurrent first-inserts (comments cache, star, notepad, search cache, AI notes jobs, group joins) are guarded
+  with `IntegrityError` handling.
+- Free Gemini models often answer 503 "high demand": jobs queue and retry; two models are tried in turn.
+- Overlays on the study page must render in a portal (`createPortal(..., document.body)`): on phones the page's
+  `.study-main` is `display: contents` (so the player can stay pinned), which traps fixed layers.
 - Free Render sleeps after 15 idle minutes (30–60 s wake); the app pings `/health` on open and shows a
   "Waking up the server" banner while it retries.

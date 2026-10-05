@@ -4,22 +4,45 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
-## New direction (2026-10-05)
+## v3 is built (2026-10-05)
 
-The user did not like the v2 app (look, feel or features). After a design interview they confirmed
-[plan-v3.md](plan-v3.md): keep the backend, rebuild every screen, and centre the app on Gemini-made notes, a
-zoomable mind map and the user's own notepad, then add a YouTube-like feed and study groups. Revision cards
-are removed.
+The user did not like the v2 app. After a design interview they confirmed [plan-v3.md](plan-v3.md) and asked
+for the whole plan to be built before they judge it. All four steps are built, tested and live.
 
-**Step 1 (study page) is live (2026-10-05):** tabs Notes · Mind map · My notes under the video. Notes and the
-mind map come from one shared Gemini job per video and language (`app/ai_notes.py`, `POST /api/ai-notes`):
-peek on open, "Generate notes" starts it, the page polls while queued, a copy is kept on the phone for 30 days.
-The mind map uses `@xyflow/react` (lazy chunk, ~58 KB gzip). Description and Comments are fold-outs; the
-player stays pinned on phones; making revision cards is gone from this page. Checked live with
-`E2E_BASE=… node e2e/study-v3.mjs` (phone + laptop, light + dark). Tests: backend 95, frontend 50.
+- **Step 1, study page:** tabs Notes · Mind map · My notes under a pinned player. One shared Gemini job per
+  video and language (`app/ai_notes.py`, `POST /api/ai-notes`): queue with backoff, a second model when one is
+  busy, videos up to 4 h in 1-hour parts, 7 h/day budget, 15 new jobs per user per day, deleted after 30 days.
+  Hindi tested on a real lecture. PDF (print page) and WhatsApp export; offline copy on the phone. Mind map:
+  `@xyflow/react` (lazy chunk). "Copy to my notes" appends to the notepad.
+- **Step 2, new look:** teal accent, neutral greys (`src/styles/v3.css`, loaded after `index.css`). YouTube-style
+  top bar (search, theme switch, Settings), chips, video grid, red watched line under thumbnails (never on them,
+  R7). ⋮ menu: Star, Follow, Not interested, Don't show this channel. Hidden by default: gaming, comedy,
+  entertainment; every YouTube category group can be switched in Settings. Feed adds watched channels and recent
+  searches (kept on the device only). Shorts tab: followed channels only. Settings: text size, notes language,
+  feedback (`POST /api/feedback`). First-time guide (3 screens) and a one-time study-page hint. Cards removed.
+- **Step 3, Google:** `POST /api/auth/google` (ID token checked with Google's tokeninfo; new accounts still
+  confirm 18+ and the notice). `POST /api/follows/import` follows her YouTube subscriptions; the access token is
+  used once and never stored. Buttons appear only when `GOOGLE_CLIENT_ID` is set.
+- **Step 4, groups:** `app/routers/groups.py`. Invite links (survive sign-in), up to 50 members, a chosen name
+  per group (no emails shown), posts (note, doubt at a second, shared video with notes or mind map), one-level
+  threads, unread badge on the Groups tab, owner removes members and deletes posts, Report, Leave; deleting an
+  account deletes its posts. "Share" on the study page.
+- **Notice v2** covers notes, groups, feedback, AI notes and Google sign-in.
+- **Tests:** backend 117, frontend 56. Live checks: `e2e/study-v3.mjs`, `e2e/home-v3.mjs`, `e2e/groups-v3.mjs`
+  (two people), all passing on the live site with throwaway accounts that are deleted.
 
-Still open in step 1: PDF / WhatsApp export, Hindi notes tested on a real Hindi lecture (Gemini was
-overloaded), notes in parts for videos over 2.5 h. Next: those, then step 2 (Home and search).
+**Not built (optional in the plan):** phone push alerts for replies (needs VAPID keys and a push service);
+the in-app badge covers it for now.
+
+### Blocked on the user (v3)
+
+1. **`GEMINI_API_KEY` on Render** (Environment). Without it the live app says "AI notes aren't switched on yet"
+   (jobs made earlier on a laptop still show).
+2. **Google OAuth client** (Google Cloud → APIs & Services → Credentials → OAuth client ID, type Web; authorised
+   JavaScript origin `https://focuslearn.focuslearn.workers.dev`; enable YouTube Data API v3 on that project;
+   OAuth consent screen with the `youtube.readonly` scope, test users until Google verifies it). Put the client
+   ID on Render as `GOOGLE_CLIENT_ID`.
+3. YouTube quota increase form; rotate the old YouTube API key; pick the real app name.
 
 ## Where things stood (2026-10-03)
 

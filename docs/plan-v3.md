@@ -89,6 +89,11 @@ Video on top; three tabs below on phone, a side panel on laptop: **Notes · Mind
 
 Revision cards. Focus sessions were considered and dropped: people come here to work, not to calm down.
 
+## Status (2026-10-05)
+
+All four steps are built and live; see the top of [progress.md](progress.md). Optional and not built: phone
+push alerts for replies.
+
 ## How we build it
 
 Keep the backend (accounts, YouTube client, cache, quota guard, database, tests). Rebuild every screen in
