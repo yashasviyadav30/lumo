@@ -125,7 +125,7 @@ def test_phrase_mute_and_shorts_setting():
     v = video("x" * 11, title="Bigg Boss highlights", duration_s=60, vertical=True)
     verdict = judge(v, UserRules(muted_phrases=["bigg boss"]))
     assert "Your mute: “bigg boss”" in verdict.reasons
-    assert any("Shorts setting is off" in r for r in verdict.reasons)
+    assert any("in the Shorts tab" in r for r in verdict.reasons)
     assert judge(video("y" * 11, duration_s=60, vertical=True), UserRules(shorts_enabled=True)).visible
     assert judge(video("z" * 11, duration_s=60, vertical=False), UserRules()).visible  # short lesson, not a Short
     assert judge(video("w" * 11, duration_s=60, vertical=None), UserRules()).visible  # unknown shape: show

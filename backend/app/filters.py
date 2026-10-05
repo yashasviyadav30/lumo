@@ -158,7 +158,7 @@ def judge(video, rules: UserRules) -> Verdict:
             reasons.append(f"Your mute: “{phrase}”")
             break
     if not rules.shorts_enabled and is_short(video):
-        reasons.append("Short vertical video, and your Shorts setting is off")
+        reasons.append("A Short: Shorts from channels you follow are in the Shorts tab")
     if video.channel_id not in rules.trusted_channels:
         type_reason = youtube_type_reason(video.category_id, video.topic_categories, rules.hidden_groups)
         if type_reason:
