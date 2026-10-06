@@ -9,13 +9,14 @@ Sources are interleaved so no single one fills the screen. The same hide rules a
 import hashlib
 from datetime import date, datetime, timedelta, timezone
 
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app import quota
 from app.filters import UserRules, is_short, judge
 from app.models import YtSearchCache
-from app.search import MAX_AGE, _aware, _details, _ids_for, video_card
+from app.search import MAX_AGE, _aware, _details, _ids_for, cache_key, video_card
 from app.youtube import QuotaExceeded, YouTubeClient, YouTubeError
 
 UPLOADS_FRESH = timedelta(hours=6)
@@ -67,6 +68,20 @@ def _cached_list(db: Session, key_text: str, fresh: timedelta, now: datetime, fe
     return ids
 
 
+def _preload(db: Session, channels: list[str], queries: list[str], language: str) -> None:
+    """One query for every cache row this feed may read. They stay in the session, so the `db.get` calls below
+    find them without another round trip each (about 0.25 s apiece from Render to Supabase)."""
+    keys = [hashlib.sha256(f"uploads|{ch}".encode()).hexdigest() for ch in channels]
+    keys += [cache_key(q, language) for q in queries]
+    if keys:
+        db.scalars(select(YtSearchCache).where(YtSearchCache.key.in_(keys))).all()
+
+
+def _shared_queries(language: str, count: int) -> list[str]:
+    queries = todays_topics(SHARED_QUERIES, limit=count)
+    return [f"{q} hindi" for q in queries] if language == "hi" else queries
+
+
 def _uploads(db: Session, yt: YouTubeClient, channel_id: str, now: datetime) -> list[str]:
     """A channel's newest videos. The uploads playlist ID is the channel ID with "UU" for "UC"."""
     return _cached_list(db, f"uploads|{channel_id}", UPLOADS_FRESH, now, lambda: yt.playlist_items("UU" + channel_id[2:]))
@@ -74,10 +89,7 @@ def _uploads(db: Session, yt: YouTubeClient, channel_id: str, now: datetime) -> 
 
 def shared_sources(db: Session, yt: YouTubeClient, language: str, now: datetime, count: int) -> list[list[str]]:
     """Today's few shared learning searches (podcasts, talks, interviews, explainers), the same for everyone."""
-    queries = todays_topics(SHARED_QUERIES, limit=count)
-    if language == "hi":
-        queries = [f"{q} hindi" for q in queries]
-    return [_ids_for(db, yt, q, language, now)[0] for q in queries]
+    return [_ids_for(db, yt, q, language, now)[0] for q in _shared_queries(language, count)]
 
 
 def todays_topics(queries: list[str], today: date | None = None, limit: int = MAX_TOPICS) -> list[str]:
@@ -103,11 +115,13 @@ def build_feed(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[s
                topic_queries: list[str], language: str, recent: list[str] | None = None, only: str | None = None) -> dict:
     now = datetime.now(timezone.utc)
     if only == "podcasts":  # the "Podcasts & talks" chip
+        _preload(db, [], _shared_queries(language, PODCASTS_PER_DAY), language)
         return _finish(db, yt, rules, shared_sources(db, yt, language, now, PODCASTS_PER_DAY), now, follows)
-    sources = [_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]]
     others = [q for q in dict.fromkeys(topic_queries) if q != goal_query]
     searched = [q for q in dict.fromkeys(recent or []) if q not in (goal_query, *others)][:MAX_RECENT]
     queries = ([goal_query] if goal_query else []) + searched + todays_topics(others)
+    _preload(db, follows[:MAX_CHANNELS], queries + _shared_queries(language, SHARED_PER_DAY), language)
+    sources = [_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]]
     for n, q in enumerate(queries):
         if n > 0 and quota.search_left(db) < SPARE_SEARCHES:
             break
@@ -135,6 +149,7 @@ def _finish(db: Session, yt: YouTubeClient, rules: UserRules, sources: list[list
 def build_shorts(db: Session, yt: YouTubeClient, rules: UserRules, follows: list[str]) -> dict:
     """Short vertical videos from followed channels only, newest first per channel, mixed."""
     now = datetime.now(timezone.utc)
+    _preload(db, follows[:MAX_CHANNELS], [], "")
     order = interleave([_uploads(db, yt, ch, now) for ch in follows[:MAX_CHANNELS]])
     videos = _details(db, yt, order, now)
     allow = UserRules(**{**rules.__dict__, "shorts_enabled": True})

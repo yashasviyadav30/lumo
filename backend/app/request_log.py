@@ -9,6 +9,7 @@ import ipaddress
 import logging
 import time
 
+from starlette.background import BackgroundTasks
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
@@ -57,12 +58,23 @@ class RequestLogMiddleware(BaseHTTPMiddleware):
             ip_prefix=ip_prefix(client_ip(request)) if keep_ip else None,
             action=action,
         )
-        factory = session_factory()
-        if factory is not None:
-            try:
-                with factory() as db:
-                    db.add(row)
-                    db.commit()
-            except Exception:  # logging must never break a request
-                log.exception("could not write request log")
+        # Written after the reply has gone out (in the thread pool), so the log never adds a database round trip
+        # to what the phone waits for. Any task the endpoint set runs first.
+        tasks = BackgroundTasks()
+        if response.background is not None:
+            tasks.add_task(response.background)
+        tasks.add_task(_write, row)
+        response.background = tasks
         return response
+
+
+def _write(row: AppLog) -> None:
+    factory = session_factory()
+    if factory is None:
+        return
+    try:
+        with factory() as db:
+            db.add(row)
+            db.commit()
+    except Exception:  # logging must never break anything
+        log.exception("could not write request log")

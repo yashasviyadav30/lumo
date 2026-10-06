@@ -67,6 +67,7 @@ class AuthSession(Base):
     token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    user: Mapped["User"] = relationship(viewonly=True)  # read-only: auth loads the user with the session
 
 
 class Consent(Base):

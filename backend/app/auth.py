@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
 from app.models import AuthSession, User
@@ -21,7 +21,11 @@ def current_session(
 ) -> AuthSession:
     if creds is None:
         raise HTTPException(status_code=401, detail="not_signed_in")
-    session = db.scalar(select(AuthSession).where(AuthSession.token_hash == hash_token(creds.credentials)))
+    session = db.scalar(
+        select(AuthSession)
+        .options(joinedload(AuthSession.user))
+        .where(AuthSession.token_hash == hash_token(creds.credentials))
+    )
     now = datetime.now(timezone.utc)
     if session is None or _aware(session.expires_at) <= now:
         raise HTTPException(status_code=401, detail="not_signed_in")
@@ -30,7 +34,7 @@ def current_session(
 
 
 def current_user(session: AuthSession = Depends(current_session), db: Session = Depends(get_db)) -> User:
-    user = db.get(User, session.user_id)
+    user = session.user  # loaded with the session in one query (joined), no second round trip
     if user is None:
         raise HTTPException(status_code=401, detail="not_signed_in")
     return user
