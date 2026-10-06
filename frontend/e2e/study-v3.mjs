@@ -42,6 +42,10 @@ try {
   await page.getByRole('button', { name: 'Create account' }).click()
   await page.getByLabel('Your learning goal').waitFor({ timeout: 90_000 })
 
+  await page.evaluate(() => {
+    localStorage.setItem('focuslearn.guideSeen', '1')
+    localStorage.setItem('focuslearn.studyHintSeen', '1')
+  })
   await page.goto(BASE + '/watch/' + VIDEO)
   await page.locator('.ai-notes').waitFor()
   await page.locator('.ai-skeleton').waitFor({ state: 'detached' })
