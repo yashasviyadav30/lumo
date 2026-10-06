@@ -47,6 +47,16 @@ PNGs via `node e2e/make-icons.mjs`), glow palette and Bricolage Grotesque headin
 (loaded last), new landing page. Still to do from the user's list: a wording pass on every screen and a
 "nothing missing" walk-through.
 
+**Redesign brief from the user's reference image (2026-10-06, C:/Users/yasha/Downloads/ui.jpg; Dribbble-style pastel app):**
+the user rejected the orange, and then the dark midnight look, as "AI-ish and boring", and wants this style instead.
+Background video in the app: no. Spec: warm cream background (#fbf7ef), white surfaces; pastel colour-block cards with
+dark text (butter #fbe38e, pink #f6bed6, lavender #c9c3f5, mint #bfebdd, peach #fad3b5, sky #c6dbf7, sage #c9d8a6,
+coral #f5a7a0), rotating by card; ink pill buttons (#16151a, white text) and white pill secondaries; round white icon
+chips in the top bar; a dark floating pill bottom bar with white icons, the active tab as a lavender circle; big bold
+friendly headlines (Bricolage), radius ~26px, tilted sticker cards on the landing page; Home opens with a greeting
+header. Night: bg #121116, surfaces #1c1b22, pastels kept (dark text on them). Standards: top bar always first and
+sticky; check every screen with `node e2e/audit.mjs` (phone + laptop, light + night).
+
 **Not built (optional in the plan):** phone push alerts for replies (needs VAPID keys and a push service);
 the in-app badge covers it for now.
 
