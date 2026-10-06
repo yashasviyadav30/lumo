@@ -25,9 +25,11 @@ export default function Search() {
       .catch(() => setGoal(null))
   }, [])
 
+  const latest = useRef(0) // only the newest search may fill the page
   async function run(q: string) {
     const text = q.trim()
     if (!text) return
+    const ticket = ++latest.current
     setQuery(text)
     setBusy(true)
     setError(null)
@@ -35,11 +37,12 @@ export default function Search() {
     rememberSearch(text)
     setRecent(recentSearches())
     try {
-      setData(await searchVideos(text))
+      const found = await searchVideos(text)
+      if (ticket === latest.current) setData(found)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search failed. Try again.')
+      if (ticket === latest.current) setError(err instanceof Error ? err.message : 'Search failed. Try again.')
     } finally {
-      setBusy(false)
+      if (ticket === latest.current) setBusy(false)
     }
   }
 

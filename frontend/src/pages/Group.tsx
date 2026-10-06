@@ -293,7 +293,12 @@ export default function Group() {
     }
   }
   const onReport = async (p: Post) => {
-    await reportPost(p.id).catch(() => undefined)
+    try {
+      await reportPost(p.id)
+    } catch (err) {
+      setNotice(err instanceof Error ? err.message : 'Couldn’t send the report. Try again.')
+      return
+    }
     setPosts((all) => all.map((x) => (x.id === p.id ? { ...x, reported: true } : x)))
     setNotice('Reported. Thank you: the group owner can remove it, and we review reports.')
   }

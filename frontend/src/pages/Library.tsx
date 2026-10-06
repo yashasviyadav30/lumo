@@ -1,7 +1,7 @@
 import { History, Star, X } from '../components/icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { api } from '../lib/api'
+import { api, fresh, peek, remember } from '../lib/api'
 import { ago, formatDuration } from '../lib/search'
 import { clock, getLibrary, lectureTitle, starVideo, type LibraryItem } from '../lib/study'
 
@@ -45,25 +45,44 @@ function Row({ item, resume, onRemove, removeLabel }: { item: LibraryItem; resum
 }
 
 // Things the user saved or watched. Their notes live in "My notes".
+type Lib = { starred: LibraryItem[]; history: LibraryItem[] }
+
 export default function Library() {
   const [tab, setTab] = useState<Tab>('starred')
-  const [lib, setLib] = useState<{ starred: LibraryItem[]; history: LibraryItem[] } | null>(null)
+  const [lib, setLib] = useState(() => peek<Lib>('library') ?? null)
   const [error, setError] = useState(false)
+  const [failed, setFailed] = useState<string | null>(null)
 
   useEffect(() => {
-    getLibrary()
+    const kept = peek<Lib>('library')
+    fresh('library', getLibrary)
       .then(setLib)
-      .catch(() => setError(true))
+      .catch(() => !kept && setError(true))
   }, [])
+  useEffect(() => {
+    if (lib) remember('library', lib) // so coming back shows the list as it was left
+  }, [lib])
 
-  const unstar = async (id: string) => {
-    setLib((l) => l && { ...l, starred: l.starred.filter((s) => s.video_id !== id) })
-    await starVideo(id, false).catch(() => {})
+  // The row goes at once; if the server says no, it comes back with a message (a privacy action must not fake it).
+  const change = async (next: (l: Lib) => Lib, save: () => Promise<unknown>, message: string) => {
+    const before = lib
+    setFailed(null)
+    setLib((l) => l && next(l))
+    try {
+      await save()
+    } catch {
+      setLib(before)
+      setFailed(message)
+    }
   }
-  const forget = async (id: string | null) => {
-    setLib((l) => l && { ...l, history: id ? l.history.filter((h) => h.video_id !== id) : [] })
-    await api('/api/history/remove', { method: 'POST', body: JSON.stringify(id ? { video_id: id } : {}) }).catch(() => {})
-  }
+  const unstar = (id: string) =>
+    change((l) => ({ ...l, starred: l.starred.filter((s) => s.video_id !== id) }), () => starVideo(id, false), 'Couldn’t remove the star. Try again.')
+  const forget = (id: string | null) =>
+    change(
+      (l) => ({ ...l, history: id ? l.history.filter((h) => h.video_id !== id) : [] }),
+      () => api('/api/history/remove', { method: 'POST', body: JSON.stringify(id ? { video_id: id } : {}) }),
+      'Couldn’t clear that from your history. Try again.',
+    )
 
   const items = lib ? lib[tab] : []
   const groups: Array<[string, LibraryItem[]]> = []
@@ -93,6 +112,11 @@ export default function Library() {
         </button>
       </div>
       {error && <p className="error">Couldn’t load your library.</p>}
+      {failed && (
+        <p className="error" role="alert">
+          {failed}
+        </p>
+      )}
       {!lib && !error && <div className="skeleton" style={{ height: 180 }} aria-busy="true" />}
       {lib && items.length === 0 && (
         <div className={`card empty ${tab === 'starred' ? 'tint-butter' : 'tint-peach'}`}>

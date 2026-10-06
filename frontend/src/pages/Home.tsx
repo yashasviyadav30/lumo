@@ -2,6 +2,8 @@ import { Play } from "../components/icons";
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import Feed from "../components/Feed";
+import { ALL, feedKey, loadFeed } from "../lib/search";
+import { forget, fresh, peek, remember } from "../lib/api";
 import { APP_NAME } from "../config";
 import {
   chooseMeaning,
@@ -134,18 +136,35 @@ function greeting(d = new Date()) {
 
 export default function Home() {
   const { me } = useSession();
-  const [goal, setGoalState] = useState<Goal | null>(null);
-  const [summary, setSummary] = useState<HomeSummary | null>(null);
-  const [loading, setLoading] = useState(true);
+  const kept = peek<{ goal: Goal | null; summary: HomeSummary | null }>("home");
+  const [goal, setGoalState] = useState<Goal | null>(kept?.goal ?? null);
+  const [summary, setSummary] = useState<HomeSummary | null>(kept?.summary ?? null);
+  const [loading, setLoading] = useState(!kept);
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
+    fresh(feedKey(ALL), () => loadFeed(ALL)).catch(() => undefined); // start the feed now, not after the cards
     // Draw Home once both are in, so the top never flashes the wrong thing.
+    // A failed refresh keeps what was already on screen.
+    let next = { goal: kept?.goal ?? null, summary: kept?.summary ?? null };
     Promise.allSettled([
-      homeSummary().then(setSummary),
-      getActiveGoal().then((g) => setGoalState(g && g.id ? g : null)),
-    ]).finally(() => setLoading(false));
+      homeSummary().then((s) => (next = { ...next, summary: s })),
+      getActiveGoal().then((g) => (next = { ...next, goal: g && g.id ? g : null })),
+    ]).then(() => {
+      remember("home", next);
+      setSummary(next.summary);
+      setGoalState(next.goal);
+      setLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit to Home
   }, []);
+
+  // A new or changed goal changes the feed: drop the kept feeds so the next ones are fresh.
+  const changeGoal = (g: Goal) => {
+    setGoalState(g);
+    remember("home", { goal: g, summary });
+    forget("feed:");
+  };
 
   // The greeting shows at once (it is the page's heading); only the cards below wait for data.
   const hello = (
@@ -179,7 +198,7 @@ export default function Home() {
           editing={editing}
           onCancel={() => setEditing(false)}
           onSaved={(g) => {
-            setGoalState(g);
+            changeGoal(g);
             setEditing(false);
           }}
         />
@@ -194,7 +213,7 @@ export default function Home() {
                 key={c.index}
                 className="chip"
                 onClick={async () =>
-                  setGoalState(await chooseMeaning(goal.id, c.index))
+                  changeGoal(await chooseMeaning(goal.id, c.index))
                 }
               >
                 {c.label}

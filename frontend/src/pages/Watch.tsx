@@ -143,9 +143,13 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   const mark = useCallback(async () => {
     if (notStarted()) return flash('Press play first, then Mark the moment.')
-    const n = await addNote({ video_id: videoId, t_seconds: now() })
-    upsert(n)
-    flash(`Marked at ${clock(n.t_seconds)}`)
+    try {
+      const n = await addNote({ video_id: videoId, t_seconds: now() })
+      upsert(n)
+      flash(`Marked at ${clock(n.t_seconds)}`)
+    } catch {
+      flash('Couldn’t save that mark. Check your connection and try again.')
+    }
   }, [videoId])
 
   // Star the whole video: it goes to Library → Starred. The icon fills at once; the server catches up.
@@ -165,10 +169,14 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   const doubt = useCallback(async () => {
     if (notStarted()) return flash('Press play first, then tap Doubt at the confusing part.')
-    const n = await addNote({ video_id: videoId, t_seconds: now(), kind: 'doubt' })
-    upsert(n)
-    setDoubtFor(n)
-    flash(`Doubt parked at ${clock(n.t_seconds)}. Keep going.`)
+    try {
+      const n = await addNote({ video_id: videoId, t_seconds: now(), kind: 'doubt' })
+      upsert(n)
+      setDoubtFor(n)
+      flash(`Doubt parked at ${clock(n.t_seconds)}. Keep going.`)
+    } catch {
+      flash('Couldn’t save that doubt. Check your connection and try again.')
+    }
   }, [videoId])
 
   const back10 = () => player.current?.seekTo(Math.max(0, now() - 10), true)

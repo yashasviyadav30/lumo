@@ -1,6 +1,7 @@
 import { UsersRound } from '../components/icons'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
+import { ApiError, messageFor } from '../lib/api'
 import { joinGroup, keepName, lastName, previewInvite } from '../lib/groups'
 
 // Opened from an invite link: shows the group, asks their name for it, joins.
@@ -15,7 +16,8 @@ export default function Join() {
   useEffect(() => {
     previewInvite(code)
       .then((g) => (g.member ? navigate(`/groups/${g.id}`, { replace: true }) : setGroup(g)))
-      .catch((err) => setError(err instanceof Error ? err.message : 'This invite didn’t work.'))
+      // A malformed code fails validation (422): to the person it is the same as a dead link.
+      .catch((err) => setError(err instanceof ApiError && err.status !== 422 ? err.message : messageFor('invite_not_found')))
   }, [code, navigate])
 
   async function join(e: FormEvent) {

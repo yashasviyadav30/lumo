@@ -43,6 +43,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       })
       .finally(() => setLoading(false))
   }, [])
+  useEffect(() => {
+    const out = () => setMe(null)
+    window.addEventListener('focuslearn:signed-out', out)
+    return () => window.removeEventListener('focuslearn:signed-out', out)
+  }, [])
 
   const signUp = useCallback(async (input: SignUpInput) => {
     let r: { token: string; me: Me }

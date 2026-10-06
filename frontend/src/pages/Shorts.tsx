@@ -1,3 +1,4 @@
+import { fresh, peek } from '../lib/api'
 import { Search as SearchIcon, UserPlus } from '../components/icons'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
@@ -7,15 +8,18 @@ import { getShorts, type VideoCard } from '../lib/search'
 import { useVideoActions } from '../lib/useVideoActions'
 
 // Shorts only from channels the user follows (plan v3): the useful reels, without an endless scroll of strangers.
+type ShortsData = { results: VideoCard[]; follows: number }
+
 export default function Shorts() {
-  const [data, setData] = useState<{ results: VideoCard[]; follows: number } | null>(null)
+  const [data, setData] = useState(() => peek<ShortsData>('shorts') ?? null)
   const [error, setError] = useState(false)
   const { actions, visible, notice, undo } = useVideoActions()
 
   useEffect(() => {
-    getShorts()
+    const kept = peek('shorts')
+    fresh('shorts', getShorts)
       .then(setData)
-      .catch(() => setError(true))
+      .catch(() => !kept && setError(true))
   }, [])
 
   return (

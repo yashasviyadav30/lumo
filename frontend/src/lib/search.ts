@@ -111,3 +111,9 @@ export function reasonCounts(hidden: HiddenCard[]): Array<[string, number]> {
   for (const h of hidden) for (const r of h.reasons) counts.set(r, (counts.get(r) ?? 0) + 1)
   return [...counts.entries()].sort((a, b) => b[1] - a[1])
 }
+
+// One chip above the Home feed, and how its videos load (kept in memory per chip, see `fresh` in api.ts).
+export type Chip = { id: string; name: string; query: string | null; only?: 'podcasts' }
+export const ALL: Chip = { id: 'all', name: 'All', query: null }
+export const feedKey = (chip: Chip) => `feed:${chip.id}`
+export const loadFeed = (chip: Chip) => (chip.query ? searchVideos(chip.query) : getFeed(recentSearches(), chip.only))

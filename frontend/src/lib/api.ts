@@ -12,12 +12,36 @@ export function readToken(): string | null {
 }
 
 export function writeToken(token: string | null): void {
+  memo.clear() // another person (or nobody) from now on: forget everything kept for the last one
   try {
     if (token) localStorage.setItem(TOKEN_KEY, token)
     else localStorage.removeItem(TOKEN_KEY)
   } catch {
     /* ignore */
   }
+}
+
+// What each screen last loaded, kept in memory for this visit: going back to a tab draws it at once from here,
+// then the fresh answer replaces it a moment later (stale-while-revalidate). Never stored on the phone.
+const memo = new Map<string, unknown>()
+const inflight = new Map<string, Promise<unknown>>()
+
+export const peek = <T,>(key: string): T | undefined => memo.get(key) as T | undefined
+export const remember = <T,>(key: string, value: T): T => (memo.set(key, value), value)
+export function forget(prefix: string): void {
+  for (const k of [...memo.keys()]) if (k.startsWith(prefix)) memo.delete(k)
+}
+
+// Loads and keeps the answer. If the same request is already on its way (Home starts the feed early), it waits
+// for that one instead of asking twice.
+export function fresh<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const running = inflight.get(key) as Promise<T> | undefined
+  if (running) return running
+  const p = load()
+    .then((v) => remember(key, v))
+    .finally(() => inflight.delete(key))
+  inflight.set(key, p)
+  return p
 }
 
 export class ApiError extends Error {
@@ -112,6 +136,11 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   }
   if (res.status === 204) return undefined as T
   const data = await res.json().catch(() => ({}))
+  if (res.status === 401 && token && !path.startsWith('/api/auth/')) {
+    // The session ended (expired, or signed out on another device): back to the welcome page, not a dead screen.
+    writeToken(null)
+    window.dispatchEvent(new Event('focuslearn:signed-out'))
+  }
   if (!res.ok) {
     const detail = typeof data?.detail === 'string' ? data.detail : 'error'
     throw new ApiError(res.status, detail)

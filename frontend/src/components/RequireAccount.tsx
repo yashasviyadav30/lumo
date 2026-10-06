@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
 import Logo from './Logo'
+import { readToken } from '../lib/api'
 import { rememberJoin } from '../lib/groups'
 import { useSession } from '../lib/session'
 
@@ -14,6 +15,16 @@ export default function RequireAccount() {
         <span>Opening Lumo…</span>
       </div>
     )
+  if (!me && readToken()) {
+    // Still signed in, but the server couldn't be reached at start (not a sign-out): offer a retry, keep the token.
+    return (
+      <div className="boot" role="alert">
+        <Logo size={56} />
+        <span>Can’t reach Lumo right now.</span>
+        <button onClick={() => window.location.reload()}>Try again</button>
+      </div>
+    )
+  }
   if (!me) {
     const invite = pathname.match(/^\/join\/([A-Za-z0-9_-]{8,32})$/)
     if (invite) rememberJoin(invite[1]) // opened an invite while signed out: join right after signing in

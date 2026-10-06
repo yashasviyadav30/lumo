@@ -22,7 +22,7 @@ describe('app shell (1.1)', () => {
     const { router } = renderAt('/')
     await userEvent.click(await screen.findByRole('link', { name: 'Library' }))
     expect(router.state.location.pathname).toBe('/library')
-    expect(screen.getByRole('heading', { name: 'Library' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Library' })).toBeInTheDocument() // the screen loads on demand
   })
 
   it('marks the current tab as active', async () => {

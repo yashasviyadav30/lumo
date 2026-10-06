@@ -1,3 +1,4 @@
+import { peek, remember } from '../lib/api'
 import { Plus, UsersRound } from '../components/icons'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
@@ -50,13 +51,14 @@ function CreateForm({ onCancel }: { onCancel?: () => void }) {
 }
 
 export default function Groups() {
-  const [data, setData] = useState<GroupSummary[] | null>(null)
+  const [data, setData] = useState<GroupSummary[] | null>(() => peek<GroupSummary[]>('groups') ?? null)
   const [error, setError] = useState(false)
   const [creating, setCreating] = useState(false)
   useEffect(() => {
+    const kept = peek('groups')
     myGroups()
-      .then((r) => setData(r.groups))
-      .catch(() => setError(true))
+      .then((r) => setData(remember('groups', r.groups)))
+      .catch(() => !kept && setError(true))
   }, [])
 
   return (

@@ -1,39 +1,44 @@
 import { Search as SearchIcon } from './icons'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { getFeed, recentSearches, searchVideos, type FeedResponse } from '../lib/search'
+import { fresh, peek } from '../lib/api'
+import { ALL, feedKey, loadFeed, recentSearches, type Chip, type FeedResponse } from '../lib/search'
 import { useVideoActions } from '../lib/useVideoActions'
 import HiddenLine from './HiddenLine'
 import VideoItem, { NoticeLine } from './VideoItem'
 
-type Chip = { id: string; name: string; query: string | null; only?: 'podcasts' }
-
 // YouTube-style Home: chips ("All", "Podcasts & talks", their goal's topics, their recent searches) over a grid.
 // "All" mixes followed and recently watched channels, their goal and their searches. The same hide list applies
 // everywhere, and hidden videos are always listed (R6).
+
 export default function Feed({ topics }: { topics: Array<{ id: string; name: string; query: string }> }) {
   const [chips] = useState<Chip[]>(() => {
     const own = topics.map((t) => t.query.toLowerCase())
     const recent = recentSearches().filter((q) => !own.includes(q.toLowerCase()))
     return [
-      { id: 'all', name: 'All', query: null },
+      ALL,
       { id: 'podcasts', name: 'Podcasts & talks', query: null, only: 'podcasts' },
       ...topics.map((t) => ({ id: t.id, name: t.name, query: t.query })),
       ...recent.map((q) => ({ id: `recent:${q}`, name: q, query: q })),
     ]
   })
   const [active, setActive] = useState('all')
-  const [data, setData] = useState<FeedResponse | null>(null)
+  const [data, setData] = useState<FeedResponse | null>(() => peek<FeedResponse>(feedKey(chips[0])) ?? null)
   const [error, setError] = useState(false)
   const [showHidden, setShowHidden] = useState(false)
   const { actions, visible, notice, undo } = useVideoActions()
 
+  const shownKey = useRef(feedKey(chips[0]))
   const load = (chip: Chip) => {
-    setData(null)
+    const key = feedKey(chip)
+    const cached = peek<FeedResponse>(key)
+    shownKey.current = key
+    setData(cached ?? null)
     setError(false)
     setShowHidden(false)
-    const req = chip.query ? searchVideos(chip.query) : getFeed(recentSearches(), chip.only)
-    return req.then(setData).catch(() => setError(true))
+    return fresh(key, () => loadFeed(chip))
+      .then((d) => shownKey.current === key && setData(d)) // a slow answer for an earlier chip can't replace this one
+      .catch(() => shownKey.current === key && !cached && setError(true))
   }
 
   useEffect(() => {
