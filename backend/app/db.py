@@ -28,8 +28,10 @@ def make_engine(url: str) -> Engine:
             dbapi_conn.execute("PRAGMA foreign_keys=ON")
 
         return engine
-    # Supabase's session pooler; pre_ping survives the database pausing when idle.
-    return create_engine(url, pool_pre_ping=True, pool_size=5, max_overflow=5)
+    # Supabase's session pooler allows 15 connections in all. At most 6 per server process (3 + 3 when busy), so the
+    # live server and a local one together stay under it (2026-10-06: 5 + 5 each hit "max clients reached").
+    # pre_ping survives the database pausing when idle.
+    return create_engine(url, pool_pre_ping=True, pool_size=3, max_overflow=3)
 
 
 def configure(url: str) -> None:
