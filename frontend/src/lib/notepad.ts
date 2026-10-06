@@ -38,7 +38,7 @@ const ColourUnderline = Mark.create({
   },
 })
 
-// Screenshots: only images uploaded to her own notepad (an outside image could track who opens the note).
+// Screenshots: only images uploaded to their own notepad (an outside image could track who opens the note).
 export const NOTE_IMAGE_PATH = '/api/notepad/images/'
 const NoteImage = Image.extend({
   addAttributes() {

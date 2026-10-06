@@ -3,7 +3,7 @@
 - Sign-in: the browser gets a signed ID token from Google Identity Services; we check it with Google's
   tokeninfo endpoint (audience = our client ID, issuer = Google, email verified, not expired).
 - Subscriptions: the browser asks the user for read-only YouTube access once and hands us the short-lived
-  access token. We read her subscriptions (subscriptions.list, mine=true) and never store the token.
+  access token. We read their subscriptions (subscriptions.list, mine=true) and never store the token.
 """
 
 import time
@@ -46,7 +46,7 @@ def verify_id_token(credential: str) -> dict:
 
 
 def subscription_channels(access_token: str) -> list[str]:
-    """Channel IDs she subscribes to on YouTube (up to 200)."""
+    """Channel IDs the user subscribes to on YouTube (up to 200)."""
     channels: list[str] = []
     page_token = None
     for _ in range(MAX_PAGES):

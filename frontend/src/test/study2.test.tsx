@@ -84,7 +84,7 @@ describe('study page extras', () => {
 })
 
 describe('library', () => {
-  it('has Starred and History, and History shows where she stopped', async () => {
+  it('has Starred and History, and History shows where the user stopped', async () => {
     signInForTest({
       'GET /api/library': () => ({
         status: 200,

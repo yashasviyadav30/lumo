@@ -267,7 +267,7 @@ async function compressImage(file: File): Promise<{ mime: string; data: string }
 
 const imagesIn = (list: FileList | null | undefined) => [...(list ?? [])].filter((f) => f.type.startsWith('image/'))
 
-// Free-form notes beside a lecture, like a small Google Doc. Saves itself a moment after she stops typing.
+// Free-form notes beside a lecture, like a small Google Doc. Saves itself a moment after the user stops typing.
 export default function Notepad({
   videoId,
   initial,

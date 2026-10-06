@@ -154,7 +154,7 @@ def create_group(body: CreateIn, user: User = Depends(current_user), db: Session
 
 @router.get("")
 def my_groups(user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
-    """Her groups, newest activity first, each with how many posts and replies she hasn't seen."""
+    """Their groups, newest activity first, each with how many posts and replies the user hasn't seen."""
     rows = db.execute(select(StudyGroup, GroupMember).join(GroupMember, GroupMember.group_id == StudyGroup.id)
                       .where(GroupMember.user_id == user.id)).all()
     out = []

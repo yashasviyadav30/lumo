@@ -62,13 +62,13 @@ export async function shareInvite(name: string, code: string): Promise<'shared' 
   }
 }
 
-// An invite opened while signed out waits on this device until she signs in or signs up.
+// An invite opened while signed out waits on this device until the user signs in or signs up.
 const PENDING = 'focuslearn.pendingJoin'
 export function rememberJoin(code: string) {
   try {
     localStorage.setItem(PENDING, code)
   } catch {
-    // private mode: she can open the link again after signing in
+    // private mode: the user can open the link again after signing in
   }
 }
 export function pendingJoin(): string | null {
@@ -89,7 +89,7 @@ export function nextAfterSignIn(): string {
   return `/join/${code}`
 }
 
-// The name she used last time, offered again for the next group.
+// The name the user used last time, offered again for the next group.
 const NAME = 'focuslearn.groupName'
 export function lastName(): string {
   try {

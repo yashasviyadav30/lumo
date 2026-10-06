@@ -63,7 +63,7 @@ function TopSearch() {
 
 const UNREAD_EVERY_MS = 2 * 60_000
 
-// New posts and replies in her groups: a quiet in-app badge, checked when the app comes back and every 2 minutes.
+// New posts and replies in their groups: a quiet in-app badge, checked when the app comes back and every 2 minutes.
 function useGroupUnread(pathname: string): number {
   const [unread, setUnread] = useState(0)
   useEffect(() => {

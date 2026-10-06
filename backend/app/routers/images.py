@@ -1,8 +1,8 @@
-"""Screenshots in her notepad, like Google Docs (feedback 2026-10-06).
+"""Screenshots in their notepad, like Google Docs (feedback 2026-10-06).
 
 Images are compressed on the phone (WebP, at most 1600 px wide) and kept in our database. Each has an unguessable
-ID, so the notepad can show it with a plain <img> (browsers can't send our sign-in header for images); only she
-gets the link, inside her own notepad. Only PNG, JPEG and WebP are accepted, checked by their first bytes, and
+ID, so the notepad can show it with a plain <img> (browsers can't send our sign-in header for images); only the user
+gets the link, inside their own notepad. Only PNG, JPEG and WebP are accepted, checked by their first bytes, and
 they are served with nosniff so a browser never treats one as a page.
 """
 

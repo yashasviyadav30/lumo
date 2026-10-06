@@ -49,7 +49,7 @@ def rules_for(db: Session, user: User) -> UserRules:
 
 
 def progress_for(db: Session, user: User, ids: list[str]) -> dict[str, int]:
-    """Where she stopped in each of these videos, for the red line under the thumbnail (our data, R9)."""
+    """Where the user stopped in each of these videos, for the red line under the thumbnail (our data, R9)."""
     if not ids:
         return {}
     rows = db.execute(select(LectureProgress.video_id, LectureProgress.position_s)
@@ -58,7 +58,7 @@ def progress_for(db: Session, user: User, ids: list[str]) -> dict[str, int]:
 
 
 def watched_channels(db: Session, user: User, skip: set[str], limit: int = 4) -> list[str]:
-    """Channels of videos she watched here recently: the feed treats them like soft follows."""
+    """Channels of videos the user watched here recently: the feed treats them like soft follows."""
     rows = db.scalars(select(YtVideo.channel_id).join(LectureProgress, LectureProgress.video_id == YtVideo.video_id)
                       .where(LectureProgress.user_id == user.id).order_by(LectureProgress.updated_at.desc()).limit(30))
     return [c for c in dict.fromkeys(rows) if c not in skip][:limit]
@@ -136,7 +136,7 @@ class ImportIn(BaseModel):
 
 @router.post("/follows/import")
 def import_follows(body: ImportIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
-    """Follow every channel she subscribes to on YouTube (plan v3). She can unfollow any of them later."""
+    """Follow every channel the user subscribes to on YouTube (plan v3). The user can unfollow any of them later."""
     request.state.action = "follows_import"
     try:
         channels = [c for c in dict.fromkeys(google.subscription_channels(body.access_token)) if CHANNEL_ID.match(c)]
@@ -177,7 +177,7 @@ def remove_follow(body: FollowIn, user: User = Depends(current_user), db: Sessio
 
 
 class FeedIn(BaseModel):
-    # Her last searches, kept on her phone (never stored here) and sent in the body (R11).
+    # Their last searches, kept on their phone (never stored here) and sent in the body (R11).
     recent: list[str] = Field(default_factory=list, max_length=5)
     only: str | None = Field(default=None, pattern=r"^podcasts$")  # the shared "Podcasts & talks" chip
 
@@ -191,7 +191,7 @@ def feed_get(request: Request, user: User = Depends(current_user), db: Session =
 @router.post("/feed")
 def feed(body: FeedIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
          yt: YouTubeClient = Depends(get_youtube)) -> dict:
-    """Home feed: followed and recently watched channels, her goal's topics and her recent searches."""
+    """Home feed: followed and recently watched channels, their goal's topics and their recent searches."""
     request.state.action = "feed"
     row = db.scalar(select(Goal).where(Goal.user_id == user.id, Goal.active.is_(True)).order_by(Goal.created_at.desc()))
     goal = view(row) if row else None
@@ -211,7 +211,7 @@ def feed(body: FeedIn, request: Request, user: User = Depends(current_user), db:
 @router.get("/shorts")
 def shorts(request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
            yt: YouTubeClient = Depends(get_youtube)) -> dict:
-    """Shorts only from channels she follows (plan v3): the useful reels, without the endless scroll of strangers."""
+    """Shorts only from channels the user follows (plan v3): the useful reels, without the endless scroll of strangers."""
     request.state.action = "shorts"
     follows = list(db.scalars(select(Follow.channel_id).where(Follow.user_id == user.id).order_by(Follow.id.desc())))
     try:

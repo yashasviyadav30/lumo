@@ -5,7 +5,7 @@ Every rule uses YouTube's own fields or the user's own settings. Nothing here ju
 - DROP: videos that can't play in the app (age-restricted, not embeddable, blocked in India). Listed with
   the reason, never playable here.
 - HIDE: videos in a YouTube category group the user hides (gaming, comedy and entertainment by default, plan
-  v3), videos she marked "Not interested", her mutes, and Shorts (they have their own tab). "Show" reveals them.
+  v3), videos the user marked "Not interested", their mutes, and Shorts (they have their own tab). "Show" reveals them.
 Channels the user follows are never hidden by YouTube's type (uploaders choose their own category and are
 sometimes wrong). People & Blogs is shown: podcasts and interviews carry that label too.
 """
@@ -50,7 +50,7 @@ CATEGORY_NAMES = {
 }
 # Groups of YouTube's own categories a user can hide (plan v3). Gaming, comedy, entertainment and music are hidden
 # by default (music added 2026-10-05: a feed full of songs; YouTube labels every song "Music", so motivational
-# songs come from channels she follows, which are never hidden). The rest is her choice. Documentary (35) and People & Blogs (22, most podcasts) are never grouped.
+# songs come from channels the user follows, which are never hidden). The rest is their choice. Documentary (35) and People & Blogs (22, most podcasts) are never grouped.
 CATEGORY_GROUPS = {
     "gaming": {"20"},
     "comedy": {"23", "34"},
@@ -96,7 +96,7 @@ class UserRules:
     shorts_enabled: bool = False
     trusted_channels: set[str] = field(default_factory=set)  # channels the user follows
     hidden_groups: frozenset[str] = DEFAULT_HIDDEN_GROUPS
-    not_interested: set[str] = field(default_factory=set)  # video IDs she dismissed
+    not_interested: set[str] = field(default_factory=set)  # video IDs the user dismissed
 
 
 @dataclass

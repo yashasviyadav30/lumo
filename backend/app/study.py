@@ -1,13 +1,13 @@
-"""Study companion logic: cards from her notes, the review ladder, and replay windows.
+"""Study companion logic: cards from their notes, the review ladder, and replay windows.
 
-Everything here works on her own data: notes she wrote, words she chose to hide, seconds she marked.
+Everything here works on their own data: notes the user wrote, words the user chose to hide, seconds the user marked.
 Nothing reads YouTube titles or judges videos (R3, R4).
 """
 
 import re
 from datetime import datetime, timedelta, timezone
 
-# Review ladder: a new card she knows comes back after 1 day, then 3 days; the third correct recall
+# Review ladder: a new card the user knows comes back after 1 day, then 3 days; the third correct recall
 # (three different days) retires it, so every card has an end.
 LADDER_DAYS = [1, 3]
 FORGOT_AGAIN_MIN = 10  # a forgotten card comes back later in the same session
@@ -26,7 +26,7 @@ def word_in(text: str, word: str) -> bool:
 
 
 def card_front(text: str, blanks: list[str]) -> str:
-    """Her note with each chosen word hidden (first match, whole word, any case)."""
+    """Their note with each chosen word hidden (first match, whole word, any case)."""
     front = text
     for word in blanks:
         front = re.sub(rf"(?<!\w){re.escape(word)}(?!\w)", BLANK, front, count=1, flags=re.IGNORECASE)
@@ -34,7 +34,7 @@ def card_front(text: str, blanks: list[str]) -> str:
 
 
 def replay_window(t_seconds: int) -> dict[str, int]:
-    """Just the part around her note: 30 s before to 60 s after (played with the embed's own start/end)."""
+    """Just the part around their note: 30 s before to 60 s after (played with the embed's own start/end)."""
     return {"start": max(0, t_seconds - REPLAY_BEFORE_S), "end": t_seconds + REPLAY_AFTER_S}
 
 

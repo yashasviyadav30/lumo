@@ -149,7 +149,7 @@ NO_PASSWORD = "!google"
 
 class GoogleIn(BaseModel):
     credential: str = Field(min_length=20, max_length=4096)
-    # Only for a new account: Google doesn't tell us her age, so she confirms 18+ here (R10).
+    # Only for a new account: Google doesn't tell us their age, so the user confirms 18+ here (R10).
     date_of_birth: date | None = None
     accepted_notice: bool = False
 

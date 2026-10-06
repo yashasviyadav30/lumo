@@ -94,7 +94,7 @@ def test_owner_passes_on_and_posts_go_with_a_deleted_account(signed_in, group, d
     ravi = other(signed_in, "ravi@example.com")
     signed_in.post("/api/groups/join", json={"code": group["invite_code"], "my_name": "Ravi"}, headers=ravi)
     signed_in.post("/api/groups/post", json={"group_id": group["id"], "kind": "note", "text": "Asha's note"})
-    signed_in.delete("/api/me")  # Asha deletes her data
+    signed_in.delete("/api/me")  # Asha deletes their data
     db.expire_all()
     assert db.query(GroupPost).count() == 0 and db.query(GroupMember).count() == 1
     view = signed_in.post("/api/groups/open", json={"group_id": group["id"]}, headers=ravi).json()

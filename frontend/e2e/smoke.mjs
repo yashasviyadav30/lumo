@@ -89,7 +89,7 @@ try {
   await page.getByRole('button', { name: 'Save card' }).click()
   await page.getByText('Card made').waitFor()
   await page.screenshot({ path: shots + '7-study.png', fullPage: true })
-  log('made a card from her own note')
+  log('made a card from their own note')
 
   await page.getByRole('link', { name: 'Home', exact: true }).click()
   await page.locator('.hero').waitFor({ timeout: 15000 })

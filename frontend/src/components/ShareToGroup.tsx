@@ -6,7 +6,7 @@ import { addPost, myGroups, type GroupSummary } from "../lib/groups";
 import { clock } from "../lib/study";
 
 // "Share" on the study page (plan v3): send the video (optionally opened on its AI notes or mind map) or ask a
-// doubt at the current second, to one of her groups.
+// doubt at the current second, to one of their groups.
 export default function ShareToGroup({
   videoId,
   getTime,

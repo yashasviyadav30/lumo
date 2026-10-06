@@ -8,8 +8,8 @@ import VideoItem, { NoticeLine } from './VideoItem'
 
 type Chip = { id: string; name: string; query: string | null; only?: 'podcasts' }
 
-// YouTube-style Home: chips ("All", "Podcasts & talks", her goal's topics, her recent searches) over a grid.
-// "All" mixes followed and recently watched channels, her goal and her searches. The same hide list applies
+// YouTube-style Home: chips ("All", "Podcasts & talks", their goal's topics, their recent searches) over a grid.
+// "All" mixes followed and recently watched channels, their goal and their searches. The same hide list applies
 // everywhere, and hidden videos are always listed (R6).
 export default function Feed({ topics }: { topics: Array<{ id: string; name: string; query: string }> }) {
   const [chips] = useState<Chip[]>(() => {

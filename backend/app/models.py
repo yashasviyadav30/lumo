@@ -127,7 +127,7 @@ class UserSettings(Base):
 
 
 class NotInterested(Base):
-    """A video she tapped "Not interested" on. Video ID only (R1)."""
+    """A video the user tapped "Not interested" on. Video ID only (R1)."""
 
     __tablename__ = "not_interested"
     __table_args__ = (UniqueConstraint("user_id", "video_id"),)
@@ -164,7 +164,7 @@ class StudyGroup(Base):
 
 
 class GroupMember(Base):
-    """Her membership, with the name she chose for this group (other members never see her email)."""
+    """Their membership, with the name the user chose for this group (other members never see their email)."""
 
     __tablename__ = "group_members"
     __table_args__ = (UniqueConstraint("group_id", "user_id"),)
@@ -205,7 +205,7 @@ class PostReport(Base):
 
 
 class NoteImage(Base):
-    """A screenshot pasted into her notepad. Compressed on the phone; deleted with the account."""
+    """A screenshot pasted into their notepad. Compressed on the phone; deleted with the account."""
 
     __tablename__ = "note_images"
 
@@ -244,7 +244,7 @@ class QuotaUsage(Base):
 
 class Note(Base):
     """A mark, note or doubt at a second of a lecture. Our data: the video ID and the second, never YouTube's
-    title (R1). An empty `text` is a mark she hasn't filled in yet."""
+    title (R1). An empty `text` is a mark the user hasn't filled in yet."""
 
     __tablename__ = "notes"
 
@@ -257,13 +257,13 @@ class Note(Base):
     starred: Mapped[bool] = mapped_column(Boolean, default=False)
     text: Mapped[str] = mapped_column(Text, default="")
     solved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # doubts
-    answer: Mapped[str] = mapped_column(Text, default="")  # doubts: her own answer once solved
+    answer: Mapped[str] = mapped_column(Text, default="")  # doubts: their own answer once solved
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
 class LectureProgress(Base):
-    """Where she stopped in a lecture, so she can resume. Not kept for Made-for-Kids videos (R14)."""
+    """Where the user stopped in a lecture, so the user can resume. Not kept for Made-for-Kids videos (R14)."""
 
     __tablename__ = "lecture_progress"
     __table_args__ = (UniqueConstraint("user_id", "video_id"),)
@@ -276,7 +276,7 @@ class LectureProgress(Base):
 
 
 class StarredVideo(Base):
-    """A video she starred, shown in Library. Video ID only; the title is fetched fresh (R1)."""
+    """A video the user starred, shown in Library. Video ID only; the title is fetched fresh (R1)."""
 
     __tablename__ = "starred_videos"
     __table_args__ = (UniqueConstraint("user_id", "video_id"),)
@@ -288,7 +288,7 @@ class StarredVideo(Base):
 
 
 class Notepad(Base):
-    """Her free-form notes beside one lecture (rich text, stored as the editor's JSON). Her own words only."""
+    """Their free-form notes beside one lecture (rich text, stored as the editor's JSON). Their own words only."""
 
     __tablename__ = "notepads"
     __table_args__ = (UniqueConstraint("user_id", "video_id"),)
@@ -302,7 +302,7 @@ class Notepad(Base):
 
 
 class Card(Base):
-    """A recall card made from one of her notes by blanking words she chose (her text only, R3/R4).
+    """A recall card made from one of their notes by blanking words the user chose (their text only, R3/R4).
     It remembers the lecture second, so a forgotten card can replay just that part."""
 
     __tablename__ = "cards"
@@ -310,7 +310,7 @@ class Card(Base):
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = _user_fk()
     note_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("notes.id", ondelete="CASCADE"), index=True)
-    blanks: Mapped[list] = mapped_column(JSON)  # the words she hid
+    blanks: Mapped[list] = mapped_column(JSON)  # the words the user hid
     step: Mapped[int] = mapped_column(Integer, default=0)  # place on the review ladder
     due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
     retired: Mapped[bool] = mapped_column(Boolean, default=False)

@@ -69,7 +69,7 @@ function setWaking(on: boolean) {
 }
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-// Fire-and-forget ping when the app opens, so the server is awake by the time she signs in.
+// Fire-and-forget ping when the app opens, so the server is awake by the time the user signs in.
 export function wakeServer() {
   fetch(API_BASE + '/health').catch(() => {})
 }

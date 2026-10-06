@@ -82,7 +82,7 @@ describe('study page', () => {
     expect(yt.seeks).toContain(600)
   })
 
-  it('resumes where she stopped, and can start from the beginning', async () => {
+  it('resumes where the user stopped, and can start from the beginning', async () => {
     const yt = fakeYouTube()
     signInForTest({
       'POST /api/study/open': () => ({ status: 200, body: { video: VIDEO, position_s: 2530, notes: [] } }),
@@ -171,14 +171,14 @@ describe('home and personal', () => {
     expect(screen.queryByText(/card/i)).not.toBeInTheDocument() // revision cards are gone (plan v3)
   })
 
-  it('searches her notes and filters doubts, all in the request body', async () => {
+  it('searches their notes and filters doubts, all in the request body', async () => {
     const book = { lectures: [{ video_id: VID, video: VIDEO, notes: [note({ kind: 'doubt', text: 'What is XBRL?' })] }], total: 1 }
     const { calls } = signInForTest({ 'POST /api/notebook': () => ({ status: 200, body: book }) })
     renderAt('/personal')
     expect(await screen.findByText(/What is XBRL\?/)).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Doubts' }))
     await userEvent.type(screen.getByRole('searchbox', { name: 'Search your notes' }), 'xbrl')
-    // Searches as she types, after a short pause.
+    // Searches as the user types, after a short pause.
     await waitFor(() => expect(calls.filter((c) => c.path === '/api/notebook').at(-1)?.body).toEqual({ q: 'xbrl', only: 'doubts' }))
   })
 

@@ -31,7 +31,7 @@ describe('Copy to my notes', () => {
     expect(text).toBe('[3:40] Layers: Input to output')
   })
 
-  it('keeps what she already wrote, blank lines included', () => {
+  it('keeps what the user already wrote, blank lines included', () => {
     const mine = JSON.stringify({
       type: 'doc',
       content: [{ type: 'paragraph', content: [{ type: 'text', text: 'My line' }] }, { type: 'paragraph' }],

@@ -62,7 +62,7 @@ def _add_leftovers(query: str, goal: ParsedGoal, level_words: set[str]) -> str:
 def build_query(goal: ParsedGoal, topic_id: str | None = None) -> str:
     """topic_id: a topic the user tapped; defaults to the goal's own topic."""
     query = _build(goal, topic_id)
-    # A language the user typed is her own word, so it stays ("cs executive capital market hindi me").
+    # A language the user typed is their own word, so it stays ("cs executive capital market hindi me").
     for lang in ("hindi", "english"):
         if lang in _words(goal.text) and lang not in query.casefold().split() and goal.field is not None:
             query = f"{query} {lang}"

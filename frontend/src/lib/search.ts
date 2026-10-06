@@ -14,7 +14,7 @@ export type VideoCard = {
 
 export type HiddenCard = VideoCard & { reasons: string[]; playable: boolean }
 
-// Where she stopped in each video (seconds), for the red line under the thumbnail.
+// Where the user stopped in each video (seconds), for the red line under the thumbnail.
 export type Progress = Record<string, number>
 
 export type SearchResponse = {
@@ -34,18 +34,18 @@ export function searchVideos(q: string): Promise<SearchResponse> {
 
 export type FeedResponse = { results: VideoCard[]; hidden: HiddenCard[]; hidden_count: number; progress?: Progress }
 
-// Home feed: followed and recently watched channels, her goal's topics and her recent searches (sent from this
+// Home feed: followed and recently watched channels, their goal's topics and their recent searches (sent from this
 // device; the server never stores search history).
 export const getFeed = (recent: string[] = [], only?: 'podcasts') =>
   api<FeedResponse>('/api/feed', { method: 'POST', body: JSON.stringify(only ? { recent, only } : { recent }) })
 
-// Shorts only from channels she follows.
+// Shorts only from channels the user follows.
 export const getShorts = () => api<{ results: VideoCard[]; follows: number }>('/api/shorts')
 
 export const notInterested = (video_id: string, undo = false) =>
   api('/api/videos/not-interested', { method: 'POST', body: JSON.stringify({ video_id, undo }) })
 
-// Her last 5 searches, on this device only.
+// Their last 5 searches, on this device only.
 const RECENT_KEY = 'focuslearn.recentSearches'
 export function recentSearches(): string[] {
   try {

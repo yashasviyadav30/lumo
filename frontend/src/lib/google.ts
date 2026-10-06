@@ -53,7 +53,7 @@ export function loadGis(): Promise<Gis> {
   return script
 }
 
-// Asks her for read-only YouTube access once; the token goes to our server for one import and is never kept.
+// Asks them for read-only YouTube access once; the token goes to our server for one import and is never kept.
 export async function youtubeAccessToken(clientId: string): Promise<string> {
   const g = await loadGis()
   return new Promise((resolve, reject) => {

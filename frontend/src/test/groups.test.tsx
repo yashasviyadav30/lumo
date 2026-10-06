@@ -30,7 +30,7 @@ const post = (over: Record<string, unknown> = {}) => ({
 })
 
 describe('study groups (plan v3 step 4)', () => {
-  it('creates a group with her chosen name and opens it', async () => {
+  it('creates a group with their chosen name and opens it', async () => {
     const { calls } = signInForTest({
       'GET /api/groups': () => ({ status: 200, body: { groups: [], unread: 0 } }),
       'POST /api/groups': () => ({ status: 201, body: VIEW }),

@@ -154,7 +154,7 @@ def test_any_goal_gets_its_own_topics_from_the_users_words(signed_in, monkeypatc
     g = signed_in.post("/api/goals", json={"text": "UPSC prelims"}).json()
     assert g["field"] is None and [t["name"] for t in g["topics"]] == ["Indian polity", "Topper interviews"]
     assert g["topics"][1]["query"] == "UPSC topper interview"
-    assert seen == ["Goal: upsc prelims"]  # only her own words go to the LLM (R4)
+    assert seen == ["Goal: upsc prelims"]  # only their own words go to the LLM (R4)
     assert signed_in.get("/api/goals/active").json()["topics"] == g["topics"]
     assert clean('{"topics": "nope"}') == () and suggest_topics("x", lambda s, u: "not json") == []
 

@@ -95,7 +95,7 @@ export function lectureTitle(video: VideoCard | null | undefined, videoId: strin
   return video?.title || `Lecture ${videoId}`
 }
 
-// A plain Markdown export of her notes, with "watch at" links back to YouTube (no YouTube data copied).
+// A plain Markdown export of their notes, with "watch at" links back to YouTube (no YouTube data copied).
 export function notebookMarkdown(book: Notebook): string {
   const lines = ['# My notes', '']
   for (const l of book.lectures) {

@@ -1,8 +1,8 @@
 """Home feed (user decision 2026-10-01: "like YouTube's feed, minus songs, movies, shows, news and vlogs").
 
-YouTube gives apps no personal recommendations, so the feed mixes two sources the user chose herself:
-- the newest uploads of channels she follows (playlistItems.list, 1 unit per channel, cached 6 hours);
-- searches for her goal and a few of its topics (the shared 24-hour search cache; the topics rotate daily).
+YouTube gives apps no personal recommendations, so the feed mixes two sources the user chose themselves:
+- the newest uploads of channels the user follows (playlistItems.list, 1 unit per channel, cached 6 hours);
+- searches for their goal and a few of its topics (the shared 24-hour search cache; the topics rotate daily).
 Sources are interleaved so no single one fills the screen. The same hide rules as search apply (R3, R6).
 """
 
@@ -39,7 +39,7 @@ SHARED_QUERIES = [
 ]
 SHARED_PER_DAY = 2  # in the "All" feed
 PODCASTS_PER_DAY = 3  # behind the "Podcasts & talks" chip
-MAX_RECENT = 2  # her last searches add to the feed (they are usually in the shared cache already)
+MAX_RECENT = 2  # their last searches add to the feed (they are usually in the shared cache already)
 
 
 def _cached_list(db: Session, key_text: str, fresh: timedelta, now: datetime, fetch, bucket: str = "general") -> list[str]:

@@ -158,7 +158,7 @@ def star_video(body: StarIn, user: User = Depends(current_user), db: Session = D
 @router.get("/library")
 def library(user: User = Depends(current_user), db: Session = Depends(get_db),
             yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
-    """Starred videos and watch history (where she stopped in each lecture), newest first."""
+    """Starred videos and watch history (where the user stopped in each lecture), newest first."""
     stars = list(db.scalars(select(StarredVideo).where(StarredVideo.user_id == user.id).order_by(StarredVideo.created_at.desc()).limit(100)))
     history = list(db.scalars(select(LectureProgress).where(LectureProgress.user_id == user.id).order_by(LectureProgress.updated_at.desc()).limit(100)))
     info = lecture_info(db, yt, [s.video_id for s in stars] + [h.video_id for h in history])
@@ -298,7 +298,7 @@ def _due_count(db: Session, user: User) -> int:
 @router.get("/home/summary")
 def home_summary(user: User = Depends(current_user), db: Session = Depends(get_db),
                  yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
-    """What Home shows first: where she stopped, cards due, open doubts."""
+    """What Home shows first: where the user stopped, cards due, open doubts."""
     last = db.scalar(select(LectureProgress).where(LectureProgress.user_id == user.id).order_by(LectureProgress.updated_at.desc()))
     resume = None
     if last:
@@ -322,14 +322,14 @@ def home_summary(user: User = Depends(current_user), db: Session = Depends(get_d
 
 
 class NotebookIn(BaseModel):
-    q: str = Field(default="", max_length=200)  # in the body, so her search never reaches a log (R11)
+    q: str = Field(default="", max_length=200)  # in the body, so their search never reaches a log (R11)
     only: str | None = Field(default=None, pattern="^(doubts|starred)$")
 
 
 @router.post("/notebook")
 def notebook(body: NotebookIn, user: User = Depends(current_user), db: Session = Depends(get_db),
              yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
-    """All her notes, grouped by lecture, newest lecture first. Search runs over her own text only."""
+    """All their notes, grouped by lecture, newest lecture first. Search runs over their own text only."""
     query = select(Note).where(Note.user_id == user.id)
     if body.q.strip():
         like = f"%{body.q.strip()}%"

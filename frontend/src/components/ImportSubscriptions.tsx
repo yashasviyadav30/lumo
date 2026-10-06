@@ -2,7 +2,7 @@ import { SquarePlay } from './icons'
 import { useEffect, useState } from 'react'
 import { googleClientId, importSubscriptions, youtubeAccessToken } from '../lib/google'
 
-// "Import my YouTube subscriptions": her real creators on day one (plan v3). Read-only, one time.
+// "Import my YouTube subscriptions": their real creators on day one (plan v3). Read-only, one time.
 export default function ImportSubscriptions({ onDone }: { onDone?: () => void }) {
   const [clientId, setClientId] = useState<string | null>(null)
   const [state, setState] = useState<{ busy: boolean; msg: string | null; error: boolean }>({ busy: false, msg: null, error: false })

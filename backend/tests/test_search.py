@@ -77,7 +77,7 @@ def test_youtube_type_reason():
     assert youtube_type_reason("24", []) == "YouTube lists this as Entertainment"
     assert youtube_type_reason("20", []) == "YouTube lists this as Gaming"
     assert youtube_type_reason("10", []) == "YouTube lists this as Music"  # songs hidden by default
-    assert youtube_type_reason("10", [], frozenset({"gaming"})) is None  # unless she switches Music on
+    assert youtube_type_reason("10", [], frozenset({"gaming"})) is None  # unless the user switches Music on
     assert youtube_type_reason("10", [], everything) == "YouTube lists this as Music"
     assert youtube_type_reason("27", ["https://en.wikipedia.org/wiki/Humour"]) is None  # Education wins
     assert youtube_type_reason("22", ["https://en.wikipedia.org/wiki/Humour"]) == "YouTube tags this as Comedy"
@@ -89,7 +89,7 @@ def test_youtube_type_reason():
 def test_default_hide_list_is_gaming_comedy_and_entertainment():
     for cat in ("20", "23", "24", "43", "10"):
         assert not judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
-    # Films, news and vlogs are her choice; podcasts and lectures always show.
+    # Films, news and vlogs are their choice; podcasts and lectures always show.
     for cat in ("1", "25", "19", "22", "27", "28", "26", "35", "17"):
         assert judge(video("x" * 11, category_id=cat), UserRules()).visible, cat
 
@@ -135,7 +135,7 @@ def test_phrase_mute_and_shorts_setting():
 
 
 def test_search_shows_learning_and_explains_every_hidden_video(yt, signed_in):
-    # She hides music and news herself (they show by default since plan v3).
+    # The user hides music and news themselves (they show by default since plan v3).
     signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     r = signed_in.post("/api/search", json={"q": "cost accounting"})
     assert r.status_code == 200
@@ -173,7 +173,7 @@ def test_safe_search_is_always_strict():
 
 
 def test_quota_guard_serves_saved_results(yt, signed_in, db, monkeypatch):
-    # She hides music and news herself (they show by default since plan v3).
+    # The user hides music and news themselves (they show by default since plan v3).
     signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     signed_in.post("/api/search", json={"q": "cost accounting"})
     # Make the saved search a day old (stale but under 30 days) and use up the day's quota.
@@ -216,7 +216,7 @@ def test_search_text_and_video_ids_never_reach_the_log(yt, signed_in, db):
 
 
 def test_mutes_and_follows_change_results(yt, signed_in):
-    # She hides music and news herself (they show by default since plan v3).
+    # The user hides music and news themselves (they show by default since plan v3).
     signed_in.post("/api/me/settings", json={"hidden_groups": ["music", "news", "gaming", "comedy", "entertainment"]})
     assert signed_in.post("/api/mutes", json={"kind": "channel", "value": TEACHER}).status_code == 201
     r = signed_in.post("/api/search", json={"q": "cost accounting"}).json()

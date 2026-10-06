@@ -17,7 +17,7 @@ export async function shareNotes(title: string, videoId: string, notes: AiNotesD
       await navigator.share({ title, text })
       return 'shared'
     } catch (e) {
-      if ((e as Error).name === 'AbortError') return 'shared' // she closed the share sheet
+      if ((e as Error).name === 'AbortError') return 'shared' // the user closed the share sheet
     }
   }
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener')
