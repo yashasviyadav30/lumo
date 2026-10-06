@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { IconContext } from '@phosphor-icons/react'
+import { IconContext } from './components/icons'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import '@fontsource-variable/plus-jakarta-sans'
 import '@fontsource-variable/bricolage-grotesque'

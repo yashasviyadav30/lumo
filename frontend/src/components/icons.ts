@@ -1,70 +1,79 @@
 // One icon family for the whole app: Phosphor (duotone by default, set in main.tsx).
 // Components keep the names they had, so screens read the same; this file maps them to Phosphor.
-export {
-  TextAlignLeft as AlignLeft,
-  ArrowLeft,
-  ArrowUpRight,
-  Prohibit as Ban,
-  TextB as Bold,
-  Check,
-  CaretDown as ChevronDown,
-  Question as CircleHelp,
-  Clock,
-  ClockCountdown as Clock3,
-  CopySimple as CopyPlus,
-  DownloadSimple as Download,
-  DotsThreeVertical as EllipsisVertical,
-  EyeSlash as EyeOff,
-  FilePdf as FileDown,
-  Flag,
-  TextHTwo as Heading2,
-  HighlighterCircle as Highlighter,
-  ClockCounterClockwise as History,
-  HourglassMedium as Hourglass,
-  House,
-  ImageSquare as ImagePlus,
-  TextItalic as Italic,
-  ListDashes as LayoutList,
-  Books as Library,
-  ListBullets as List,
-  ListChecks,
-  ListNumbers as ListOrdered,
-  CircleNotch as Loader,
-  MapPin,
-  ArrowsOut as Maximize2,
-  ChatCircleText as MessageSquare,
-  ChatCircleDots as MessageSquareOff,
-  ArrowsIn as Minimize2,
-  Moon,
-  TreeStructure as Network,
-  NotePencil as NotebookPen,
-  Palette,
-  PencilLine as PenLine,
-  PencilSimple as Pencil,
-  Play,
-  MonitorPlay as PlaySquare,
-  Plus,
-  ArrowClockwise as Redo2,
-  ArrowCounterClockwise as RotateCcw,
-  MagnifyingGlass as Search,
-  PaperPlaneRight as Send,
-  GearSix as Settings,
-  ShareNetwork as Share2,
-  ShieldCheck,
-  Sparkle as Sparkles,
-  FilmStrip as SquarePlay,
-  Star,
-  Note as StickyNote,
-  TextStrikethrough as Strikethrough,
-  Sun,
-  CircleHalf as SunMoon,
-  ThumbsUp,
-  Trash as Trash2,
-  Warning as TriangleAlert,
-  TextUnderline as Underline,
-  ArrowCounterClockwise as Undo2,
-  UserMinus,
-  UserPlus,
-  UsersThree as UsersRound,
-  X,
-} from '@phosphor-icons/react'
+// Each icon is imported from its own file: the package's main entry loads all ~1,500 icons in every weight,
+// which made dev, tests and builds slow (one test took 38 s just to load the app).
+export { TextAlignLeft as AlignLeft } from '@phosphor-icons/react/dist/csr/TextAlignLeft'
+export { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+export { ArrowUpRight } from '@phosphor-icons/react/dist/csr/ArrowUpRight'
+export { Prohibit as Ban } from '@phosphor-icons/react/dist/csr/Prohibit'
+export { TextB as Bold } from '@phosphor-icons/react/dist/csr/TextB'
+export { Check } from '@phosphor-icons/react/dist/csr/Check'
+export { CaretDown as ChevronDown } from '@phosphor-icons/react/dist/csr/CaretDown'
+export { Question as CircleHelp } from '@phosphor-icons/react/dist/csr/Question'
+export { Clock } from '@phosphor-icons/react/dist/csr/Clock'
+export { ClockCountdown as Clock3 } from '@phosphor-icons/react/dist/csr/ClockCountdown'
+export { CopySimple as CopyPlus } from '@phosphor-icons/react/dist/csr/CopySimple'
+export { DownloadSimple as Download } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+export { DotsThreeVertical as EllipsisVertical } from '@phosphor-icons/react/dist/csr/DotsThreeVertical'
+export { EyeSlash as EyeOff } from '@phosphor-icons/react/dist/csr/EyeSlash'
+export { FilePdf as FileDown } from '@phosphor-icons/react/dist/csr/FilePdf'
+export { Flag } from '@phosphor-icons/react/dist/csr/Flag'
+export { TextHTwo as Heading2 } from '@phosphor-icons/react/dist/csr/TextHTwo'
+export { HighlighterCircle as Highlighter } from '@phosphor-icons/react/dist/csr/HighlighterCircle'
+export { ClockCounterClockwise as History } from '@phosphor-icons/react/dist/csr/ClockCounterClockwise'
+export { HourglassMedium as Hourglass } from '@phosphor-icons/react/dist/csr/HourglassMedium'
+export { House } from '@phosphor-icons/react/dist/csr/House'
+export { ImageSquare as ImagePlus } from '@phosphor-icons/react/dist/csr/ImageSquare'
+export { TextItalic as Italic } from '@phosphor-icons/react/dist/csr/TextItalic'
+export { ListDashes as LayoutList } from '@phosphor-icons/react/dist/csr/ListDashes'
+export { Books as Library } from '@phosphor-icons/react/dist/csr/Books'
+export { ListBullets as List } from '@phosphor-icons/react/dist/csr/ListBullets'
+export { ListChecks } from '@phosphor-icons/react/dist/csr/ListChecks'
+export { ListNumbers as ListOrdered } from '@phosphor-icons/react/dist/csr/ListNumbers'
+export { CircleNotch as Loader } from '@phosphor-icons/react/dist/csr/CircleNotch'
+export { MapPin } from '@phosphor-icons/react/dist/csr/MapPin'
+export { ArrowsOut as Maximize2 } from '@phosphor-icons/react/dist/csr/ArrowsOut'
+export { ChatCircleText as MessageSquare } from '@phosphor-icons/react/dist/csr/ChatCircleText'
+export { ChatCircleDots as MessageSquareOff } from '@phosphor-icons/react/dist/csr/ChatCircleDots'
+export { ArrowsIn as Minimize2 } from '@phosphor-icons/react/dist/csr/ArrowsIn'
+export { Moon } from '@phosphor-icons/react/dist/csr/Moon'
+export { TreeStructure as Network } from '@phosphor-icons/react/dist/csr/TreeStructure'
+export { NotePencil as NotebookPen } from '@phosphor-icons/react/dist/csr/NotePencil'
+export { Palette } from '@phosphor-icons/react/dist/csr/Palette'
+export { PencilLine as PenLine } from '@phosphor-icons/react/dist/csr/PencilLine'
+export { PencilSimple as Pencil } from '@phosphor-icons/react/dist/csr/PencilSimple'
+export { Play } from '@phosphor-icons/react/dist/csr/Play'
+export { MonitorPlay as PlaySquare } from '@phosphor-icons/react/dist/csr/MonitorPlay'
+export { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+export { ArrowClockwise as Redo2 } from '@phosphor-icons/react/dist/csr/ArrowClockwise'
+export { ArrowCounterClockwise as RotateCcw } from '@phosphor-icons/react/dist/csr/ArrowCounterClockwise'
+export { MagnifyingGlass as Search } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+export { PaperPlaneRight as Send } from '@phosphor-icons/react/dist/csr/PaperPlaneRight'
+export { GearSix as Settings } from '@phosphor-icons/react/dist/csr/GearSix'
+export { ShareNetwork as Share2 } from '@phosphor-icons/react/dist/csr/ShareNetwork'
+export { ShieldCheck } from '@phosphor-icons/react/dist/csr/ShieldCheck'
+export { Sparkle as Sparkles } from '@phosphor-icons/react/dist/csr/Sparkle'
+export { FilmStrip as SquarePlay } from '@phosphor-icons/react/dist/csr/FilmStrip'
+export { Star } from '@phosphor-icons/react/dist/csr/Star'
+export { Note as StickyNote } from '@phosphor-icons/react/dist/csr/Note'
+export { TextStrikethrough as Strikethrough } from '@phosphor-icons/react/dist/csr/TextStrikethrough'
+export { Sun } from '@phosphor-icons/react/dist/csr/Sun'
+export { CircleHalf as SunMoon } from '@phosphor-icons/react/dist/csr/CircleHalf'
+export { ThumbsUp } from '@phosphor-icons/react/dist/csr/ThumbsUp'
+export { Trash as Trash2 } from '@phosphor-icons/react/dist/csr/Trash'
+export { Warning as TriangleAlert } from '@phosphor-icons/react/dist/csr/Warning'
+export { TextUnderline as Underline } from '@phosphor-icons/react/dist/csr/TextUnderline'
+export { ArrowCounterClockwise as Undo2 } from '@phosphor-icons/react/dist/csr/ArrowCounterClockwise'
+export { UserMinus } from '@phosphor-icons/react/dist/csr/UserMinus'
+export { UserPlus } from '@phosphor-icons/react/dist/csr/UserPlus'
+export { UsersThree as UsersRound } from '@phosphor-icons/react/dist/csr/UsersThree'
+export { X } from '@phosphor-icons/react/dist/csr/X'
+export { ChatCircleText } from '@phosphor-icons/react/dist/csr/ChatCircleText'
+export { EyeSlash } from '@phosphor-icons/react/dist/csr/EyeSlash'
+export { HighlighterCircle } from '@phosphor-icons/react/dist/csr/HighlighterCircle'
+export { ImageSquare } from '@phosphor-icons/react/dist/csr/ImageSquare'
+export { Lightning } from '@phosphor-icons/react/dist/csr/Lightning'
+export { Sparkle } from '@phosphor-icons/react/dist/csr/Sparkle'
+export { TreeStructure } from '@phosphor-icons/react/dist/csr/TreeStructure'
+export { UsersThree } from '@phosphor-icons/react/dist/csr/UsersThree'
+export { IconContext } from '@phosphor-icons/react/dist/lib/context'

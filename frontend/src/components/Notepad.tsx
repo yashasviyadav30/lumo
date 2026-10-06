@@ -20,7 +20,7 @@ import {
   Undo2,
   X,
 } from './icons'
-import { IconContext } from '@phosphor-icons/react'
+import { IconContext } from './icons'
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../lib/api'
 import { UNDERLINE_COLOURS, notepadExtensions, parseDoc, timeFromLink } from '../lib/notepad'

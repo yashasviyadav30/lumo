@@ -44,7 +44,7 @@ describe('accounts (Stage 2)', () => {
     const { router } = renderAt('/sign-up')
     await fillSignUp('2012-05-01')
     await waitFor(() => expect(router.state.location.pathname).toBe('/not-yet'))
-    expect(screen.getByText(/We haven’t saved anything you typed/)).toBeInTheDocument()
+    expect(await screen.findByText(/We haven’t saved anything you typed/)).toBeInTheDocument()
     expect(localStorage.getItem('focuslearn.token')).toBeNull()
   })
 

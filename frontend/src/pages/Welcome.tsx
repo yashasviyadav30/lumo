@@ -1,4 +1,4 @@
-import { ArrowUpRight, ChatCircleText, Clock, EyeSlash, HighlighterCircle, ImageSquare, Lightning, Sparkle, TreeStructure, UsersThree } from '@phosphor-icons/react'
+import { ArrowUpRight, ChatCircleText, Clock, EyeSlash, HighlighterCircle, ImageSquare, Lightning, Sparkle, TreeStructure, UsersThree } from '../components/icons'
 import { Link, useLocation } from 'react-router'
 import { Orb } from '../components/Logo'
 import { APP_NAME } from '../config'

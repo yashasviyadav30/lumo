@@ -51,5 +51,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    testTimeout: 20000, // whole-app tests; parallel workers share one laptop
+    maxWorkers: 4,
   },
 })

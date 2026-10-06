@@ -27,7 +27,7 @@ describe('home feed', () => {
       'POST /api/mutes/remove': () => ({ status: 204 }),
     })
     renderAt('/')
-    const feed = await screen.findByRole('list', { name: 'Your feed' })
+    const feed = await screen.findByRole('list', { name: 'Your feed' }, { timeout: 5000 }) // goal, summary, then the feed: three requests
     expect(within(feed).getByText('Podcast with a CMA topper')).toBeInTheDocument()
     expect(screen.getByText(/1 hidden by/)).toBeInTheDocument() // what was hidden is always listed (R6)
     expect(within(feed).getByText(/watched 50%/)).toBeInTheDocument() // red line under the thumbnail, told to screen readers too
@@ -51,7 +51,7 @@ describe('home feed', () => {
       'POST /api/videos/not-interested': () => ({ status: 204 }),
     })
     renderAt('/')
-    const feed = await screen.findByRole('list', { name: 'Your feed' })
+    const feed = await screen.findByRole('list', { name: 'Your feed' }, { timeout: 5000 }) // goal, summary, then the feed: three requests
     expect(calls.find((c) => c.path === '/api/feed')?.body).toEqual({ recent: ['cost sheet'] })
     expect(screen.getByRole('button', { name: 'cost sheet' })).toBeInTheDocument() // her search is a chip
     expect(screen.getByRole('button', { name: 'Podcasts & talks' })).toBeInTheDocument() // on every Home

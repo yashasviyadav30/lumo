@@ -58,7 +58,7 @@ function GoalCard({ onSaved, editing, onCancel }: { onSaved: (g: Goal) => void; 
   }
   return (
     <div className="start-card">
-      <h1>What do you want to learn?</h1>
+      <h2>What do you want to learn?</h2>
       <p>Anything: a subject, an exam, a skill, a language. Home fills with videos for it. You can change it any time.</p>
       <form className="inline-form" onSubmit={onSubmit}>
         <label htmlFor="goal" className="visually-hidden">

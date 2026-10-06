@@ -1,6 +1,6 @@
 /* Lumo brand. Loaded last, so it wins over index.css and v3.css. */
 /* Palette v2 (2026-10-06, after the user's review): midnight and starlight. Quiet colour, one mood, like the
-   reference sites she liked: buttons are plain pills (ink by day, white by night), the accent is a soft starlight
+   reference sites the user liked: buttons are plain pills (ink by day, white by night), the accent is a soft starlight
    blue used sparingly. No orange. */
 :root {
   --bg: #f5f7fb;
@@ -208,36 +208,13 @@ button.danger {
     background: var(--primary-soft);
   }
 }
-/* A soft aurora behind the top of every signed-in page: warmth without decoration in the way. */
-.app.signed-in::before,
-.landing-page::before {
-  content: '';
-  position: fixed;
-  inset: -20vh -10vw auto auto;
-  width: 70vw;
-  height: 60vh;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(closest-side, var(--glow-soft), transparent);
-  filter: blur(10px);
-}
-.app.signed-in > *,
-.landing-page > * {
-  position: relative;
-  z-index: 1;
-}
-.app.signed-in > .topbar,
-.landing-page > .topbar {
-  z-index: 10;
-}
-.app.signed-in > .tabbar {
-  z-index: 15;
-  position: fixed;
-}
-@media (min-width: 960px) {
-  .app.signed-in > .tabbar {
-    position: sticky;
-  }
+/* A soft glow at the top of the page, as a background only: nothing is layered over the layout, so the top bar
+   stays first and sticky (an earlier version set every child to position: relative and broke both). */
+.app.signed-in,
+.landing-page {
+  background:
+    radial-gradient(70vw 55vh at 100% 0%, var(--glow-soft), transparent 70%) fixed no-repeat,
+    var(--bg);
 }
 
 /* ---------- cards and feed ---------- */
@@ -801,4 +778,9 @@ button.danger {
     opacity: 0;
     transform: translateY(-6px);
   }
+}
+
+/* The landing page never scrolls sideways (the orb glows past the edge but is clipped). */
+.lp {
+  overflow-x: clip;
 }
