@@ -547,3 +547,59 @@ button.secondary,
   color: #fff;
   border-color: #16151a;
 }
+
+/* ---------- sign in / sign up: plain cream, with two pastel stickers peeking from behind the card ---------- */
+.app:not(.signed-in) {
+  background-image: none;
+  overflow-x: clip;
+  isolation: isolate; /* the stickers sit above the cream page but under the card */
+}
+.auth {
+  position: relative;
+  border: 0;
+  box-shadow: var(--shadow-lg);
+}
+.auth::before,
+.auth::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 28px;
+  pointer-events: none;
+}
+.auth::before {
+  width: 150px;
+  height: 110px;
+  top: -26px;
+  right: -18px;
+  background: var(--butter);
+  transform: rotate(8deg);
+}
+.auth::after {
+  width: 120px;
+  height: 120px;
+  bottom: -24px;
+  left: -16px;
+  border-radius: 50%;
+  background: var(--pink);
+}
+
+/* ---------- Settings: each section gets a pastel dot ---------- */
+.settings-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.settings-section h2::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--lavender);
+}
+.settings-list > :nth-child(6n + 2) h2::before { background: var(--butter); }
+.settings-list > :nth-child(6n + 3) h2::before { background: var(--mint); }
+.settings-list > :nth-child(6n + 4) h2::before { background: var(--pink); }
+.settings-list > :nth-child(6n + 5) h2::before { background: var(--sky); }
+.settings-list > :nth-child(6n + 6) h2::before { background: var(--peach); }
