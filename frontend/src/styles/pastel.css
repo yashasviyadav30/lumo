@@ -603,3 +603,9 @@ button.secondary,
 .settings-list > :nth-child(6n + 4) h2::before { background: var(--pink); }
 .settings-list > :nth-child(6n + 5) h2::before { background: var(--sky); }
 .settings-list > :nth-child(6n + 6) h2::before { background: var(--peach); }
+
+/* the logo tile: no blue glow any more (the old night orb) */
+.logo-tile {
+  border-radius: 9px;
+  box-shadow: 0 3px 10px rgb(22 21 26 / 0.18);
+}

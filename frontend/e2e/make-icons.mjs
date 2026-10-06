@@ -13,7 +13,7 @@ async function render(size, html, out) {
 const full = (s) => svg.replace('<svg ', `<svg width="${s}" height="${s}" `)
 await render(192, full(192), 'public/icon-192.png')
 await render(512, full(512), 'public/icon-512.png')
-// Maskable: full-bleed night background, the orb inside the 80% safe zone (Android crops to a circle or squircle).
-const orbOnly = svg.replace(/<rect[^>]*\/>/, '<rect width="64" height="64" fill="#0a0f1c"/>').replace('<svg ', '<svg width="512" height="512" ')
+// Maskable: full-bleed ink background, the mark inside the 80% safe zone (Android crops to a circle or squircle).
+const orbOnly = svg.replace(/<rect[^>]*\/>/, '<rect width="64" height="64" fill="#16151a"/>').replace('<svg ', '<svg width="512" height="512" ')
 await render(512, orbOnly, 'public/icon-maskable-512.png')
 await browser.close()
