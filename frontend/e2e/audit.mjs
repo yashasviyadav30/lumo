@@ -2,7 +2,7 @@
 // Checks: top bar first and at the top (also after scrolling), tab bar at the bottom (phone) / left (laptop),
 // nothing wider than the screen, tap targets big enough, every button named, images have alt, one h1 per page.
 // Needs the backend on :8000 and `npx vite` on :5173 (or set E2E_BASE). Throwaway account, always deleted.
-// Run: node e2e/audit.mjs
+// Run: node e2e/audit.mjs   (SHOTS=1 also saves a screenshot of every screen to e2e/screenshots/audit-*.png)
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
@@ -13,6 +13,7 @@ const issues = []
 
 async function check(page, label, signedIn) {
   await page.waitForTimeout(1500)
+  await page.waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, { timeout: 90_000 }).catch(() => {})
   const r = await page.evaluate((signedIn) => {
     const out = []
     const vw = innerWidth
@@ -68,6 +69,10 @@ async function check(page, label, signedIn) {
       const y = await page.evaluate(() => Math.round(document.querySelector('header.topbar')?.getBoundingClientRect().top ?? 0))
       if (Math.abs(y) > 2) r.push(`top bar scrolls away (at y=${y} after scrolling)`)
     }
+  }
+  if (process.env.SHOTS) {
+    await page.evaluate(() => window.scrollTo(0, 0))
+    await page.screenshot({ path: `e2e/screenshots/audit-${label.replace(/[^a-z0-9]+/gi, '-')}.png` })
   }
   for (const msg of r) issues.push(`${label}: ${msg}`)
   console.log(r.length ? `✘ ${label}: ${r.join(' | ')}` : `✔ ${label}`)

@@ -74,7 +74,7 @@ function StudyPage({ videoId }: { videoId: string }) {
   const askedTab = (useLocation().state as { tab?: string } | null)?.tab
   const [tab, setTab] = useState<'notes' | 'map' | 'mine'>(askedTab === 'map' ? 'map' : askedTab === 'mine' ? 'mine' : 'notes')
   const [padVersion, setPadVersion] = useState(0) // bumps when a copy changes the saved notepad
-  // The editor opens only once her saved notes are in: a blank editor could save over them.
+  // The editor opens only once their saved notes are in: a blank editor could save over them.
   const [padState, setPadState] = useState<'loading' | 'ready' | 'failed'>('loading')
   const [aboutOpen, setAboutOpen] = useState(false)
   const [commentsOpen, setCommentsOpen] = useState(false)
@@ -107,7 +107,7 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   const now = () => Math.floor(player.current?.getCurrentTime() ?? 0)
 
-  // Save where she is every 15 s while playing, and when she leaves (resume next time).
+  // Save where the user is every 15 s while playing, and when the user leaves (resume next time).
   useEffect(() => {
     const save = () => {
       const p = player.current
@@ -603,7 +603,7 @@ function NoteRow({
   )
 }
 
-// Tap the words to hide; the card asks her to recall them (her own words only).
+// Tap the words to hide; the card asks them to recall them (their own words only).
 
 // One-time hint on the first study page (plan v3: first-time guide).
 function StudyHint() {

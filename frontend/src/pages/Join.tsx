@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { joinGroup, keepName, lastName, previewInvite } from '../lib/groups'
 
-// Opened from an invite link: shows the group, asks her name for it, joins.
+// Opened from an invite link: shows the group, asks their name for it, joins.
 export default function Join() {
   const { code = '' } = useParams()
   const navigate = useNavigate()

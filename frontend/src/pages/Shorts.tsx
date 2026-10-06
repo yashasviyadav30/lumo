@@ -6,7 +6,7 @@ import VideoItem, { NoticeLine } from '../components/VideoItem'
 import { getShorts, type VideoCard } from '../lib/search'
 import { useVideoActions } from '../lib/useVideoActions'
 
-// Shorts only from channels she follows (plan v3): the useful reels, without an endless scroll of strangers.
+// Shorts only from channels the user follows (plan v3): the useful reels, without an endless scroll of strangers.
 export default function Shorts() {
   const [data, setData] = useState<{ results: VideoCard[]; follows: number } | null>(null)
   const [error, setError] = useState(false)
@@ -38,7 +38,7 @@ export default function Shorts() {
         </ul>
       )}
       {data && data.follows === 0 && (
-        <div className="feed-empty">
+        <div className="feed-empty tint-sky">
           <UserPlus size={26} aria-hidden="true" />
           <h3>Follow channels to see their Shorts</h3>
           <p>On any video, tap ⋮ and then Follow channel. Their Shorts appear here, and nobody else’s.</p>
@@ -49,7 +49,7 @@ export default function Shorts() {
         </div>
       )}
       {data && data.follows > 0 && data.results.length === 0 && (
-        <div className="feed-empty">
+        <div className="feed-empty tint-mint">
           <h3>No Shorts yet</h3>
           <p>The channels you follow haven’t posted Shorts recently.</p>
         </div>

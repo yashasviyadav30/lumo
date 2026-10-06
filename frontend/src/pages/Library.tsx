@@ -44,7 +44,7 @@ function Row({ item, resume, onRemove, removeLabel }: { item: LibraryItem; resum
   )
 }
 
-// Things she saved or watched. Her notes live in "My notes".
+// Things the user saved or watched. Their notes live in "My notes".
 export default function Library() {
   const [tab, setTab] = useState<Tab>('starred')
   const [lib, setLib] = useState<{ starred: LibraryItem[]; history: LibraryItem[] } | null>(null)
@@ -95,7 +95,7 @@ export default function Library() {
       {error && <p className="error">Couldn’t load your library.</p>}
       {!lib && !error && <div className="skeleton" style={{ height: 180 }} aria-busy="true" />}
       {lib && items.length === 0 && (
-        <div className="card empty">
+        <div className={`card empty ${tab === 'starred' ? 'tint-butter' : 'tint-peach'}`}>
           <span className="icon-circle">
             {tab === 'starred' ? <Star size={22} aria-hidden="true" /> : <History size={22} aria-hidden="true" />}
           </span>

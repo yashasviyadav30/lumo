@@ -459,3 +459,91 @@ button.secondary,
   stroke: #1a1a1f;
   stroke-opacity: 0.45;
 }
+
+/* ---------- first load: the logo breathes while the session loads ---------- */
+.boot {
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.boot .logo-tile { animation: boot-breathe 1.6s ease-in-out infinite; }
+@keyframes boot-breathe { 50% { transform: scale(1.08) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .boot .logo-tile { animation: none; } }
+
+/* ---------- empty states: pastel stickers with a tilted white icon chip ---------- */
+.empty[class*='tint-'],
+.feed-empty[class*='tint-'] {
+  border: 0;
+  color: var(--on-pastel);
+  padding: 30px 20px;
+}
+.tint-butter { background: var(--butter); }
+.tint-peach { background: var(--peach); }
+.tint-mint { background: var(--mint); }
+.tint-sky { background: var(--sky); }
+.tint-lavender { background: var(--lavender); }
+[class*='tint-'] h3 { color: var(--on-pastel); }
+[class*='tint-'] .help,
+[class*='tint-'] p { color: rgb(26 26 31 / 0.72); }
+.empty[class*='tint-'] .icon-circle,
+.feed-empty[class*='tint-'] > svg:first-child {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #fff;
+  color: #16151a;
+  transform: rotate(-8deg);
+  box-shadow: 0 6px 16px rgb(26 26 31 / 0.12);
+}
+.feed-empty[class*='tint-'] > svg:first-child {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* goal topics on Search: pastel tiles in turn */
+.topic-tiles .chip {
+  border: 0;
+  color: var(--on-pastel);
+  font-weight: 600;
+  padding-inline: 16px;
+}
+.topic-tiles .chip:nth-child(5n + 1) { background: var(--butter); }
+.topic-tiles .chip:nth-child(5n + 2) { background: var(--pink); }
+.topic-tiles .chip:nth-child(5n + 3) { background: var(--mint); }
+.topic-tiles .chip:nth-child(5n + 4) { background: var(--sky); }
+.topic-tiles .chip:nth-child(5n + 5) { background: var(--peach); }
+
+/* night: lift the floating bar off the dark page */
+@media (max-width: 959px) {
+  :root[data-theme='dark'] .app.signed-in .tabbar {
+    background: #2a2833;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 14px 34px rgb(0 0 0 / 0.5);
+  }
+}
+@media (max-width: 959px) and (prefers-color-scheme: dark) {
+  :root[data-theme='system'] .app.signed-in .tabbar {
+    background: #2a2833;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 14px 34px rgb(0 0 0 / 0.5);
+  }
+}
+
+/* one border on the search field, not two */
+.search-top .field input,
+.search-top .field input:focus {
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: 44px;
+  background: transparent;
+}
+/* buttons on a pastel block stay ink in both themes */
+[class*='tint-'] .button,
+[class*='tint-'] button:not(.link) {
+  background: #16151a;
+  color: #fff;
+  border-color: #16151a;
+}

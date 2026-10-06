@@ -66,7 +66,7 @@ export default function Search() {
             ref={input}
             type="search"
             name="q"
-            placeholder="Search anything you want to learn…"
+            placeholder="Search a topic…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             enterKeyHint="search"
@@ -115,12 +115,21 @@ export default function Search() {
               <p className="help">Kept on this device only.</p>
             </>
           )}
+          {recent.length === 0 && !goal?.topics.length && (
+            <div className="card empty tint-lavender">
+              <span className="icon-circle">
+                <SearchIcon size={22} aria-hidden="true" />
+              </span>
+              <h3>What do you want to learn today?</h3>
+              <p className="help">A topic, an exam, a skill, a language. Songs and shows stay out of the way.</p>
+            </div>
+          )}
           {goal && goal.topics.length > 0 && (
             <>
               <h2 className="page-title" style={{ fontSize: '1.05rem' }}>
                 Topics for “{goal.text}”
               </h2>
-              <div className="chips">
+              <div className="chips topic-tiles">
                 {goal.topics.map((t) => (
                   <button key={t.id} className="chip" onClick={() => run(t.query)}>
                     {t.name}

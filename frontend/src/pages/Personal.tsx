@@ -70,7 +70,7 @@ function NoteItem({ n, videoId, source }: { n: Note; videoId: string; source?: s
   )
 }
 
-// "My notes": everything she wrote, first thing on the screen. Settings are in the top bar.
+// "My notes": everything the user wrote, first thing on the screen. Settings are in the top bar.
 export default function Personal() {
   const navigate = useNavigate()
   const [book, setBook] = useState<Notebook | null>(null)
@@ -98,7 +98,7 @@ export default function Personal() {
       .catch(() => setError('Couldn’t load your notes.'))
   }
 
-  // Search as she types (a short pause first), in the request body (R11).
+  // Search while typing (a short pause first), in the request body (R11).
   useEffect(() => {
     const t = window.setTimeout(() => load(q.trim(), filter), q ? 300 : 0)
     return () => window.clearTimeout(t)
@@ -190,8 +190,9 @@ export default function Personal() {
       )}
 
       {error && <p className="error">{error}</p>}
+      {!book && !error && <div className="skeleton" style={{ height: 160 }} aria-busy="true" />}
       {book && book.total === 0 && (
-        <div className="card empty">
+        <div className="card empty tint-mint">
           <span className="icon-circle">
             <NotebookPen size={22} aria-hidden="true" />
           </span>
