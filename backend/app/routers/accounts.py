@@ -64,17 +64,22 @@ def today_in_india() -> date:
     return datetime.now(INDIA).date()
 
 
-# Small in-memory limit on sign-in attempts per IP + email. Enough for a prototype on one instance.
+# Small in-memory limits, enough for one instance. Keyed on the email, not the IP: X-Forwarded-For can be
+# forged by anyone calling the backend directly, so an IP key would let a guesser rotate past the limit.
+# ponytail: in-memory per process; move to the database if the app runs on several instances.
 _attempts: dict[str, deque[float]] = defaultdict(deque)
 MAX_ATTEMPTS, WINDOW_S = 5, 60
+NEW_ACCOUNTS_PER_MINUTE = 20  # whole app: sign-up runs argon2, so a flood would eat the free server
 
 
-def _too_many(key: str) -> bool:
+def _too_many(key: str, limit: int = MAX_ATTEMPTS) -> bool:
     now = time.monotonic()
+    for k in [k for k, old in _attempts.items() if not old or now - old[-1] > WINDOW_S]:
+        del _attempts[k]  # forget quiet keys, so the dict can't grow without end
     q = _attempts[key]
     while q and now - q[0] > WINDOW_S:
         q.popleft()
-    if len(q) >= MAX_ATTEMPTS:
+    if len(q) >= limit:
         return True
     q.append(now)
     return False
@@ -135,6 +140,8 @@ def _create_user(db: Session, email: str, password_hash: str) -> User:
 @router.post("/auth/signup", response_model=TokenOut, status_code=201)
 def signup(body: SignupIn, request: Request, db: Session = Depends(get_db)) -> TokenOut:
     request.state.action = "signup"
+    if _too_many("new-account", NEW_ACCOUNTS_PER_MINUTE):
+        raise HTTPException(status_code=429, detail="too_many_attempts")
     _check_adult(body.date_of_birth, body.accepted_notice, request)
     user = _create_user(db, body.email.lower(), hash_password(body.password))
     token = _start_session(db, user)
@@ -172,8 +179,15 @@ def google_auth(body: GoogleIn, request: Request, db: Session = Depends(get_db))
     if user is None:
         if body.date_of_birth is None:
             raise HTTPException(status_code=404, detail="no_account")
+        if _too_many("new-account", NEW_ACCOUNTS_PER_MINUTE):
+            raise HTTPException(status_code=429, detail="too_many_attempts")
         _check_adult(body.date_of_birth, body.accepted_notice, request)
         user = _create_user(db, info["email"], NO_PASSWORD)
+    elif user.password_hash != NO_PASSWORD:
+        # Email sign-up never proves the address, Google does. Someone could have signed up with this email and a
+        # password before its real owner arrived: drop that password and every old session, so only Google opens it.
+        user.password_hash = NO_PASSWORD
+        db.execute(delete(AuthSession).where(AuthSession.user_id == user.id))
     token = _start_session(db, user)
     db.commit()
     request.state.actor = pseudonym(user.id)
@@ -183,8 +197,7 @@ def google_auth(body: GoogleIn, request: Request, db: Session = Depends(get_db))
 @router.post("/auth/login", response_model=TokenOut)
 def login(body: LoginIn, request: Request, db: Session = Depends(get_db)) -> TokenOut:
     request.state.action = "login"
-    ip = request.headers.get("x-forwarded-for") or (request.client.host if request.client else "")
-    if _too_many(f"{ip}|{body.email.lower()}"):
+    if _too_many(body.email.lower()):
         raise HTTPException(status_code=429, detail="too_many_attempts")
     user = db.scalar(select(User).where(User.email == body.email.lower()))
     if user is None or not verify_password(user.password_hash, body.password):

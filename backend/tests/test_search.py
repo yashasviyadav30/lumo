@@ -246,3 +246,21 @@ def test_http_client_logs_never_carry_the_api_key():
 
     assert logging.getLogger("httpx").getEffectiveLevel() >= logging.WARNING
     assert logging.getLogger("httpcore").getEffectiveLevel() >= logging.WARNING
+
+
+def test_search_still_answers_when_youtube_cant_refresh_details(yt, signed_in, db, monkeypatch):
+    from app.models import YtVideo
+    from app.youtube import YouTubeError
+
+    first = signed_in.post("/api/search", json={"q": "cost accounting"}).json()
+    for v in db.scalars(select(YtVideo)):
+        v.fetched_at = datetime.now(timezone.utc) - timedelta(days=2)  # stale details, still under 30 days
+    db.commit()
+
+    def broken(ids):
+        raise YouTubeError("down")
+
+    monkeypatch.setattr(yt, "videos", broken)
+    r = signed_in.post("/api/search", json={"q": "cost accounting"})
+    assert r.status_code == 200
+    assert [v["video_id"] for v in r.json()["results"]] == [v["video_id"] for v in first["results"]]

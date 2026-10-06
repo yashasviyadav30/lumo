@@ -41,8 +41,12 @@ def test_google_needs_an_account_or_an_18_plus_sign_up(client, db, google_ok):
 def test_google_signs_in_an_existing_password_account_with_the_same_email(client, google_ok):
     from tests.conftest import ADULT
 
-    client.post("/api/auth/signup", json={**ADULT, "email": "riya@gmail.com"})
+    squatter = client.post("/api/auth/signup", json={**ADULT, "email": "riya@gmail.com"}).json()["token"]
     assert client.post("/api/auth/google", json={"credential": "x" * 40}).status_code == 200
+    # Email sign-up never proved the address: whoever set that password loses it and their session (pre-hijack).
+    assert client.get("/api/me", headers={"Authorization": f"Bearer {squatter}"}).status_code == 401
+    login = client.post("/api/auth/login", json={"email": "riya@gmail.com", "password": ADULT["password"]})
+    assert login.status_code == 401
 
 
 def test_bad_or_unconfigured_google_tokens_are_refused(client, monkeypatch):

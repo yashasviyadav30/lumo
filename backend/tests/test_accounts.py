@@ -112,3 +112,15 @@ def test_feedback_is_saved_and_deleted_with_the_account(signed_in, db):
     signed_in.delete("/api/me")
     db.expire_all()
     assert db.query(Feedback).count() == 0
+
+
+def test_login_limit_ignores_a_forged_forwarded_for(client):
+    codes = [
+        client.post(
+            "/api/auth/login",
+            json={"email": "nobody@example.com", "password": "wrong password"},
+            headers={"X-Forwarded-For": f"10.0.0.{i}"},
+        ).status_code
+        for i in range(6)
+    ]
+    assert codes[5] == 429

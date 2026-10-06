@@ -7,6 +7,7 @@ from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
@@ -33,6 +34,11 @@ def record(db: Session, bucket: str, units: int = 1) -> None:
     row = db.scalar(select(QuotaUsage).where(QuotaUsage.day == day, QuotaUsage.bucket == bucket).with_for_update())
     if row is None:
         db.add(QuotaUsage(day=day, bucket=bucket, count=units))
-    else:
-        row.count += units
+        try:
+            db.commit()
+            return
+        except IntegrityError:  # another request made today's row first: add to that one
+            db.rollback()
+            row = db.scalar(select(QuotaUsage).where(QuotaUsage.day == day, QuotaUsage.bucket == bucket).with_for_update())
+    row.count += units
     db.commit()

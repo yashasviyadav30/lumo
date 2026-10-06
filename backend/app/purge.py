@@ -15,7 +15,7 @@ from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
 from app.db import session_factory
-from app.models import AiNotes, AppLog, YtComments, YtSearchCache, YtVideo
+from app.models import AiNotes, AppLog, AuthSession, YtComments, YtSearchCache, YtVideo
 
 log = logging.getLogger("app.purge")
 
@@ -32,6 +32,7 @@ def purge(db: Session, now: datetime | None = None) -> dict[str, int]:
         "yt_search_cache": db.execute(delete(YtSearchCache).where(YtSearchCache.fetched_at < yt_cutoff)).rowcount,
         "yt_comments": db.execute(delete(YtComments).where(YtComments.fetched_at < yt_cutoff)).rowcount,
         "ai_notes": db.execute(delete(AiNotes).where(AiNotes.updated_at < yt_cutoff)).rowcount,
+        "auth_sessions": db.execute(delete(AuthSession).where(AuthSession.expires_at < now)).rowcount,
         "app_log": db.execute(delete(AppLog).where(AppLog.at < now - LOG_MAX_AGE)).rowcount,
     }
     db.commit()

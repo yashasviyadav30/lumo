@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from app import quota
 from app.filters import UserRules, judge
 from app.models import YtSearchCache, YtVideo
-from app.youtube import QuotaExceeded, YouTubeClient
+from app.youtube import QuotaExceeded, YouTubeClient, YouTubeError
 
 SEARCH_FRESH = timedelta(hours=24)
 DETAILS_FRESH = timedelta(hours=24)
@@ -94,7 +94,11 @@ def _details(db: Session, yt: YouTubeClient, ids: list[str], now: datetime) -> d
     rows = {v.video_id: v for v in db.scalars(select(YtVideo).where(YtVideo.video_id.in_(ids)))} if ids else {}
     stale = [i for i in ids if i not in rows or now - _aware(rows[i].fetched_at) >= DETAILS_FRESH]
     if stale:
-        fetched = yt.videos(stale)
+        try:
+            fetched = yt.videos(stale)
+        except (QuotaExceeded, YouTubeError):
+            fetched = None  # YouTube can't refresh right now: keep showing what we have (under 30 days, R12)
+    if stale and fetched is not None:
         quota.record(db, "general", math.ceil(len(stale) / 50))
         for f in fetched:
             row = rows.get(f.video_id)  # already loaded above; no extra round trip per video
