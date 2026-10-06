@@ -56,6 +56,11 @@ chips in the top bar; a dark floating pill bottom bar with white icons, the acti
 friendly headlines (Bricolage), radius ~26px, tilted sticker cards on the landing page; Home opens with a greeting
 header. Night: bg #121116, surfaces #1c1b22, pastels kept (dark text on them). Standards: top bar always first and
 sticky; check every screen with `node e2e/audit.mjs` (phone + laptop, light + night).
+Built and live (2026-10-06): the whole look in `src/styles/pastel.css`; pastel empty states with a tilted white
+icon chip (`tint-*` classes) on Search, Shorts, Library and My notes; goal topics as colour tiles on Search; a
+breathing logo while the app opens; stickers behind the sign-in card; a colour dot per Settings section.
+`SHOTS=1 node e2e/audit.mjs` saves a screenshot of every screen; `API_PROXY=<live url> npx vite` checks local
+screens against the live server (no local backend, so no extra Supabase connections).
 
 **Not built (optional in the plan):** phone push alerts for replies (needs VAPID keys and a push service);
 the in-app badge covers it for now.
