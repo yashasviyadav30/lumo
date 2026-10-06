@@ -609,3 +609,10 @@ button.secondary,
   border-radius: 9px;
   box-shadow: 0 3px 10px rgb(22 21 26 / 0.18);
 }
+
+/* while a screen's code downloads (first open only) */
+.page-skeleton {
+  height: 220px;
+  margin-top: 12px;
+  border-radius: var(--radius);
+}

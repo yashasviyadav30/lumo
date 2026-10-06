@@ -10,7 +10,7 @@ import './styles/brand.css'
 import './styles/pastel.css'
 import { wakeServer } from './lib/api'
 import { applyTextSize, applyTheme } from './lib/theme'
-import { routes } from './routes'
+import { preloadPages, routes } from './routes'
 import { registerSW } from 'virtual:pwa-register'
 
 applyTheme()
@@ -37,3 +37,4 @@ createRoot(document.getElementById('root')!).render(
     </IconContext.Provider>
   </StrictMode>,
 )
+preloadPages()

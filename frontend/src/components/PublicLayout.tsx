@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import { APP_NAME } from '../config'
 import Logo from './Logo'
@@ -23,7 +24,9 @@ export default function PublicLayout() {
       </header>
       <WakingBanner />
       <main id="main" className="content public">
-        <Outlet />
+        <Suspense fallback={<div className="skeleton page-skeleton" aria-busy="true" aria-label="Loading" />}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   )

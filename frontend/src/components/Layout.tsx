@@ -1,5 +1,5 @@
 import { ArrowLeft, House, Library, Moon, NotebookPen, Search, Settings, SquarePlay, Sun, SunMoon, UsersRound } from './icons'
-import { useEffect, useState, type CSSProperties, type FormEvent } from 'react'
+import { Suspense, useEffect, useState, type CSSProperties, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { APP_NAME } from '../config'
 import { myGroups } from '../lib/groups'
@@ -63,8 +63,10 @@ function TopSearch() {
 
 const UNREAD_EVERY_MS = 2 * 60_000
 
-// New posts and replies in their groups: a quiet in-app badge, checked when the app comes back and every 2 minutes.
+// New posts and replies in their groups: a quiet in-app badge, checked when the app comes back, every 2 minutes,
+// and on entering or leaving the groups pages (not on every tap: that would race each page's own request).
 function useGroupUnread(pathname: string): number {
+  const inGroups = pathname.startsWith('/groups')
   const [unread, setUnread] = useState(0)
   useEffect(() => {
     const check = () => myGroups().then((r) => setUnread(r.unread)).catch(() => undefined)
@@ -76,7 +78,7 @@ function useGroupUnread(pathname: string): number {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onShow)
     }
-  }, [pathname])
+  }, [inGroups])
   return unread
 }
 
@@ -118,7 +120,9 @@ export default function Layout() {
       </header>
       <WakingBanner />
       <main id="main" className="content" tabIndex={-1}>
-        <Outlet />
+        <Suspense fallback={<div className="skeleton page-skeleton" aria-busy="true" aria-label="Loading" />}>
+          <Outlet />
+        </Suspense>
       </main>
       <nav className="tabbar" aria-label="Main" style={{ '--tabs': tabs.length } as CSSProperties}>
         {tabs.map(({ to, label, end, Icon }) => (

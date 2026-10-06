@@ -2,23 +2,49 @@ import { Outlet, type RouteObject } from 'react-router'
 import Layout from './components/Layout'
 import PublicLayout from './components/PublicLayout'
 import RequireAccount from './components/RequireAccount'
+import { lazyWithReload } from './lib/lazy'
 import { SessionProvider } from './lib/session'
 import Home from './pages/Home'
-import Group from './pages/Group'
-import Groups from './pages/Groups'
-import Join from './pages/Join'
-import Library from './pages/Library'
-import NotFound from './pages/NotFound'
-import NotYet from './pages/NotYet'
-import Personal from './pages/Personal'
-import Privacy from './pages/Privacy'
-import Search from './pages/Search'
-import Settings from './pages/Settings'
-import Shorts from './pages/Shorts'
-import SignIn from './pages/SignIn'
-import SignUp from './pages/SignUp'
-import Watch from './pages/Watch'
 import Welcome from './pages/Welcome'
+
+// Home and the welcome page load at once; every other screen downloads the first time it opens.
+const pages = {
+  Group: () => import('./pages/Group'),
+  Groups: () => import('./pages/Groups'),
+  Join: () => import('./pages/Join'),
+  Library: () => import('./pages/Library'),
+  NotFound: () => import('./pages/NotFound'),
+  NotYet: () => import('./pages/NotYet'),
+  Personal: () => import('./pages/Personal'),
+  Privacy: () => import('./pages/Privacy'),
+  Search: () => import('./pages/Search'),
+  Settings: () => import('./pages/Settings'),
+  Shorts: () => import('./pages/Shorts'),
+  SignIn: () => import('./pages/SignIn'),
+  SignUp: () => import('./pages/SignUp'),
+  Watch: () => import('./pages/Watch'),
+}
+const Group = lazyWithReload(pages.Group)
+const Groups = lazyWithReload(pages.Groups)
+const Join = lazyWithReload(pages.Join)
+const Library = lazyWithReload(pages.Library)
+const NotFound = lazyWithReload(pages.NotFound)
+const NotYet = lazyWithReload(pages.NotYet)
+const Personal = lazyWithReload(pages.Personal)
+const Privacy = lazyWithReload(pages.Privacy)
+const Search = lazyWithReload(pages.Search)
+const Settings = lazyWithReload(pages.Settings)
+const Shorts = lazyWithReload(pages.Shorts)
+const SignIn = lazyWithReload(pages.SignIn)
+const SignUp = lazyWithReload(pages.SignUp)
+const Watch = lazyWithReload(pages.Watch)
+
+// Once the first screen is up and the phone is idle, fetch the other screens too, so later taps open at once.
+export function preloadPages() {
+  const run = () => Object.values(pages).forEach((load) => load().catch(() => undefined))
+  if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 4000 })
+  else setTimeout(run, 2500)
+}
 
 export const routes: RouteObject[] = [
   {
