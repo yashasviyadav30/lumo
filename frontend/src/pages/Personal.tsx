@@ -233,7 +233,7 @@ export default function Personal() {
           <div key={l.video_id} className="lecture-block">
             <Link to={`/watch/${l.video_id}`} className="lecture-head">
               <span className="thumb">
-                {l.video?.thumbnail_url && <img src={l.video.thumbnail_url} alt="" loading="lazy" />}
+                {l.video?.thumbnail_url && <img src={l.video.thumbnail_url} alt="" width={160} height={90} loading="lazy" />}
               </span>
               <span className="meta">
                 <span className="title">{lectureTitle(l.video, l.video_id)}</span>

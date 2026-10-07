@@ -21,7 +21,7 @@ function Row({ item, resume, onRemove, removeLabel }: { item: LibraryItem; resum
     <li className="row-item">
       <Link to={`/watch/${item.video_id}`} className="row-link">
         <span className="row-thumb">
-          <span className="thumb">{v?.thumbnail_url && <img src={v.thumbnail_url} alt="" loading="lazy" />}</span>
+          <span className="thumb">{v?.thumbnail_url && <img src={v.thumbnail_url} alt="" width={160} height={90} loading="lazy" />}</span>
           {resume !== undefined && total > 0 && (
             <span className="watched" aria-hidden="true">
               <span style={{ width: `${Math.min(100, (resume / total) * 100)}%` }} />

@@ -68,7 +68,7 @@ export default function SignUp() {
         </label>
         <GoogleButton onCredential={onGoogle} after="or create an account with email" />
         <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" autoComplete="email" required />
+        <input id="email" name="email" type="email" autoComplete="email" spellCheck={false} required />
         <label htmlFor="password">Password (at least 8 characters)</label>
         <input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required />
         {error && (

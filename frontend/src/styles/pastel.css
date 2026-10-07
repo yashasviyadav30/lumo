@@ -952,3 +952,22 @@ button:disabled:not(.link):not([role='tab']):not([role='menuitem']) {
 }
 @keyframes now-pulse { 50% { transform: scale(1.35); } }
 @media (prefers-reduced-motion: reduce) { .mm-node.now::after { animation: none; } }
+
+/* web interface guidelines: no widows in headings, no double-tap zoom wait on controls, sheets keep their scroll */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+button,
+a,
+[role='tab'],
+summary,
+label {
+  touch-action: manipulation;
+}
+.mm-wrap.full,
+.np-menu,
+.menu {
+  overscroll-behavior: contain;
+}
