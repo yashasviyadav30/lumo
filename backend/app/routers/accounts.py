@@ -200,6 +200,9 @@ def login(body: LoginIn, request: Request, db: Session = Depends(get_db)) -> Tok
     if _too_many(body.email.lower()):
         raise HTTPException(status_code=429, detail="too_many_attempts")
     user = db.scalar(select(User).where(User.email == body.email.lower()))
+    if user is not None and user.password_hash == NO_PASSWORD:
+        # A Google account has no password: say so, or the person keeps retyping a password that can't work.
+        raise HTTPException(status_code=401, detail="use_google")
     if user is None or not verify_password(user.password_hash, body.password):
         raise HTTPException(status_code=401, detail="wrong_email_or_password")
     token = _start_session(db, user)

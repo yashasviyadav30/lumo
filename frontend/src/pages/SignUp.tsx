@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import GoogleButton from '../components/GoogleButton'
+import GoogleNewAccount from '../components/GoogleNewAccount'
 import Notice from '../components/Notice'
 import { APP_NAME } from '../config'
 import { ApiError } from '../lib/api'
@@ -32,11 +33,9 @@ export default function SignUp() {
     }
   }
 
+  const [pendingGoogle, setPendingGoogle] = useState<string | null>(null)
   function onGoogle(credential: string) {
-    if (!dob || !notice) {
-      setError('Enter your date of birth and tick the box first, then continue with Google.')
-      return
-    }
+    if (!dob || !notice) return setPendingGoogle(credential) // keep Google's answer; ask for the last two things
     attempt(() => googleAuth({ credential, date_of_birth: dob, accepted_notice: notice }))
   }
 
@@ -47,6 +46,24 @@ export default function SignUp() {
       signUp({ email: String(form.get('email')), password: String(form.get('password')), date_of_birth: dob, accepted_notice: notice }),
     )
   }
+
+  if (pendingGoogle)
+    return (
+      <section className="auth card">
+        <h1>Create your {APP_NAME} account</h1>
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+        <GoogleNewAccount
+          busy={busy}
+          initialDob={dob}
+          onCreate={(d) => attempt(() => googleAuth({ credential: pendingGoogle, date_of_birth: d, accepted_notice: true }))}
+          onCancel={() => setPendingGoogle(null)}
+        />
+      </section>
+    )
 
   return (
     <section className="auth card">

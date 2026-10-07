@@ -80,7 +80,7 @@ describe('accounts (Stage 2)', () => {
 })
 
 describe('Continue with Google (plan v3 step 3)', () => {
-  it('signs in with Google when the server has a client ID, and asks new people to sign up first', async () => {
+  it('signs in with Google, and a new Google email finishes its account on the same page', async () => {
     let send: ((r: { credential: string }) => void) | undefined
     window.google = {
       accounts: {
@@ -91,20 +91,28 @@ describe('Continue with Google (plan v3 step 3)', () => {
         oauth2: { initTokenClient: () => ({ requestAccessToken() {} }) },
       },
     } as unknown as typeof window.google
-    let known = false
     const { calls } = mockApi({
       'GET /api/config': () => ({ status: 200, body: { google_client_id: 'cid.apps.googleusercontent.com' } }),
-      'POST /api/auth/google': () => (known ? { status: 200, body: { token: 'g1', me: ME } } : { status: 404, body: { detail: 'no_account' } }),
+      'POST /api/auth/google': (init) =>
+        JSON.parse(String(init.body)).date_of_birth
+          ? { status: 200, body: { token: 'g1', me: ME } }
+          : { status: 404, body: { detail: 'no_account' } },
       'GET /api/me': () => ({ status: 200, body: ME }),
     })
     const { router } = renderAt('/sign-in')
     expect(await screen.findByText('Continue with Google')).toBeInTheDocument()
     send!({ credential: 'google-id-token' })
-    expect(await screen.findByRole('alert')).toHaveTextContent('no account for this Google email')
-    known = true
-    send!({ credential: 'google-id-token' })
+    // No account yet: Google's answer is kept and only the 18+ check and the notice are asked, right here.
+    expect(await screen.findByRole('heading', { name: 'One last step' })).toBeInTheDocument()
+    await userEvent.type(screen.getByLabelText('Date of birth'), '1999-02-02')
+    await userEvent.click(screen.getByLabelText(/I’ve read what/))
+    await userEvent.click(screen.getByRole('button', { name: 'Create my account' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
-    expect(calls.filter((c) => c.path === '/api/auth/google').at(-1)?.body).toEqual({ credential: 'google-id-token' })
+    expect(calls.filter((c) => c.path === '/api/auth/google').at(-1)?.body).toEqual({
+      credential: 'google-id-token',
+      date_of_birth: '1999-02-02',
+      accepted_notice: true,
+    })
     expect(localStorage.getItem('focuslearn.token')).toBe('g1')
     delete window.google
   })

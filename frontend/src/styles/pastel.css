@@ -1070,3 +1070,19 @@ label {
   flex: 1;
   min-width: 0;
 }
+
+/* Google said yes to a new email: the last step, on the same page */
+.google-new {
+  display: grid;
+  gap: 6px;
+}
+.google-new h2 {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+}
+.google-new button[type='submit'] {
+  margin-top: 10px;
+}
+.google-new .link {
+  justify-self: center;
+}

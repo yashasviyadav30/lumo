@@ -90,3 +90,11 @@ def test_import_follows_her_youtube_subscriptions(signed_in, db, monkeypatch):
 
     monkeypatch.setattr(google, "subscription_channels", denied)
     assert signed_in.post("/api/follows/import", json={"access_token": "y" * 40}).status_code == 400
+
+
+def test_password_sign_in_on_a_google_account_says_to_use_google(client, db, google_ok):
+    from tests.conftest import ADULT
+
+    client.post("/api/auth/google", json={"credential": "x" * 40, "date_of_birth": ADULT["date_of_birth"], "accepted_notice": True})
+    r = client.post("/api/auth/login", json={"email": "riya@gmail.com", "password": "anything at all"})
+    assert r.status_code == 401 and r.json()["detail"] == "use_google"

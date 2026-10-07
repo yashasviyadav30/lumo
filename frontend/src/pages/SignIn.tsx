@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import GoogleButton from '../components/GoogleButton'
+import GoogleNewAccount from '../components/GoogleNewAccount'
+import { APP_NAME } from '../config'
+import { ApiError } from '../lib/api'
 import { nextAfterSignIn } from '../lib/groups'
 import { useSession } from '../lib/session'
 
@@ -9,19 +12,39 @@ export default function SignIn() {
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [newGoogle, setNewGoogle] = useState<string | null>(null) // Google's answer for an email with no account yet
 
-  async function attempt(work: () => Promise<void>) {
+  async function attempt(work: () => Promise<void>, credential?: string) {
     setBusy(true)
     setError(null)
     try {
       await work()
       navigate(nextAfterSignIn(), { replace: true })
     } catch (err) {
+      if (err instanceof ApiError && err.code === 'under_18') return navigate('/not-yet', { replace: true })
+      if (credential && err instanceof ApiError && err.code === 'no_account') return setNewGoogle(credential)
       setError(err instanceof Error ? err.message : 'Something went wrong.')
     } finally {
       setBusy(false)
     }
   }
+
+  if (newGoogle)
+    return (
+      <section className="auth card">
+        <h1>Welcome to {APP_NAME}</h1>
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+        <GoogleNewAccount
+          busy={busy}
+          onCreate={(dob) => attempt(() => googleAuth({ credential: newGoogle, date_of_birth: dob, accepted_notice: true }))}
+          onCancel={() => setNewGoogle(null)}
+        />
+      </section>
+    )
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -32,7 +55,7 @@ export default function SignIn() {
   return (
     <section className="auth card">
       <h1>Sign in</h1>
-      <GoogleButton onCredential={(credential) => attempt(() => googleAuth({ credential }))} />
+      <GoogleButton onCredential={(credential) => attempt(() => googleAuth({ credential }), credential)} />
       <form onSubmit={onSubmit}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" autoComplete="email" spellCheck={false} required />

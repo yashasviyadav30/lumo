@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { googleClientId, loadGis } from '../lib/google'
 
+// Apps like Instagram and Facebook open links in their own built-in browser, where Google blocks sign-in.
+const IN_APP_BROWSER = /; wv\)|FBAN|FBAV|Instagram|LinkedInApp|Snapchat|Line\//
+
 // Google's own "Continue with Google" button. Hidden when the server has no Google client ID.
 export default function GoogleButton({ onCredential, after = 'or use email' }: { onCredential: (credential: string) => void; after?: string }) {
   const box = useRef<HTMLDivElement>(null)
@@ -34,6 +37,12 @@ export default function GoogleButton({ onCredential, after = 'or use email' }: {
     <div className="google-block">
       <div ref={box} className="google-btn" />
       {failed && <p className="help">Couldn’t load Google sign-in. Use email below, or try again later.</p>}
+      {IN_APP_BROWSER.test(navigator.userAgent) && (
+        <p className="notice-line" role="note">
+          Google sign-in doesn’t work inside this app’s browser. Tap ⋮ (or Share) and choose Open in Chrome, or use
+          email below.
+        </p>
+      )}
       <p className="or-line">
         <span>{after}</span>
       </p>

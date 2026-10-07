@@ -62,6 +62,7 @@ export function messageFor(code: string, status = 0): string {
     under_18: 'under_18',
     email_taken: 'An account with this email already exists. Try signing in.',
     wrong_email_or_password: 'That email and password don’t match.',
+    use_google: 'This account signs in with Google. Tap Continue with Google above.',
     too_many_attempts: 'Too many tries. Wait a minute and try again.',
     not_signed_in: 'Please sign in again.',
     notice_not_accepted: 'Please read and accept the notice first.',
