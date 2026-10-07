@@ -12,12 +12,23 @@ export default defineConfig({
       manifest: {
         name: 'Lumo',
         short_name: 'Lumo',
-        description: 'Learn anything from YouTube, without the noise.',
+        description:
+          'Learn anything from YouTube, without the noise: an AI summary and mind map for any video, your own notes beside the player, and study groups.',
+        id: '/',
         start_url: '/',
         scope: '/',
+        lang: 'en',
         display: 'standalone',
-        background_color: '#121116',
-        theme_color: '#121116',
+        categories: ['education', 'productivity'],
+        background_color: '#fbf7ef',
+        theme_color: '#fbf7ef',
+        // What the install sheet shows on Android and desktop Chrome, like a store listing.
+        screenshots: [
+          { src: '/screenshots/home.webp', sizes: '618x1372', type: 'image/webp', form_factor: 'narrow', label: 'Home: videos for your goal' },
+          { src: '/screenshots/summary.webp', sizes: '618x1372', type: 'image/webp', form_factor: 'narrow', label: 'An AI summary of any video' },
+          { src: '/screenshots/mind-map.webp', sizes: '618x1372', type: 'image/webp', form_factor: 'narrow', label: 'The video as a mind map' },
+          { src: '/screenshots/laptop.webp', sizes: '1920x1200', type: 'image/webp', form_factor: 'wide', label: 'Study on a laptop' },
+        ],
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },

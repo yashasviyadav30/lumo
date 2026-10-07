@@ -1035,3 +1035,16 @@ label {
 .share-none {
   margin: 4px 0 0;
 }
+
+/* install the app (Chrome's own prompt behind our button) */
+.install-btn {
+  gap: 8px;
+  background: var(--lavender);
+  color: var(--on-pastel);
+}
+.lp-install {
+  margin-top: 14px;
+}
+.install-ios {
+  margin: 10px 0 0;
+}

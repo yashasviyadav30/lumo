@@ -1,3 +1,5 @@
+import InstallButton from '../components/InstallButton'
+import { useInstall } from '../lib/install'
 import { Send } from '../components/icons'
 import ImportSubscriptions from '../components/ImportSubscriptions'
 import { useEffect, useState, type FormEvent } from 'react'
@@ -193,6 +195,19 @@ function Feedback() {
   )
 }
 
+// Shown only when this browser can install Lumo (or on an iPhone, with the two taps it takes).
+function AppOnPhone() {
+  const { state } = useInstall()
+  if (state !== 'ready' && state !== 'ios') return null
+  return (
+    <div className="card settings-section">
+      <h2>Lumo on your home screen</h2>
+      <p className="help">Opens full screen like any app, with its own icon. No store needed.</p>
+      <InstallButton />
+    </div>
+  )
+}
+
 export default function Settings() {
   const { me, signOut, deleteAccount } = useSession()
   const navigate = useNavigate()
@@ -220,6 +235,7 @@ export default function Settings() {
             Sign out
           </button>
         </div>
+        <AppOnPhone />
         <Appearance />
         <div className="card settings-section">
           <h2>Your YouTube channels</h2>
