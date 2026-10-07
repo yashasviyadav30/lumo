@@ -184,6 +184,18 @@ function SummaryCard({ notes }: { notes: AiNotesData }) {
   )
 }
 
+// Over the early notes of a long video: how much is ready, and that the rest is on its way.
+export function PartialBanner({ view }: { view: AiNotesView }) {
+  if (!('status' in view) || view.status !== 'queued' || !view.partial) return null
+  const minutes = Math.round((view.covered_s ?? 0) / 60)
+  return (
+    <p className="partial-banner" role="status">
+      <Hourglass size={16} aria-hidden="true" className="ai-spin" /> First {minutes} minutes ready. Reading the rest
+      {view.progress ? `: ${view.progress.done} of ${view.progress.total} parts` : ''}. This page fills in by itself.
+    </p>
+  )
+}
+
 export function AiLabel({ offline }: { offline?: boolean }) {
   return (
     <p className="ai-label">
@@ -221,6 +233,7 @@ export default function AiNotesPanel({
         <AiNotesStatus view={ai.view} onGenerate={ai.generate} what="summary" />
       ) : (
         <>
+          <PartialBanner view={ai.view} />
           <SummaryCard notes={notes} />
           {notes.terms && notes.terms.length > 0 && <KeyTerms terms={notes.terms} />}
           <div className="ai-sub-row">

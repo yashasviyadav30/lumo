@@ -15,7 +15,13 @@ export type AiTerm = { term: string; meaning: string }
 export type AiNotesData = { summary: string; brief?: string; points: AiPoint[]; terms?: AiTerm[]; mindmap: MapNode[] }
 export type AiNotesState =
   | { status: 'none' | 'failed' | 'too_long' | 'unavailable' }
-  | { status: 'queued'; reason: 'busy' | 'daily_limit' | null; progress?: { done: number; total: number } }
+  | {
+      status: 'queued'
+      reason: 'busy' | 'daily_limit' | null
+      progress?: { done: number; total: number }
+      partial?: AiNotesData // a long video: the notes on its first minutes, while the rest is read
+      covered_s?: number
+    }
   | { status: 'ready'; notes: AiNotesData; updating?: boolean } // updating: a newer format is on its way
 
 // Video IDs go in the body, never the URL (R11).

@@ -54,5 +54,6 @@ export function useAiNotes(videoId: string) {
 
 export function notesOf(view: AiNotesView): AiNotesData | null {
   if ('kind' in view) return view.kind === 'offline' ? view.notes : null
+  if (view.status === 'queued') return view.partial ?? null // the first minutes of a long video, shown early
   return view.status === 'ready' ? view.notes : null
 }

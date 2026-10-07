@@ -171,6 +171,8 @@ def test_finished_parts_are_kept_and_only_failed_ones_are_asked_again(db, signed
     assert run_due(db, t, call=second_part_busy) == "queued"
     peek = signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json()
     assert peek["progress"] == {"done": 2, "total": 3}  # the page can say "2 of 3 parts"
+    # The first part is ready from the start: shown now as a preview of the first 15 minutes.
+    assert peek["covered_s"] == 900 and peek["partial"]["summary"] == "from 0"
     asked.clear()
     assert run_due(db, t + timedelta(hours=1), call=answer, combine=whole_video([])) == "ready"
     assert asked == [(900, 1800)]

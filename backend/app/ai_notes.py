@@ -15,8 +15,9 @@ budget is used up.
 import asyncio
 import json
 import logging
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 
 import httpx
@@ -341,13 +342,20 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
     kept: dict[str, dict] = dict(job.data["parts"]) if job.data and "parts" in job.data else {}
     previous = (job.data or {}).get("previous")  # older notes still shown while these are made
     missing = [i for i in range(len(todo)) if str(i) not in kept]
+    results = []
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
-        results = list(pool.map(
-            lambda i: _retrying(lambda: clean(call(job.video_id, job.lang, todo[i], duration or 0), duration, todo[i])),
-            missing))
-    for i, r in zip(missing, results):
-        if isinstance(r, dict):
-            kept[str(i)] = r
+        running = {pool.submit(_retrying, lambda i=i: clean(call(job.video_id, job.lang, todo[i], duration or 0), duration, todo[i])): i
+                   for i in missing}
+        for done_part in as_completed(running):
+            r = done_part.result()
+            results.append(r)
+            if isinstance(r, dict) and len(todo) > 1:
+                kept[str(running[done_part])] = r
+                # Saved as each part finishes, so the page can show the first minutes while the rest is read.
+                job.data = {"parts": dict(kept), "total": len(todo), **({"previous": previous} if previous else {})}
+                db.commit()
+            elif isinstance(r, dict):
+                kept[str(running[done_part])] = r
     errors = [r for r in results if not isinstance(r, dict)]
     if not errors:
         done = [kept[str(i)] for i in range(len(todo))]
@@ -391,7 +399,14 @@ def view(job: AiNotes) -> dict:
     elif job.status == "queued":
         out["reason"] = job.reason
         if job.data and "parts" in job.data:  # a long video part-way done
-            out["progress"] = {"done": len(job.data["parts"]), "total": job.data["total"]}
+            done = job.data["parts"]
+            out["progress"] = {"done": len(done), "total": job.data["total"]}
+            first = 0  # the parts ready from the start, in order: shown now as a preview
+            while str(first) in done:
+                first += 1
+            if first:
+                out["partial"] = merge([done[str(i)] for i in range(first)])
+                out["covered_s"] = first * PART_S
     return out
 
 
@@ -407,7 +422,16 @@ def _run_once() -> None:
         log.exception("ai notes loop failed")
 
 
+# Set when someone asks for new notes, so the loop starts at once instead of at its next 20-second turn.
+_wake = threading.Event()
+
+
+def wake() -> None:
+    _wake.set()
+
+
 async def notes_loop() -> None:
     while True:
         await asyncio.to_thread(_run_once)
-        await asyncio.sleep(LOOP_SECONDS)
+        await asyncio.to_thread(_wake.wait, LOOP_SECONDS)
+        _wake.clear()

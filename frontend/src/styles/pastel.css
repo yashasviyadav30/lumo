@@ -1389,3 +1389,17 @@ button.armed,
 .np-tip {
   font-size: 0.86rem;
 }
+
+/* a long video's early notes: how much is ready */
+.partial-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--sky);
+  color: var(--on-pastel);
+  font-size: 0.9rem;
+  font-weight: 600;
+}

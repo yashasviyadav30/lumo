@@ -6,7 +6,7 @@ import { NODE_W, ideaAt, ideaContext, layoutMindMap, type AiPoint, type MapNode 
 import { clock } from '../lib/study'
 import { notesOf, type useAiNotes } from '../lib/useAiNotes'
 import { useBackToClose } from '../lib/useBackToClose'
-import { AiLabel, AiNotesStatus, LangPicker } from './AiNotesPanel'
+import { AiLabel, AiNotesStatus, LangPicker, PartialBanner } from './AiNotesPanel'
 
 type IdeaData = {
   label: string
@@ -198,6 +198,7 @@ export default function MindMap({
         <AiNotesStatus view={ai.view} onGenerate={ai.generate} what="mind map" />
       ) : (
         <>
+          <PartialBanner view={ai.view} />
           <div
             className={`mm-wrap${full ? ' full' : ''}`}
             role={full ? 'dialog' : undefined}
