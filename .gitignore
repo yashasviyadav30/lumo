@@ -25,11 +25,3 @@ Thumbs.db
 *.csv
 docs/guide/screens.json
 docs/guide/failure.png
-
-# Local assistant and review files (kept on the dev machine, not part of the product)
-CLAUDE.md
-continue-chat.cmd
-.claude/
-docs/session-report.md
-docs/ux-review-final.md
-docs/ux-review-final/

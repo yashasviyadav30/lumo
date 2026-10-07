@@ -10,10 +10,10 @@ Written 2026-09-27, revised the same day (two tests, timeline, stop rule, curato
 
 ## How we work (set 2026-09-27)
 
-- Claude does as much as possible; you only do what truly needs you (logins, approvals, choices).
+- Automate as much as possible; the owner only does what truly needs them (logins, approvals, choices).
 - Use each service's command-line tool with browser login where one exists (gcloud, Supabase CLI, wrangler), installing what's needed.
-- When you must act on a website, Claude opens the exact page and says in one or two lines what to click.
-- Claude generates passwords and secrets and writes them straight into `backend/.env` without showing them. You're never asked to copy or paste secrets.
+- When the owner must act on a website, give the exact page and one or two lines on what to click.
+- Generate passwords and secrets straight into `backend/.env` without showing them. Nobody copies or pastes secrets.
 - The cost rule below applies to **every** service, not only Google Cloud.
 
 ## Google Cloud rule (applies to every service)
@@ -314,8 +314,8 @@ Required before any real user, so it's all in Part A.
 |---|---|---|
 | `YOUTUBE_API_KEY` | Google Cloud project `focus-learn-8936` → Credentials: create a new key restricted to YouTube Data API v3 | Update both places, run `tools/check_youtube_api.py`, then delete the old key (ask first; free) |
 | `GROQ_API_KEY` | Groq console → API Keys: create a new key | Update both places, run `tools/check_llm.py`, then revoke the old key. Confirm Zero Data Retention is still on |
-| Supabase database password (inside `DATABASE_URL`) | Supabase → project `focus-app` → Database settings → reset password | Claude generates the new password and writes the new `DATABASE_URL` into `.env` without showing it; update Render; check the connection |
-| `SECRET_KEY` | Claude generates a new one into `.env` | Update Render. Log pseudonyms change from then on (old log rows can't be linked to new ones), which is fine |
+| Supabase database password (inside `DATABASE_URL`) | Supabase → project `focus-app` → Database settings → reset password | Generate the new password and write the new `DATABASE_URL` into `.env` without showing it; update Render; check the connection |
+| `SECRET_KEY` | Generate a new one into `.env` | Update Render. Log pseudonyms change from then on (old log rows can't be linked to new ones), which is fine |
 
 - Never paste a secret into chat or a screenshot. Use `python tools/set_env_value.py NAME` (hidden input) locally.
 - Done when: all four are new in `.env` and on Render; the old YouTube and Groq keys are deleted and the old database password no longer works; `/health`, the two check tools and `npm run e2e` pass; and a scan of git history still finds no secrets.

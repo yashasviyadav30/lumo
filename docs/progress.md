@@ -16,7 +16,7 @@ Reviews run in parallel (design walk-through on the live site, speed, bugs, secu
 - **Features:** Test yourself (recall cards, no score), Copy all key points, doubts marked answered in groups
   (`group_posts.answered_at`, migration `c4a1d2e3f5b6`), the mind map lights the idea at the current second.
 - **Brand and repo:** new logo (sun over an open book), README with screenshots (`e2e/readme-shots.mjs`), repo renamed
-  to `yashasviyadav30/lumo`, Claude co-author lines removed from history (user approved), local assistant files untracked.
+  to `yashasviyadav30/lumo`, co-author lines removed from history (owner approved), local tool files untracked.
 - Checks: 127 backend and 65 frontend tests; `audit.mjs` 0 problems on live; study, home and groups flows pass on live.
 
 Open: email verification at sign-up and a Worker-to-backend secret header (security review, not urgent);
@@ -104,7 +104,6 @@ the in-app badge covers it for now.
 
 ## Chat timeline (one conversation; first commit 2026-09-27, research before that → 2026-10-03)
 
-Full transcript: `C:\Users\yasha\.claude\projects\C--Users-yasha-Downloads-new-project\53879416-9635-49a6-8f57-7049d50f390a.jsonl`.
 
 1. **Research** (no code): 9 topics → `docs/research.md`, answer rounds with the user (aspirants first, 18+, LLM with zero retention, transcripts, safety), `research-summary.md`, deep `feasibility.md` on 24 expectations. Found the compliance-guide ban on inferring a video's type (R3).
 2. **Plan:** `docs/plan.md` with stages and rules R1–R14; old draft archived to `docs/archive/`.
@@ -116,11 +115,11 @@ Full transcript: `C:\Users\yasha\.claude\projects\C--Users-yasha-Downloads-new-p
 8. **Premium redesign**, then **dark neon-lime theme** copied from a reference screenshot (crypto landing page).
 9. **Feed and hide list** (user decision): YouTube-like feed; hide songs, movies, shows, news, travel vlogs by YouTube's labels; podcasts shown; no Hindi add-on, no teacher list. Judging by title/comments refused (R3).
 10. **Visual guide** `docs/guide/app-guide.html` (user couldn't understand the app on first use).
-11. **User's fix list + Opus reviewer agent** (2026-10-02): comments, description, notepad, star, Library, My notes; `.claude/agents/ux-reviewer.md` → `docs/ux-review.md`; most top-10 fixes applied. Found and fixed: API key in Render logs.
+11. **User's fix list + a design review** (2026-10-02): comments, description, notepad, star, Library, My notes; report in `docs/ux-review.md`; most top-10 fixes applied. Found and fixed: API key in Render logs.
 12. **"Can't reach the server"** on the user's phone: waking banner + retry, then API through the Worker.
-13. **Push every change** to GitHub (saved as a standing rule in CLAUDE.md and memory).
+13. **Push every change** to GitHub (a standing rule).
 14. **Paper & Ink theme** (2026-10-02/03): lime removed for a research-based study palette; sign-up made retry-safe.
-15. **This file and `CLAUDE.md`** written as the reference for future sessions (2026-10-03).
+15. **This file** written as the reference for future work (2026-10-03).
 
 ## Blocked on the user (current)
 
@@ -221,7 +220,7 @@ Session finished. See `docs/session-report.md`. Next stage in the plan is 5A (cu
 ## Redesign from the UX review (2026-10-02)
 
 - User asked for: YouTube comments and description, a split-screen rich-text notepad, star a video (visible fill), Library with Starred and History, notes with/without videos, one Search entry, and an expert reviewer agent.
-- Built `.claude/agents/ux-reviewer.md` (Opus) and ran it: report in `docs/ux-review.md` with 38 screenshots. Applied nearly all of its top 10 (one Continue card + feed on Home, one Search entry, ⋮ card menu, upload dates, Watch order and pinned player, Press play first, Library = Starred + History, "My notes" with gear, inline toasts, delete message fix). Theme: kept dark as default (user's choice) but softened per the review; added Light and "same as phone".
+- Ran a design review: report in `docs/ux-review.md` with 38 screenshots. Applied nearly all of its top 10 (one Continue card + feed on Home, one Search entry, ⋮ card menu, upload dates, Watch order and pinned player, Press play first, Library = Starred + History, "My notes" with gear, inline toasts, delete message fix). Theme: kept dark as default (user's choice) but softened per the review; added Light and "same as phone".
 - Not done from the review: marks and doubts merged into the notepad (one place for all notes); onboarding screenshot instead of the phone drawing; password-length wording.
 - Security: httpx logged YouTube URLs with the API key at INFO, so Render logs held the key. Fixed (WARNING level, with a test). Rotating the YouTube key (step 6.7) is now more urgent.
 - Render had stopped deploying for over an hour on 2026-10-01; it caught up by itself on 2026-10-02.
