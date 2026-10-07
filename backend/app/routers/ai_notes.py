@@ -45,6 +45,11 @@ def get_or_request(body: AiNotesIn, request: Request, user: User = Depends(curre
             raise HTTPException(status_code=429, detail="too_many_notes_today")
         _new_jobs[key] += 1
         job = ai_notes.request_notes(db, body.video_id, body.lang)
+    elif job.status == "ready" and (job.data or {}).get("v", 1) < ai_notes.NOTES_VERSION:
+        # Made in an older, thinner format: make it again in the new one (shows progress meanwhile).
+        job.status, job.data, job.attempts, job.reason = "queued", None, 0, None
+        job.next_try_at = datetime.now(timezone.utc)
+        db.commit()
     elif job.status == "failed" and body.create:  # "Try again": Gemini's bad hours shouldn't fail a video for good
         job.status, job.attempts, job.reason, job.next_try_at = "queued", 0, None, datetime.now(timezone.utc)
         db.commit()
