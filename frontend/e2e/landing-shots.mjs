@@ -1,4 +1,4 @@
-// Screenshots of the public landing page: phone (OnePlus size) and laptop, light and night. No account needed.
+// Screenshots of the public landing page: phone and laptop, light and night. No account needed.
 // Run: node e2e/landing-shots.mjs   → e2e/screenshots/lp-*.png
 import fs from 'node:fs'
 import { chromium } from 'playwright'

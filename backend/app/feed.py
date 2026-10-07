@@ -1,4 +1,4 @@
-"""Home feed (user decision 2026-10-01: "like YouTube's feed, minus songs, movies, shows, news and vlogs").
+"""Home feed (product decision 2026-10-01: "like YouTube's feed, minus songs, movies, shows, news and vlogs").
 
 YouTube gives apps no personal recommendations, so the feed mixes two sources the user chose themselves:
 - the newest uploads of channels the user follows (playlistItems.list, 1 unit per channel, cached 6 hours);

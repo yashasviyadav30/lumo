@@ -1,13 +1,13 @@
 """Goal + topic → one YouTube search query (plan 4.8). Works on the user's text and our topic data only (R4).
 
 YouTube's own search reads titles, descriptions and transcripts; our job is to ask it a precise question.
-Rules, chosen after comparing outputs on the goal test set (docs/progress.md):
+Rules, chosen after comparing outputs on the goal test set:
 - A CS/CMA paper: exam stage + the paper's full name ("CS Executive Capital Market and Securities Laws"),
   because the short codes (CMSL, CRVI) are rarely what videos are titled.
 - A unit (NEET, AI): the topic's search term that shares most words with what the user typed.
 - Up to two useful words the user added ("one shot", "botany") are kept.
 - No language is added: the query is in the user's own words plus our topic names, and YouTube orders the
-  results (user decision 2026-10-01). Goals outside our fields use the user's own words.
+  results (product decision 2026-10-01). Goals outside our fields use the user's own words.
 """
 
 import re
