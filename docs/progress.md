@@ -4,6 +4,21 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
+## Premium summary and mind map, bug hunt, README (2026-10-08)
+
+- Notes format 2 (`NOTES_VERSION`): a 4-6 sentence summary, a sectioned brief (## headings, bullets, **bold**,
+  length by video length), key terms, fuller mind map ideas. Older notes are remade when opened. The app reads the
+  format with `lib/notesFormat.ts` (React elements only, never HTML) and the PDF keeps it.
+- Mind map: two-sided layout (`layoutMindMap`), a colour per branch, times on ideas, ideas are buttons (the map's
+  own selection kept reopening the card), a rich card per idea (`ideaContext`), a sheet in full screen with an Exit
+  button. `useBackToClose` makes Back close cards, full screens, menus, panels and the guide first; stale history
+  entries are skipped.
+- A bug hunt on the live site (docs/ux-review-final.md) found 13 bugs; all fixed: search results survive Back,
+  floating action messages, two-tap deletes, a page for missing videos (`missing` from /api/study/open only when
+  YouTube says so), no empty group doubts, the composer resets, the card scrolls in below the player.
+- README rebuilt as a product page: light/dark banner and buttons from `e2e/readme-banner.mjs`, screenshots from
+  `e2e/readme-shots.mjs`.
+
 ## Summary engine fix (2026-10-07, evening)
 
 Long videos never finished: 1-hour parts kept getting "high demand" from the free Gemini models, retried with
