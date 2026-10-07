@@ -971,3 +971,15 @@ label {
 .menu {
   overscroll-behavior: contain;
 }
+
+/* when a screen can't load (usually: the app was updated while open) */
+.route-error-title {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+  color: var(--text);
+}
+.route-error-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}

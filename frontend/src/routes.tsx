@@ -2,6 +2,7 @@ import { Navigate, Outlet, type RouteObject } from 'react-router'
 import Layout from './components/Layout'
 import PublicLayout from './components/PublicLayout'
 import RequireAccount from './components/RequireAccount'
+import RouteError from './components/RouteError'
 import { lazyWithReload } from './lib/lazy'
 import { SessionProvider } from './lib/session'
 import Home from './pages/Home'
@@ -48,6 +49,7 @@ export function preloadPages() {
 
 export const routes: RouteObject[] = [
   {
+    errorElement: <RouteError />,
     element: (
       <SessionProvider>
         <Outlet />
