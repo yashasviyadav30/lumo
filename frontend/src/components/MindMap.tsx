@@ -2,16 +2,16 @@ import { Background, Controls, Handle, Position, ReactFlow, type Edge, type Node
 import '@xyflow/react/dist/style.css'
 import { CopyPlus, Maximize2, Minimize2, Play, X } from './icons'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { NODE_W, layoutTree, type MapNode } from '../lib/aiNotes'
+import { NODE_W, ideaAt, layoutTree, type MapNode } from '../lib/aiNotes'
 import { clock } from '../lib/study'
 import { notesOf, type useAiNotes } from '../lib/useAiNotes'
 import { AiLabel, AiNotesStatus, LangPicker } from './AiNotesPanel'
 
-type IdeaData = { label: string; depth: number }
+type IdeaData = { label: string; depth: number; now: boolean }
 
 function Idea({ data, selected }: NodeProps<Node<IdeaData>>) {
   return (
-    <div className={`mm-node d${Math.min(data.depth, 2)}${selected ? ' on' : ''}`} style={{ width: NODE_W }}>
+    <div className={`mm-node d${Math.min(data.depth, 2)}${selected ? ' on' : ''}${data.now ? ' now' : ''}`} style={{ width: NODE_W }}>
       <Handle type="target" position={Position.Left} className="mm-handle" />
       {data.label}
       <Handle type="source" position={Position.Right} className="mm-handle" />
@@ -26,16 +26,21 @@ export default function MindMap({
   onSeek,
   onCopy,
   onFull,
+  nowS,
 }: {
   ai: ReturnType<typeof useAiNotes>
   onSeek: (t: number) => void
   onCopy: (title: string, body: string, seconds: number | null) => void
   onFull?: () => void // the full-screen map hides the player: Watch pauses it (never play under a cover, R7)
+  nowS?: number | null // where the video is playing: that idea is lit on the map
 }) {
   const data = notesOf(ai.view)
   const [picked, setPicked] = useState<MapNode | null>(null)
   const [full, setFull] = useState(false)
   const fullBtn = useRef<HTMLButtonElement>(null)
+
+  // The idea being taught now: the latest node whose time has passed (only while the video has started).
+  const nowId = useMemo(() => (data ? ideaAt(data.mindmap, nowS) : null), [data, nowS])
 
   const { nodes, edges } = useMemo(() => {
     const map = data?.mindmap ?? []
@@ -44,13 +49,13 @@ export default function MindMap({
       .filter((n) => pos.has(n.id))
       .map((n) => {
         const p = pos.get(n.id)!
-        return { id: n.id, type: 'idea', position: { x: p.x, y: p.y }, data: { label: n.label, depth: p.depth } }
+        return { id: n.id, type: 'idea', position: { x: p.x, y: p.y }, data: { label: n.label, depth: p.depth, now: n.id === nowId } }
       })
     const edges: Edge[] = map
       .filter((n) => n.parent && pos.has(n.id))
       .map((n) => ({ id: `${n.parent}-${n.id}`, source: n.parent!, target: n.id, className: 'mm-edge' }))
     return { nodes, edges }
-  }, [data])
+  }, [data, nowId])
 
   useEffect(() => {
     if (!full) return

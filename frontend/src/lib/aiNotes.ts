@@ -112,3 +112,11 @@ function plainText(node: DocNode): string {
   const inner = (node.content ?? []).map(plainText)
   return node.type === 'doc' ? inner.join('\n') : inner.join('')
 }
+
+// The idea being taught at `seconds`: the latest node whose time has passed. None before the video starts.
+export function ideaAt(nodes: MapNode[], seconds: number | null | undefined): string | null {
+  if (!seconds) return null
+  let best: MapNode | null = null
+  for (const n of nodes) if (n.seconds !== null && n.seconds <= seconds && (!best || n.seconds >= best.seconds!)) best = n
+  return best?.id ?? null
+}

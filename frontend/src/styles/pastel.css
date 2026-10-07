@@ -932,3 +932,23 @@ button:disabled:not(.link):not([role='tab']):not([role='menuitem']) {
 .post-card.kind-doubt:has(.answered-badge) {
   background: color-mix(in srgb, var(--pink) 45%, var(--surface));
 }
+
+/* mind map: the idea being taught right now */
+.mm-node.now {
+  box-shadow: 0 0 0 3px var(--butter), 0 6px 18px rgb(22 21 26 / 0.18);
+  position: relative;
+}
+.mm-node.now::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e2b714;
+  box-shadow: 0 0 0 2px #fff;
+  animation: now-pulse 1.6s ease-in-out infinite;
+}
+@keyframes now-pulse { 50% { transform: scale(1.35); } }
+@media (prefers-reduced-motion: reduce) { .mm-node.now::after { animation: none; } }

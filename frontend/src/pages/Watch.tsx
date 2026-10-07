@@ -73,6 +73,8 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [starred, setStarred] = useState(false)
   const [pop, setPop] = useState(false)
   const askedTab = (useLocation().state as { tab?: string } | null)?.tab
+  // While the map is open and the video plays, its current idea is lit (checked every 2 s, nothing stored).
+  const [nowS, setNowS] = useState<number | null>(null)
   const [tab, setTab] = useState<'notes' | 'map' | 'mine'>(askedTab === 'map' ? 'map' : askedTab === 'mine' ? 'mine' : 'notes')
   const [padVersion, setPadVersion] = useState(0) // bumps when a copy changes the saved notepad
   // The editor opens only once their saved notes are in: a blank editor could save over them.
@@ -260,6 +262,15 @@ function StudyPage({ videoId }: { videoId: string }) {
   )
 
   // "Copy to my notes": add to the saved notepad (works even while the editor isn't open).
+  useEffect(() => {
+    if (tab !== 'map') return
+    const t = window.setInterval(() => {
+      const p = player.current
+      if (p && p.getPlayerState() === 1) setNowS(Math.floor(p.getCurrentTime()))
+    }, 2000)
+    return () => window.clearInterval(t)
+  }, [tab])
+
   const copyLines = async (lines: ReturnType<typeof copyLine>[], done: string) => {
     const next = appendToDoc(padContent.current, lines)
     padContent.current = next.content
@@ -303,7 +314,7 @@ function StudyPage({ videoId }: { videoId: string }) {
         {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onCopyAll={copyAllToNotes} onToast={flash} />}
         {tab === 'map' && (
           <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
-            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} onFull={() => player.current?.pauseVideo()} />
+            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} onFull={() => player.current?.pauseVideo()} nowS={nowS} />
           </Suspense>
         )}
         {tab === 'mine' && (

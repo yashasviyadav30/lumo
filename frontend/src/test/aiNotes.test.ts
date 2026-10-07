@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ROW_H, appendToDoc, copyLine, layoutTree, type MapNode } from '../lib/aiNotes'
+import { ROW_H, appendToDoc, copyLine, ideaAt, layoutTree, type MapNode } from '../lib/aiNotes'
 import { notesText, printableHtml } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
@@ -68,5 +68,18 @@ describe('export', () => {
     expect(html).not.toContain('<law>')
     expect(html).toContain('href="https://youtu.be/abcdefghijk?t=760"')
     expect(html).toContain('<li><b>Circuits</b><ul><li><b>Ohm</b>: V = IR</li></ul></li>')
+  })
+})
+
+describe('ideaAt', () => {
+  const at = (id: string, seconds: number | null): MapNode => ({ id, parent: null, label: id, detail: '', seconds })
+  const map = [at('root', 0), at('layers', 220), at('weights', 540), at('untimed', null)]
+  it('lights the latest idea whose time has passed', () => {
+    expect(ideaAt(map, 300)).toBe('layers')
+    expect(ideaAt(map, 540)).toBe('weights')
+  })
+  it('lights nothing before the video starts', () => {
+    expect(ideaAt(map, 0)).toBeNull()
+    expect(ideaAt(map, null)).toBeNull()
   })
 })
