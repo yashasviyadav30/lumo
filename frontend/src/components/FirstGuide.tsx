@@ -1,4 +1,5 @@
 import { Network, Sparkles, UserPlus } from './icons'
+import { useBackToClose } from '../lib/useBackToClose'
 import { useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config'
 
@@ -43,6 +44,7 @@ export default function FirstGuide() {
     }
     setOpen(false)
   }
+  useBackToClose(open, close) // Back closes the guide instead of leaving the app
   useEffect(() => {
     if (!open) return
     next.current?.focus()

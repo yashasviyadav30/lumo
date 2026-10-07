@@ -1,4 +1,5 @@
 import { EditorContent, useEditor, useEditorState, type Editor } from '@tiptap/react'
+import { useBackToClose } from '../lib/useBackToClose'
 import {
   Bold,
   Check,
@@ -362,7 +363,8 @@ export default function Notepad({
     editorRef.current = editor
   }, [editor])
 
-  // Full screen: the notepad takes the whole screen for long writing; Esc or the button brings it back.
+  // Full screen: the notepad takes the whole screen for long writing; Esc, Back or the button brings it back.
+  useBackToClose(full, () => setFull(false))
   useEffect(() => {
     if (!full) return
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && setFull(false)
