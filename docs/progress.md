@@ -17,8 +17,10 @@ minute when Gemini was quiet. The page shows "n of m parts read", polls every 6 
 Also: Share sends a video to WhatsApp, Telegram, the share sheet or a copied link; a shared video opened while
 signed out opens after sign-in; Doubt opens its box on any tab; Install the app button; Gmail recovery hint.
 
-Waiting on the owner: publish the Google sign-in consent screen (Testing → In production) so anyone can use
-Continue with Google; Play Store needs a Play Console account (one-time US$25) and a 14-day closed test.
+Google sign-in consent screen published (In production, 2026-10-07): anyone can Continue with Google. The YouTube
+subscriptions import (sensitive scope) shows Google's "unverified app" screen until verification, which needs an owned
+domain. Stores: Google Play costs US$25 once plus a 14-day closed test; Samsung Galaxy Store is free (owner to
+create the seller account); the website install button works today.
 
 ## Final pass (2026-10-07)
 
