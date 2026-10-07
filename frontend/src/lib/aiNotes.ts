@@ -59,23 +59,51 @@ export function readOffline(videoId: string, lang: NotesLang): AiNotesData | nul
   }
 }
 
-// Left-to-right tree: depth sets x, leaves are stacked on y, a parent sits in the middle of its children.
+// A mind map in the XMind style: the main idea in the middle, its branches shared out left and right (the bigger
+// branch goes to the lighter side), each branch's ideas stacked on its own side. `branch` picks the branch's colour.
 export const NODE_W = 196
 export const GAP_X = 64
 export const ROW_H = 76
-export function layoutTree(nodes: MapNode[]): Map<string, { x: number; y: number; depth: number }> {
+export type Placed = { x: number; y: number; depth: number; side: 1 | -1; branch: number }
+export function layoutMindMap(nodes: MapNode[]): Map<string, Placed> {
   const kids = new Map<string | null, MapNode[]>()
   for (const n of nodes) kids.set(n.parent, [...(kids.get(n.parent) ?? []), n])
-  const pos = new Map<string, { x: number; y: number; depth: number }>()
-  let row = 0
-  const place = (n: MapNode, depth: number): number => {
-    pos.set(n.id, { x: depth * (NODE_W + GAP_X), y: 0, depth }) // claim first: a cycle can't loop forever
-    const ys = (kids.get(n.id) ?? []).filter((c) => !pos.has(c.id)).map((c) => place(c, depth + 1))
-    const y = ys.length ? (ys[0] + ys[ys.length - 1]) / 2 : row++ * ROW_H
-    pos.set(n.id, { x: depth * (NODE_W + GAP_X), y, depth })
-    return y
+  const pos = new Map<string, Placed>()
+  const root = (kids.get(null) ?? [])[0]
+  if (!root) return pos
+  const leaves = (n: MapNode, seen = new Set<string>()): number => {
+    if (seen.has(n.id)) return 0
+    seen.add(n.id)
+    const k = kids.get(n.id) ?? []
+    return k.length ? k.reduce((sum, c) => sum + leaves(c, seen), 0) : 1
   }
-  for (const root of kids.get(null) ?? []) place(root, 0)
+  const branches = (kids.get(root.id) ?? []).filter((b) => b.id !== root.id)
+  const sides: Record<1 | -1, MapNode[]> = { 1: [], [-1]: [] }
+  const weight = { 1: 0, [-1]: 0 } as Record<1 | -1, number>
+  for (const b of branches) {
+    const side: 1 | -1 = weight[1] <= weight[-1] ? 1 : -1
+    sides[side].push(b)
+    weight[side] += leaves(b)
+  }
+  pos.set(root.id, { x: 0, y: 0, depth: 0, side: 1, branch: -1 })
+  for (const side of [1, -1] as const) {
+    let row = 0
+    const placed: string[] = []
+    const place = (n: MapNode, depth: number, branch: number): number => {
+      pos.set(n.id, { x: 0, y: 0, depth, side, branch }) // claim first: a cycle can't loop forever
+      placed.push(n.id)
+      const ys = (kids.get(n.id) ?? []).filter((c) => !pos.has(c.id)).map((c) => place(c, depth + 1, branch))
+      const y = ys.length ? (ys[0] + ys[ys.length - 1]) / 2 : row++ * ROW_H
+      pos.set(n.id, { x: side * depth * (NODE_W + GAP_X), y, depth, side, branch })
+      return y
+    }
+    sides[side].forEach((b) => place(b, 1, branches.indexOf(b)))
+    const mid = ((row - 1) * ROW_H) / 2 // centre this side on the main idea
+    for (const id of placed) pos.set(id, { ...pos.get(id)!, y: pos.get(id)!.y - mid })
+  }
+  // Anything not reachable from the main idea (a second root) hangs below it, so nothing is lost.
+  let extra = Math.max(0, ...[...pos.values()].map((p) => p.y)) + ROW_H * 1.5
+  for (const n of nodes) if (!pos.has(n.id)) pos.set(n.id, { x: 0, y: (extra += ROW_H), depth: 1, side: 1, branch: -1 })
   return pos
 }
 
@@ -119,4 +147,32 @@ export function ideaAt(nodes: MapNode[], seconds: number | null | undefined): st
   let best: MapNode | null = null
   for (const n of nodes) if (n.seconds !== null && n.seconds <= seconds && (!best || n.seconds >= best.seconds!)) best = n
   return best?.id ?? null
+}
+
+// Everything the mind map's detail card shows for one idea: where it sits (root › … › idea), its sub-ideas, and the
+// summary's key points taught in its stretch of the video (from its own time, or its sub-ideas' earliest, up to the
+// next idea outside it).
+export function ideaContext(nodes: MapNode[], points: AiPoint[], id: string) {
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  const path: MapNode[] = []
+  for (let n = byId.get(id); n && path.length < 20; n = n.parent ? byId.get(n.parent) : undefined) path.unshift(n)
+  const children = nodes.filter((n) => n.parent === id)
+  const inside = new Set<string>([id])
+  for (let grew = true; grew; ) {
+    grew = false
+    for (const n of nodes) {
+      if (n.parent && inside.has(n.parent) && !inside.has(n.id)) {
+        inside.add(n.id)
+        grew = true
+      }
+    }
+  }
+  const times = nodes.filter((n) => inside.has(n.id) && n.seconds !== null).map((n) => n.seconds!)
+  if (!times.length) return { path, children, points: [] as AiPoint[] }
+  const from = Math.min(...times)
+  const last = Math.max(...times)
+  const after = nodes.filter((n) => !inside.has(n.id) && n.seconds !== null && n.seconds > last).map((n) => n.seconds!)
+  const until = after.length ? Math.min(...after) : Infinity
+  const related = points.filter((p) => p.seconds !== null && p.seconds >= from && p.seconds < until)
+  return { path, children, points: related.slice(0, 6) }
 }

@@ -1,23 +1,35 @@
 import { describe, expect, it } from 'vitest'
-import { ROW_H, appendToDoc, copyLine, ideaAt, layoutTree, type MapNode } from '../lib/aiNotes'
+import { appendToDoc, copyLine, ideaAt, ideaContext, layoutMindMap, type MapNode } from '../lib/aiNotes'
 import { notesText, printableHtml, videoShareText } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
 
-describe('layoutTree', () => {
-  it('puts children right of the parent and the parent between its children', () => {
-    const pos = layoutTree([node('root', null), node('a', 'root'), node('b', 'root'), node('a1', 'a'), node('a2', 'a')])
-    expect(pos.get('a')!.x).toBeGreaterThan(pos.get('root')!.x)
-    expect(pos.get('a1')!.y).toBe(0)
-    expect(pos.get('a2')!.y).toBe(ROW_H)
-    expect(pos.get('a')!.y).toBe(ROW_H / 2)
-    expect(pos.get('b')!.y).toBe(2 * ROW_H)
-    expect(pos.get('root')!.y).toBe((ROW_H / 2 + 2 * ROW_H) / 2)
+describe('layoutMindMap', () => {
+  it('shares branches out to both sides of the main idea, heavier branch on the lighter side', () => {
+    const map = [
+      node('root', null),
+      node('a', 'root'), node('a1', 'a'), node('a2', 'a'), node('a3', 'a'),
+      node('b', 'root'), node('b1', 'b'),
+      node('c', 'root'), node('c1', 'c'), node('c2', 'c'),
+    ]
+    const pos = layoutMindMap(map)
+    expect(pos.get('root')).toMatchObject({ x: 0, y: 0, depth: 0 })
+    expect(pos.get('a')!.side).toBe(1) // first branch goes right
+    expect(pos.get('b')!.side).toBe(-1) // right now holds 3 leaves, left 0
+    expect(pos.get('c')!.side).toBe(-1) // still lighter on the left (1 leaf)
+    expect(pos.get('a')!.x).toBeGreaterThan(0)
+    expect(pos.get('b')!.x).toBeLessThan(0)
+    expect(pos.get('a2')!.x).toBeGreaterThan(pos.get('a')!.x) // further out from the middle
+    expect(pos.get('a1')!.branch).toBe(0) // its branch's colour
+    expect(pos.get('c2')!.branch).toBe(2)
+    // each side is centred on the main idea
+    expect(pos.get('a')!.y).toBe(0)
   })
 
-  it('survives a cycle in bad AI output', () => {
-    const pos = layoutTree([node('root', null), node('a', 'root'), node('b', 'a'), { ...node('a', 'b') }])
+  it('survives a cycle and a second root in bad AI output', () => {
+    const pos = layoutMindMap([node('root', null), node('a', 'root'), node('b', 'a'), { ...node('a', 'b') }, node('lost', null)])
     expect(pos.has('b')).toBe(true)
+    expect(pos.has('lost')).toBe(true)
   })
 })
 
@@ -90,5 +102,24 @@ describe('sharing a video', () => {
     expect(text).toContain('/watch/aircAruvnKk')
     expect(text).toContain('https://youtu.be/aircAruvnKk')
     expect(text.startsWith('Neural networks')).toBe(true)
+  })
+})
+
+describe('ideaContext', () => {
+  const n = (id: string, parent: string | null, seconds: number | null): MapNode => ({ id, parent, label: id, detail: '', seconds })
+  const map = [n('root', null, 0), n('layers', 'root', 200), n('input', 'layers', 220), n('hidden', 'layers', 300), n('weights', 'root', 500)]
+  const p = (title: string, seconds: number) => ({ title, seconds, short: '', detail: '' })
+  const points = [p('Intro', 10), p('Input layer', 230), p('Hidden layer', 320), p('Weights', 510)]
+
+  it('gives the path, the sub-ideas and the key points in its stretch of the video', () => {
+    const c = ideaContext(map, points, 'layers')
+    expect(c.path.map((x) => x.id)).toEqual(['root', 'layers'])
+    expect(c.children.map((x) => x.id)).toEqual(['input', 'hidden'])
+    expect(c.points.map((x) => x.title)).toEqual(['Input layer', 'Hidden layer']) // up to "weights" at 500
+  })
+
+  it('a leaf gets the points from its time to the next idea', () => {
+    expect(ideaContext(map, points, 'input').points.map((x) => x.title)).toEqual(['Input layer'])
+    expect(ideaContext(map, points, 'weights').points.map((x) => x.title)).toEqual(['Weights'])
   })
 })

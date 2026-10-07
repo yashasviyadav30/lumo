@@ -1086,3 +1086,198 @@ label {
 .google-new .link {
   justify-self: center;
 }
+
+/* ---------- mind map: the idea card (below the map; a sheet from the bottom in full screen) ---------- */
+.mm-detail {
+  margin: 12px 0 4px;
+  padding: 16px 18px 18px;
+  border-radius: var(--radius);
+  background: var(--lavender);
+  color: var(--on-pastel);
+  --text: var(--on-pastel);
+  --muted: rgb(26 26 31 / 0.7);
+  --surface: #fff;
+  --primary: #4b3fbf;
+  animation: mm-rise 0.2s ease;
+}
+.mm-detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mm-detail h3 {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+.mm-detail h4 {
+  margin: 14px 0 6px;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: rgb(26 26 31 / 0.7);
+}
+.mm-trail {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgb(26 26 31 / 0.7);
+}
+.mm-trail .link {
+  min-height: 0;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mm-explain {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+.mm-points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.mm-points li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.6);
+}
+.mm-points p {
+  margin: 2px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.mm-kids .chip {
+  background: #fff;
+  border: 0;
+  color: #16151a;
+}
+.mm-detail .mm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.mm-detail .mm-close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  color: #16151a;
+}
+/* full screen: the card is a sheet from the bottom, over the map only (the video is paused under it) */
+.mm-wrap.full .mm-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  margin: 0;
+  max-height: 62%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 26px 26px 0 0;
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+  box-shadow: 0 -12px 40px rgb(22 21 26 / 0.25);
+}
+@media (min-width: 900px) {
+  .mm-wrap.full .mm-sheet {
+    left: auto;
+    top: 70px;
+    right: 16px;
+    bottom: 16px;
+    width: 420px;
+    max-height: none;
+    border-radius: 26px;
+  }
+}
+.mm-exit {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top));
+  left: calc(10px + env(safe-area-inset-left));
+  z-index: 7;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  background: #16151a;
+  color: #fff;
+  box-shadow: 0 6px 18px rgb(22 21 26 / 0.25);
+}
+@keyframes mm-rise { from { transform: translateY(12px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .mm-detail { animation: none; } }
+
+/* ---------- mind map, the premium look: a dark main idea, colour per branch, curved branch-coloured lines ---------- */
+:root { --mm-mix: #16151a; }
+:root[data-theme='dark'] { --mm-mix: #ffffff; }
+@media (prefers-color-scheme: dark) { :root[data-theme='system'] { --mm-mix: #ffffff; } }
+.mm-wrap .mm-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--branch);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  box-shadow: 0 4px 14px rgb(22 21 26 / 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mm-wrap .mm-node:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgb(22 21 26 / 0.14);
+}
+.mm-wrap .mm-node.d0 {
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 26px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: 'Bricolage Grotesque', var(--font-display, inherit), sans-serif;
+  font-size: 1.12rem;
+  font-weight: 800;
+  box-shadow: 0 10px 28px rgb(22 21 26 / 0.28);
+}
+.mm-wrap .mm-node.d1 {
+  border: 0;
+  background: var(--branch);
+  color: #16151a;
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+.mm-wrap .mm-node.on {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+.mm-time {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+.mm-wrap .react-flow__edge.mm-edge .react-flow__edge-path {
+  stroke-opacity: 0.9;
+  stroke-linecap: round;
+}
+/* the idea boxes are buttons now: no button chrome from the global styles */
+.mm-wrap button.mm-node {
+  min-height: 0;
+  cursor: pointer;
+  justify-content: center;
+}
+.mm-wrap button.mm-node:not(.d0):not(.d1) {
+  background: var(--surface);
+  color: var(--text);
+}
