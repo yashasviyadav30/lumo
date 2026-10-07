@@ -1,4 +1,5 @@
 import { CircleCheck, CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from '../components/icons'
+import { useConfirmTap } from '../lib/useConfirmTap'
 import { useBackToClose } from '../lib/useBackToClose'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
@@ -25,6 +26,7 @@ function PostMenu({ post, onReport, onDelete, onAnswer }: { post: Post; onReport
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   useBackToClose(open, () => setOpen(false))
+  const confirm = useConfirmTap()
   useEffect(() => {
     if (!open) return
     const close = (e: Event) => !ref.current?.contains(e.target as Node) && setOpen(false)
@@ -54,8 +56,12 @@ function PostMenu({ post, onReport, onDelete, onAnswer }: { post: Post; onReport
             </button>
           )}
           {post.can_delete && (
-            <button role="menuitem" onClick={() => (setOpen(false), onDelete())}>
-              <Trash2 size={16} aria-hidden="true" /> Delete
+            <button
+              role="menuitem"
+              className={confirm.armed ? 'armed' : undefined}
+              onClick={() => confirm.tap('del', () => (setOpen(false), onDelete()))}
+            >
+              <Trash2 size={16} aria-hidden="true" /> {confirm.armed ? 'Tap again to delete' : 'Delete'}
             </button>
           )}
         </div>

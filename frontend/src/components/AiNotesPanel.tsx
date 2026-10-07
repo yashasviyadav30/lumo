@@ -280,7 +280,7 @@ export default function AiNotesPanel({
               className="small secondary"
               onClick={async () => (await shareNotes(title, videoId, notes)) === 'whatsapp' && onToast('Opening WhatsApp…')}
             >
-              <Share2 size={16} aria-hidden="true" /> Share
+              <Share2 size={16} aria-hidden="true" /> Share summary
             </button>
           </div>
           <AiLabel offline={'kind' in ai.view && ai.view.kind === 'offline'} />

@@ -1360,3 +1360,32 @@ label {
 @media (min-width: 960px) {
   .action-notice { bottom: 28px; }
 }
+
+/* the first tap of a delete: clearly armed, the second tap does it */
+button.armed,
+.menu button.armed {
+  background: var(--coral);
+  color: #16151a;
+  font-weight: 700;
+  width: auto;
+  padding-inline: 12px;
+}
+
+/* small things big enough to read on a phone */
+.share-inline .mm-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  color: #16151a;
+}
+.ai-label,
+.sum-k {
+  font-size: 0.86rem;
+}
+.ts-chip {
+  font-size: 0.86rem;
+}
+.np-tip {
+  font-size: 0.86rem;
+}

@@ -13,6 +13,7 @@ import {
   Star,
   Trash2,
 } from '../components/icons'
+import { useConfirmTap } from '../lib/useConfirmTap'
 import { useBackToClose } from '../lib/useBackToClose'
 import { Suspense, useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { lazyWithReload } from '../lib/lazy'
@@ -425,7 +426,7 @@ function StudyPage({ videoId }: { videoId: string }) {
             onSaved={(n) => {
               upsert(n)
               setDoubtFor(null)
-              flash('Doubt saved. Find it in My notes → Doubts.')
+              flash('Doubt saved. It’s in My notes, under Marks and doubts.')
             }}
             onClose={() => setDoubtFor(null)}
           />
@@ -573,6 +574,7 @@ function NoteRow({
   onChange: (n: Note) => void
   onDelete: () => void
 }) {
+  const confirm = useConfirmTap()
   const [editing, setEditing] = useState(false)
   const [text, setText] = useState(note.text)
   const [answer, setAnswer] = useState(note.answer)
@@ -654,8 +656,14 @@ function NoteRow({
               <Pencil size={14} aria-hidden="true" /> Cancel
             </button>
           )}
-          <button className="del icon-only" onClick={onDelete} aria-label="Delete note" title="Delete note">
+          <button
+            className={`del${confirm.armed ? ' armed' : ' icon-only'}`}
+            onClick={() => confirm.tap('del', onDelete)}
+            aria-label={confirm.armed ? 'Tap again to delete' : 'Delete note'}
+            title="Delete note"
+          >
             <Trash2 size={15} aria-hidden="true" />
+            {confirm.armed && ' Tap again to delete'}
           </button>
         </div>
       </div>

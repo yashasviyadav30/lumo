@@ -1,4 +1,5 @@
 import { History, Star, X } from '../components/icons'
+import { useConfirmTap } from '../lib/useConfirmTap'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { api, fresh, peek, remember } from '../lib/api'
@@ -48,6 +49,7 @@ function Row({ item, resume, onRemove, removeLabel }: { item: LibraryItem; resum
 type Lib = { starred: LibraryItem[]; history: LibraryItem[] }
 
 export default function Library() {
+  const confirm = useConfirmTap()
   const [tab, setTab] = useState<Tab>('starred')
   const [lib, setLib] = useState(() => peek<Lib>('library') ?? null)
   const [error, setError] = useState(false)
@@ -97,8 +99,8 @@ export default function Library() {
       <div className="page-head title-row">
         <h1>Library</h1>
         {tab === 'history' && items.length > 0 && (
-          <button className="link" onClick={() => forget(null)}>
-            Clear all
+          <button className="link" onClick={() => confirm.tap('clear', () => forget(null))}>
+            {confirm.armed ? 'Tap again to clear all' : 'Clear all'}
           </button>
         )}
       </div>
