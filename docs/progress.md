@@ -4,6 +4,24 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
+## Final pass (2026-10-07)
+
+Reviews run in parallel (design walk-through on the live site, speed, bugs, security) and fixed:
+- **Security:** sign-in limit keyed on the email (X-Forwarded-For can be forged); a cap of 20 new accounts a minute;
+  Google sign-in drops a password set by someone who never proved the email (account pre-hijack).
+- **Speed:** request log written after the reply; user loaded with the session in one query; feed cache rows read in
+  one query; screens load on demand (main bundle 572 to 421 kB) and remember what they showed; the Worker pings the
+  server every 10 minutes (cron) so it never sleeps. A bare API call went from 0.40 s to about 0.16 s.
+- **Rules:** Share opens in the page, not over the player; the full-screen map pauses the video (R7).
+- **Features:** Test yourself (recall cards, no score), Copy all key points, doubts marked answered in groups
+  (`group_posts.answered_at`, migration `c4a1d2e3f5b6`), the mind map lights the idea at the current second.
+- **Brand and repo:** new logo (sun over an open book), README with screenshots (`e2e/readme-shots.mjs`), repo renamed
+  to `yashasviyadav30/lumo`, Claude co-author lines removed from history (user approved), local assistant files untracked.
+- Checks: 127 backend and 65 frontend tests; `audit.mjs` 0 problems on live; study, home and groups flows pass on live.
+
+Open: email verification at sign-up and a Worker-to-backend secret header (security review, not urgent);
+"load older posts" in groups (feed shows the newest 50).
+
 ## v3 is built (2026-10-05)
 
 The user did not like the v2 app. After a design interview they confirmed [plan-v3.md](plan-v3.md) and asked
