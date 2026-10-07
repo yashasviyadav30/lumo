@@ -127,8 +127,8 @@ export default function Personal() {
       <div className="page-head title-row">
         <h1>My notes</h1>
         <div className="head-actions">
-          <button className="icon-btn" onClick={exportMd} aria-label="Export my notes" title="Export my notes (.md)">
-            <Download size={20} aria-hidden="true" />
+          <button className="export-btn" onClick={exportMd} title="Export my notes (.md)">
+            <Download size={18} aria-hidden="true" /> Export
           </button>
         </div>
       </div>

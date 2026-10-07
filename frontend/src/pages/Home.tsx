@@ -102,7 +102,7 @@ function GoalCard({
           id="goal"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="e.g. class 10 physics, spoken English, CA Inter…"
+          placeholder="e.g. CA Inter costing, UPSC polity, spoken English…"
           autoComplete="off"
         />
         <button type="submit" disabled={busy || !text.trim()}>

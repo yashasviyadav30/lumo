@@ -140,9 +140,9 @@ export default function Welcome() {
           <span className="lp-icon">
             <EyeSlash size={22} />
           </span>
-          <p className="lp-stat">0</p>
-          <h3>songs, games or comedy sketches</h3>
-          <p>Unless you switch them on. Follow the creators you love and see everything they post.</p>
+          <p className="lp-stat">Off</p>
+          <h3>songs, games and comedy, from the start</h3>
+          <p>Switch any of them back on in Settings. Creators you follow always show, whatever they post.</p>
         </article>
         <article className="lp-tile wide">
           <span className="lp-icon">

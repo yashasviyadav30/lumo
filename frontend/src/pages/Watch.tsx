@@ -2,6 +2,7 @@ import {
   AlignLeft,
   Check,
   CircleHelp,
+  Info,
   MapPin,
   MessageSquare,
   Network,
@@ -21,7 +22,7 @@ import Comments from '../components/Comments'
 import Description from '../components/Description'
 import Player from '../components/Player'
 import { appendToDoc, copyLine } from '../lib/aiNotes'
-import { useAiNotes } from '../lib/useAiNotes'
+import { useAiNotes, notesOf } from '../lib/useAiNotes'
 import { ago } from '../lib/search'
 import { VIDEO_ID, type YTPlayer } from '../lib/youtube'
 import {
@@ -67,7 +68,7 @@ function StudyPage({ videoId }: { videoId: string }) {
   const [notes, setNotes] = useState<Note[]>([])
   const [start, setStart] = useState<number | undefined>(undefined)
   const [ready, setReady] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ msg: string; kind: 'ok' | 'info' } | null>(null)
   const [doubtFor, setDoubtFor] = useState<Note | null>(null)
   const [starred, setStarred] = useState(false)
   const [pop, setPop] = useState(false)
@@ -125,9 +126,12 @@ function StudyPage({ videoId }: { videoId: string }) {
     }
   }, [videoId])
 
-  const flash = (msg: string) => {
-    setToast(msg)
-    window.setTimeout(() => setToast(null), 1600)
+  // A short message over the bottom of the page (never over the player). 'info' = not done (no tick).
+  const toastTimer = useRef(0)
+  const flash = (msg: string, kind: 'ok' | 'info' = 'ok') => {
+    setToast({ msg, kind })
+    window.clearTimeout(toastTimer.current)
+    toastTimer.current = window.setTimeout(() => setToast(null), 3000)
   }
 
   const upsert = (n: Note) =>
@@ -142,13 +146,13 @@ function StudyPage({ videoId }: { videoId: string }) {
   }
 
   const mark = useCallback(async () => {
-    if (notStarted()) return flash('Press play first, then Mark the moment.')
+    if (notStarted()) return flash('Press play first, then Mark the moment.', 'info')
     try {
       const n = await addNote({ video_id: videoId, t_seconds: now() })
       upsert(n)
       flash(`Marked at ${clock(n.t_seconds)}`)
     } catch {
-      flash('Couldn’t save that mark. Check your connection and try again.')
+      flash('Couldn’t save that mark. Check your connection and try again.', 'info')
     }
   }, [videoId])
 
@@ -163,19 +167,19 @@ function StudyPage({ videoId }: { videoId: string }) {
       await starVideo(videoId, next)
     } catch {
       setStarred(!next)
-      flash('Couldn’t save the star. Try again.')
+      flash('Couldn’t save the star. Try again.', 'info')
     }
   }, [starred, videoId])
 
   const doubt = useCallback(async () => {
-    if (notStarted()) return flash('Press play first, then tap Doubt at the confusing part.')
+    if (notStarted()) return flash('Press play first, then tap Doubt at the confusing part.', 'info')
     try {
       const n = await addNote({ video_id: videoId, t_seconds: now(), kind: 'doubt' })
       upsert(n)
       setDoubtFor(n)
       flash(`Doubt parked at ${clock(n.t_seconds)}. Keep going.`)
     } catch {
-      flash('Couldn’t save that doubt. Check your connection and try again.')
+      flash('Couldn’t save that doubt. Check your connection and try again.', 'info')
     }
   }, [videoId])
 
@@ -264,7 +268,7 @@ function StudyPage({ videoId }: { videoId: string }) {
       await saveNotepad(videoId, next.content, next.text)
       flash('Copied to My notes.')
     } catch {
-      flash('Couldn’t save to My notes. Check your connection.')
+      flash('Couldn’t save to My notes. Check your connection.', 'info')
     }
   }
 
@@ -292,7 +296,7 @@ function StudyPage({ videoId }: { videoId: string }) {
         {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onToast={flash} />}
         {tab === 'map' && (
           <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
-            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} />
+            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} onFull={() => player.current?.pauseVideo()} />
           </Suspense>
         )}
         {tab === 'mine' && (
@@ -371,6 +375,7 @@ function StudyPage({ videoId }: { videoId: string }) {
           </button>
           </div>
         </div>
+        <div id="share-slot" />
         <div className="capture" role="toolbar" aria-label="Capture while you watch">
           <button className="mark" onClick={() => mark()} aria-keyshortcuts="N" title="Save this second (N)">
             <span className="ic" aria-hidden="true">
@@ -392,15 +397,15 @@ function StudyPage({ videoId }: { videoId: string }) {
           </button>
         </div>
         {toast && (
-          <p className="toast" role="status">
-            <Check size={16} aria-hidden="true" /> {toast}
+          <p className={`toast ${toast.kind}`} role="status">
+            {toast.kind === 'ok' ? <Check size={16} aria-hidden="true" /> : <Info size={16} aria-hidden="true" />} {toast.msg}
           </p>
         )}
 
       </div>
 
       <div className="study-side">
-        <StudyHint />
+        {!notesOf(ai.view) && <StudyHint />}
         {tabs}
         <p className="attribution">
           Video plays from YouTube.{' '}

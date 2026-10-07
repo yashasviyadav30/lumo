@@ -1,4 +1,4 @@
-import { Outlet, type RouteObject } from 'react-router'
+import { Navigate, Outlet, type RouteObject } from 'react-router'
 import Layout from './components/Layout'
 import PublicLayout from './components/PublicLayout'
 import RequireAccount from './components/RequireAccount'
@@ -62,6 +62,10 @@ export const routes: RouteObject[] = [
           { path: 'sign-in', element: <SignIn /> },
           { path: 'not-yet', element: <NotYet /> },
           { path: 'privacy', element: <Privacy /> },
+          // Spellings people type by hand
+          { path: 'signin', element: <Navigate to="/sign-in" replace /> },
+          { path: 'login', element: <Navigate to="/sign-in" replace /> },
+          { path: 'signup', element: <Navigate to="/sign-up" replace /> },
         ],
       },
       {

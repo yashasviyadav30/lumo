@@ -616,3 +616,242 @@ button.secondary,
   margin-top: 12px;
   border-radius: var(--radius);
 }
+
+/* Share to a group: a panel in the page, under the title (R7: no layer over the player) */
+.share-inline {
+  margin: 4px 0 12px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--sky);
+  color: var(--on-pastel);
+  --text: var(--on-pastel);
+  --muted: rgb(26 26 31 / 0.7);
+  --surface: #fff;
+  --line: rgb(26 26 31 / 0.12);
+}
+.share-inline .mm-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.share-inline h2 { font-size: 1.05rem; margin: 0; }
+
+/* ---------- review fixes (2026-10-07) ---------- */
+/* Phone tab bar: small labels under the icons, so Shorts, Library and My notes can be told apart. */
+@media (max-width: 959px) {
+  .app.signed-in .tab {
+    flex-direction: column;
+    gap: 2px;
+    min-height: 58px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .app.signed-in .tab .tab-icon {
+    width: 40px;
+    height: 34px;
+    border-radius: 999px;
+  }
+  .app.signed-in .tab.active {
+    color: #fff;
+  }
+  .app.signed-in .tab.active svg {
+    color: #16151a;
+  }
+  /* On the study page the bar would cover the notepad and the map's sheet: the back arrow leads out instead. */
+  .app.signed-in.watching .tabbar {
+    display: none;
+  }
+  .app.signed-in.watching .content {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+}
+/* Mark, Doubt and −10s stay in reach under the pinned player while notes scroll (same width as the pin). */
+@media (max-width: 899px) {
+  .study .capture {
+    position: sticky;
+    top: calc(56px + (100vw - 32px) * 9 / 16 + 6px);
+    z-index: 7; /* under the player (8): it can slide beneath it, never over it (R7) */
+    grid-template-columns: repeat(3, 1fr);
+    margin: 8px 0 0;
+    padding: 6px 0;
+    background: var(--bg);
+  }
+  .study .capture button {
+    flex-direction: row;
+    min-height: 46px;
+    padding: 6px 8px;
+    box-shadow: none;
+  }
+  .study .capture button .ic {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Messages after Mark, Doubt, Star: a pill at the bottom of the screen for 3 s (never over the player). */
+.study .toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 40;
+  max-width: min(92vw, 460px);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #16151a;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgb(22 21 26 / 0.3);
+}
+.study .toast.info {
+  background: var(--butter);
+  color: var(--on-pastel);
+}
+
+/* The study tabs never wrap ("Mind map" on two lines); icons go on very small phones. */
+.study-tabs .tabs [role='tab'] {
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  .study-tabs .tabs [role='tab'] svg {
+    display: none;
+  }
+}
+
+/* The top bar is solid: page text no longer shows through behind the logo while scrolling. */
+.app.signed-in .topbar,
+.landing-page .topbar,
+.app:not(.signed-in) .topbar {
+  background: var(--bg);
+}
+
+/* Pastel blocks keep day-time ink inside, also at night (night tokens made text lavender or grey on them). */
+.post-card.kind-video,
+.post-card.kind-doubt,
+.group-row,
+.ai-points li details,
+.sum-card,
+.start-card,
+.continue,
+[class*='tint-'] {
+  --primary: #4b3fbf;
+  --primary-ink: #fff;
+  --text: var(--on-pastel);
+  --muted: rgb(26 26 31 / 0.7);
+  --line: rgb(26 26 31 / 0.12);
+  --surface: #fff;
+  --surface-2: rgb(255 255 255 / 0.55);
+  --ink: #16151a;
+  --on-ink: #fff;
+  color: var(--on-pastel);
+}
+
+/* Night: the logo tile keeps its edge on the dark page. */
+:root[data-theme='dark'] .logo-tile {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] .logo-tile {
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+  }
+}
+
+/* sign-up: the privacy notice folds open beside the box that confirms it */
+.notice-fold {
+  margin: 14px 0 4px;
+  border-radius: 18px;
+  background: var(--lavender);
+  color: var(--on-pastel);
+  --text: var(--on-pastel);
+  --muted: rgb(26 26 31 / 0.72);
+}
+.notice-fold summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  font-weight: 700;
+  min-height: 44px;
+}
+.notice-fold .notice {
+  padding: 0 16px 14px;
+  background: transparent;
+}
+.notice-fold .notice h2 {
+  display: none; /* the summary line already says it */
+}
+
+/* Search: the box and its button are one height */
+.search-top .field {
+  min-height: 48px;
+}
+.search-top > button {
+  min-height: 48px;
+  height: 48px;
+  padding: 0 20px;
+}
+.search-top > button:disabled {
+  background: var(--surface-2);
+  color: var(--muted);
+  opacity: 1;
+}
+
+/* Study title on phones: the title gets the full width, Share and Star sit in one row under it. */
+@media (max-width: 599px) {
+  .title-block {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .title-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+}
+
+/* video and post ⋮ menus: items read left to right; the ⋮ button is a proper tap target */
+.menu button {
+  text-align: left;
+  white-space: nowrap;
+}
+.menu-btn {
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+}
+/* disabled ink buttons (Post, Send, Create group): clearly off, still readable */
+button:disabled:not(.link):not([role='tab']):not([role='menuitem']) {
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px dashed var(--line);
+  box-shadow: none;
+  opacity: 1;
+}
+/* Settings switches: the "off" track has an edge, so off doesn't look like nothing */
+.switch {
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+/* Shorts empty card: "Find channels" is the quieter second step after importing */
+.feed-empty[class*='tint-'] a.button.small {
+  background: transparent;
+  color: var(--on-pastel);
+  border: 1.5px solid rgb(26 26 31 / 0.35);
+}
+/* My notes: Export says what it does */
+.export-btn {
+  min-height: 40px;
+  padding: 0 14px;
+  gap: 6px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.not-found {
+  margin-top: 24px;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+.not-found h1 {
+  font-size: 1.5rem;
+  margin: 6px 0 0;
+}

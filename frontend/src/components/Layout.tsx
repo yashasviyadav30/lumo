@@ -109,9 +109,11 @@ export default function Layout() {
         </Link>
         <TopSearch />
         <div className="top-actions">
-          <Link to="/search" className="icon-btn top-search-link" aria-label="Search">
-            <Search size={21} aria-hidden="true" />
-          </Link>
+          {pathname !== '/search' && ( // the Search page has its own box
+            <Link to="/search" className="icon-btn top-search-link" aria-label="Search">
+              <Search size={21} aria-hidden="true" />
+            </Link>
+          )}
           <ThemeButton />
           <Link to="/settings" className="icon-btn" aria-label="Settings">
             <Settings size={20} aria-hidden="true" />

@@ -7,6 +7,7 @@ export type YTPlayer = {
   getCurrentTime(): number
   getPlayerState(): number // 1 = playing, 2 = paused
   playVideo(): void
+  pauseVideo(): void
 }
 type YTNamespace = {
   Player: new (el: HTMLElement, opts: Record<string, unknown>) => YTPlayer

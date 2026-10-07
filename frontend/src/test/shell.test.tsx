@@ -38,6 +38,6 @@ describe('app shell (1.1)', () => {
 
   it('shows a not-found page for unknown paths', async () => {
     renderAt('/nope')
-    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'This page isn’t here' })).toBeInTheDocument()
   })
 })

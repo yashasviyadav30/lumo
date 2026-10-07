@@ -33,6 +33,7 @@ function fakeYouTube(currentTime = 2530, state = 2) {
         return state
       }
       playVideo() {}
+      pauseVideo() {}
     },
   }
   return { created, seeks }

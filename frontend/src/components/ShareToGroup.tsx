@@ -70,6 +70,11 @@ export default function ShareToGroup({
     }
   }
 
+  const sheet = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (open) sheet.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [open]);
+
   return (
     <>
       <button
@@ -81,16 +86,12 @@ export default function ShareToGroup({
       </button>
       {open &&
         createPortal(
-          <div
-            className="guide-backdrop"
-            onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+          <section
+            className="share-sheet share-inline"
+            aria-labelledby="share-title"
+            ref={sheet}
           >
-            <div
-              className="guide share-sheet"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="share-title"
-            >
+            <div>
               <div className="mm-card-head">
                 <h2 id="share-title">Share to a study group</h2>
                 <button
@@ -198,8 +199,9 @@ export default function ShareToGroup({
                 </p>
               )}
             </div>
-          </div>,
-          document.body, // above the page's own layers (sticky player, tab bar), so nothing covers the sheet
+          </section>,
+          // In the page under the title, never a layer over the player (R7: nothing covers the YouTube player).
+          document.getElementById("share-slot") ?? document.body,
         )}
     </>
   );

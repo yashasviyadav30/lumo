@@ -51,13 +51,17 @@ export default function SignUp() {
   return (
     <section className="auth card">
       <h1>Create your {APP_NAME} account</h1>
-      <Notice />
       <form onSubmit={onSubmit} noValidate={false}>
         <label htmlFor="dob">Date of birth</label>
         <input id="dob" name="dob" type="date" required aria-describedby="dob-help" value={dob} onChange={(e) => setDob(e.target.value)} />
         <p id="dob-help" className="help">
           Used once to check you’re 18 or over. We don’t keep it.
         </p>
+        {/* The notice sits right where it is confirmed: open by tapping, so the form isn't buried under it. */}
+        <details className="notice-fold">
+          <summary>What {APP_NAME} stores, and why</summary>
+          <Notice />
+        </details>
         <label className="check">
           <input name="notice" type="checkbox" required checked={notice} onChange={(e) => setNotice(e.target.checked)} /> I’ve read what{' '}
           {APP_NAME} stores and why

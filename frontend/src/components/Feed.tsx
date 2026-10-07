@@ -18,7 +18,8 @@ export default function Feed({ topics }: { topics: Array<{ id: string; name: str
     return [
       ALL,
       { id: 'podcasts', name: 'Podcasts & talks', query: null, only: 'podcasts' },
-      ...topics.map((t) => ({ id: t.id, name: t.name, query: t.query })),
+      // A goal topic called "Podcasts" would sit next to the chip above as a twin.
+      ...topics.filter((t) => !/^podcasts?$/i.test(t.name.trim())).map((t) => ({ id: t.id, name: t.name, query: t.query })),
       ...recent.map((q) => ({ id: `recent:${q}`, name: q, query: q })),
     ]
   })

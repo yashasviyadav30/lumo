@@ -26,6 +26,7 @@ function fakeYouTube() {
         return 1
       }
       playVideo() {}
+      pauseVideo() {}
     },
   }
   return { seeks }

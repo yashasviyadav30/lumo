@@ -25,10 +25,12 @@ export default function MindMap({
   ai,
   onSeek,
   onCopy,
+  onFull,
 }: {
   ai: ReturnType<typeof useAiNotes>
   onSeek: (t: number) => void
   onCopy: (title: string, body: string, seconds: number | null) => void
+  onFull?: () => void // the full-screen map hides the player: Watch pauses it (never play under a cover, R7)
 }) {
   const data = notesOf(ai.view)
   const [picked, setPicked] = useState<MapNode | null>(null)
@@ -89,14 +91,9 @@ export default function MindMap({
               edges={edges}
               nodeTypes={nodeTypes}
               fitView
-              fitViewOptions={{ padding: 0.15, minZoom: 0.7 }} // big maps stay readable; drag to see the rest
-              onInit={(flow) =>
-                // When the map is wider than the screen, start at the main idea (left) instead of the middle.
-                requestAnimationFrame(() => {
-                  const vp = flow.getViewport()
-                  if (vp.x < 16) flow.setViewport({ ...vp, x: 16 })
-                })
-              }
+              // The whole map on first look, edge to edge (pinch or + to read closer). Cutting it at the box
+              // edges hid the main idea on phones.
+              fitViewOptions={{ padding: 0.06, minZoom: 0.25 }}
               minZoom={0.2}
               maxZoom={2}
               nodesDraggable={false}
@@ -112,7 +109,10 @@ export default function MindMap({
             <button
               ref={fullBtn}
               className="mm-full-btn"
-              onClick={() => setFull(!full)}
+              onClick={() => {
+                if (!full) onFull?.()
+                setFull(!full)
+              }}
               aria-label={full ? 'Close full screen' : 'Open full screen'}
               title={full ? 'Close full screen (Esc)' : 'Full screen'}
             >

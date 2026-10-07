@@ -43,6 +43,7 @@ describe('watch page (1.2)', () => {
           return -1
         }
         playVideo() {}
+        pauseVideo() {}
       },
     }
     renderAt('/watch/dQw4w9WgXcQ')

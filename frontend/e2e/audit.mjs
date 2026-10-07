@@ -29,11 +29,14 @@ async function check(page, label, signedIn) {
     }
     if (signedIn) {
       const nav = document.querySelector('nav.tabbar')
-      if (!nav) out.push('no tab bar')
+      const studyOnPhone = vw < 960 && location.pathname.startsWith('/watch/') // hidden there on purpose
+      if (studyOnPhone) {
+        if (nav && nav.getBoundingClientRect().height > 0) out.push('tab bar shows on the study page (it covers the notes)')
+      } else if (!nav) out.push('no tab bar')
       else {
         const n = nav.getBoundingClientRect()
-        if (vw < 960 && (n.bottom > vh + 1 || vh - n.bottom > 24)) out.push(`phone tab bar not at the bottom (bottom=${Math.round(n.bottom)}, screen=${vh}; a floating bar may sit up to 24px above)`)
-        if (vw >= 960 && (n.left > 40 || n.top > 140)) out.push(`laptop side bar not at the left/top (x=${Math.round(n.left)}, y=${Math.round(n.top)})`)
+        if (!studyOnPhone && vw < 960 && (n.bottom > vh + 1 || vh - n.bottom > 24)) out.push(`phone tab bar not at the bottom (bottom=${Math.round(n.bottom)}, screen=${vh}; a floating bar may sit up to 24px above)`)
+        if (!studyOnPhone && vw >= 960 && (n.left > 40 || n.top > 140)) out.push(`laptop side bar not at the left/top (x=${Math.round(n.left)}, y=${Math.round(n.top)})`)
       }
     }
     if (document.documentElement.scrollWidth > vw + 1) out.push(`page scrolls sideways (${document.documentElement.scrollWidth}px wide on a ${vw}px screen)`)
