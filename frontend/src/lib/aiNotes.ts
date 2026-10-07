@@ -11,7 +11,8 @@ export const LANGS: Array<{ id: NotesLang; label: string }> = [
 export type AiPoint = { title: string; seconds: number | null; short: string; detail: string }
 export type MapNode = { id: string; parent: string | null; label: string; detail: string; seconds: number | null }
 // brief: the longer summary (paragraphs). Summaries made before it existed don't have it.
-export type AiNotesData = { summary: string; brief?: string; points: AiPoint[]; mindmap: MapNode[] }
+export type AiTerm = { term: string; meaning: string }
+export type AiNotesData = { summary: string; brief?: string; points: AiPoint[]; terms?: AiTerm[]; mindmap: MapNode[] }
 export type AiNotesState =
   | { status: 'none' | 'failed' | 'too_long' | 'unavailable' }
   | { status: 'queued'; reason: 'busy' | 'daily_limit' | null; progress?: { done: number; total: number } }

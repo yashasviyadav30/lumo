@@ -1281,3 +1281,47 @@ label {
   background: var(--surface);
   color: var(--text);
 }
+
+/* ---------- the brief summary as study notes; key terms ---------- */
+.sum-brief h4 {
+  margin: 18px 0 6px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+.sum-brief h4:first-child {
+  margin-top: 6px;
+}
+.sum-brief ul {
+  margin: 6px 0 10px;
+  padding-left: 20px;
+}
+.sum-brief li {
+  margin: 4px 0;
+  line-height: 1.55;
+}
+.sum-brief strong {
+  font-weight: 750;
+  background: linear-gradient(transparent 62%, rgb(255 255 255 / 0.55) 62%);
+}
+.key-terms dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin: 8px 0 0;
+}
+.key-terms dl > div {
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.key-terms dt {
+  font-weight: 800;
+}
+.key-terms dd {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}

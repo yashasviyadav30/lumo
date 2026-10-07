@@ -123,3 +123,18 @@ describe('ideaContext', () => {
     expect(ideaContext(map, points, 'weights').points.map((x) => x.title)).toEqual(['Weights'])
   })
 })
+
+describe('printable sectioned notes', () => {
+  it('draws sections, bullets, bold and key terms, all escaped', () => {
+    const html = printableHtml('T', 'abcdefghijk', {
+      summary: 's',
+      brief: '## Ohm <law>\n- **V = IR** <b>not html</b>',
+      points: [],
+      terms: [{ term: 'Ohm', meaning: 'unit <of> resistance' }],
+      mindmap: [],
+    })
+    expect(html).toContain('<h3>Ohm &lt;law&gt;</h3>')
+    expect(html).toContain('<li><b>V = IR</b> &lt;b&gt;not html&lt;/b&gt;</li>')
+    expect(html).toContain('<dt><b>Ohm</b></dt><dd>unit &lt;of&gt; resistance</dd>')
+  })
+})

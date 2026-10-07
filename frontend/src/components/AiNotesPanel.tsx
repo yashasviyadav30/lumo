@@ -1,6 +1,7 @@
 import { Brain, ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
 import { useState } from 'react'
-import { LANGS, type AiNotesData, type AiPoint, type NotesLang } from '../lib/aiNotes'
+import { LANGS, type AiNotesData, type AiPoint, type AiTerm, type NotesLang } from '../lib/aiNotes'
+import { inlineParts, parseNotes } from '../lib/notesFormat'
 import { printNotes, shareNotes } from '../lib/exportNotes'
 import { clock } from '../lib/study'
 import { notesOf, type AiNotesView, type useAiNotes } from '../lib/useAiNotes'
@@ -112,11 +113,60 @@ const byTime = (points: AiPoint[]) =>
   [...points].sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity))
 
 // The short summary first; "Brief summary" opens the fuller one (older summaries fall back to their key points).
+// The AI's detailed notes, drawn as sections, paragraphs and bullet lists (see lib/notesFormat).
+function Inline({ text }: { text: string }) {
+  return (
+    <>
+      {inlineParts(text).map((part, i) => (part.bold ? <strong key={i}>{part.text}</strong> : <span key={i}>{part.text}</span>))}
+    </>
+  )
+}
+function NotesText({ text }: { text: string }) {
+  return (
+    <>
+      {parseNotes(text).map((b, i) =>
+        b.kind === 'h' ? (
+          <h4 key={i}>{b.text}</h4>
+        ) : b.kind === 'ul' ? (
+          <ul key={i}>
+            {b.items.map((item, j) => (
+              <li key={j}>
+                <Inline text={item} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p key={i}>
+            <Inline text={b.text} />
+          </p>
+        ),
+      )}
+    </>
+  )
+}
+
+function KeyTerms({ terms }: { terms: AiTerm[] }) {
+  return (
+    <section className="key-terms" aria-labelledby="terms-title">
+      <h3 className="ai-sub" id="terms-title">
+        Key terms
+      </h3>
+      <dl>
+        {terms.map((t) => (
+          <div key={t.term}>
+            <dt>{t.term}</dt>
+            <dd>{t.meaning}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
 function SummaryCard({ notes }: { notes: AiNotesData }) {
   const [open, setOpen] = useState(false)
-  const paragraphs = notes.brief
-    ? notes.brief.split(/\n\s*\n/).filter(Boolean)
-    : notes.points.map((p) => `${p.title}. ${p.detail}`)
+  // Notes made before the sectioned format have no brief: their key points stand in for it.
+  const brief = notes.brief || notes.points.map((p) => `${p.title}. ${p.detail}`).join('\n\n')
   return (
     <section className="sum-card" aria-labelledby="sum-title">
       <p className="sum-k" id="sum-title">
@@ -128,9 +178,7 @@ function SummaryCard({ notes }: { notes: AiNotesData }) {
         <ChevronDown size={16} weight="bold" aria-hidden="true" className={open ? 'flip' : ''} />
       </button>
       <div id="sum-brief" className={`sum-brief${open ? ' open' : ''}`} hidden={!open}>
-        {paragraphs.map((t, i) => (
-          <p key={i}>{t}</p>
-        ))}
+        <NotesText text={brief} />
       </div>
     </section>
   )
@@ -174,6 +222,7 @@ export default function AiNotesPanel({
       ) : (
         <>
           <SummaryCard notes={notes} />
+          {notes.terms && notes.terms.length > 0 && <KeyTerms terms={notes.terms} />}
           <div className="ai-sub-row">
             <h3 className="ai-sub">Key points</h3>
             <div className="ai-sub-actions">

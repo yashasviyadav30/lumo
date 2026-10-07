@@ -1,5 +1,6 @@
 import { APP_URL } from '../config'
 import type { AiNotesData, MapNode } from './aiNotes'
+import { inlineParts, parseNotes } from './notesFormat'
 import { clock } from './study'
 
 // Export AI notes: a printable page (the phone's print dialog saves it as PDF) or a share to WhatsApp.
@@ -27,6 +28,16 @@ export async function shareNotes(title: string, videoId: string, notes: AiNotesD
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 
+// The sectioned notes as escaped HTML for the printable page (same reading as the app's NotesText).
+function notesHtml(text: string): string {
+  const inline = (t: string) => inlineParts(t).map((p) => (p.bold ? `<b>${esc(p.text)}</b>` : esc(p.text))).join('')
+  return parseNotes(text)
+    .map((b) =>
+      b.kind === 'h' ? `<h3>${esc(b.text)}</h3>` : b.kind === 'ul' ? `<ul>${b.items.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>` : `<p>${inline(b.text)}</p>`,
+    )
+    .join('')
+}
+
 function outline(nodes: MapNode[], parent: string | null, seen = new Set<string>()): string {
   const kids = nodes.filter((n) => n.parent === parent && !seen.has(n.id))
   if (!kids.length) return ''
@@ -50,7 +61,11 @@ ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
 @media print{body{margin:0}}
 </style></head><body>
 <h1>${esc(title)}</h1><p class="short">Watch: <a href="https://youtu.be/${videoId}">youtu.be/${videoId}</a></p>
-<h2>Summary</h2><p class="sum">${esc(notes.summary)}</p>${notes.brief ? `<h2>Brief summary</h2>${notes.brief.split(/\n\s*\n/).map((t) => `<p>${esc(t)}</p>`).join('')}` : ''}
+<h2>Summary</h2><p class="sum">${esc(notes.summary)}</p>${notes.brief ? `<h2>Brief summary</h2>${notesHtml(notes.brief)}` : ''}${
+    notes.terms?.length
+      ? `<h2>Key terms</h2><dl>${notes.terms.map((t) => `<dt><b>${esc(t.term)}</b></dt><dd>${esc(t.meaning)}</dd>`).join('')}</dl>`
+      : ''
+  }
 <h2>Key points</h2><ol>${notes.points
     .map((p) => `<li>${time(p.seconds)}<b>${esc(p.title)}</b><br><span class="short">${esc(p.short)}</span><br>${esc(p.detail)}</li>`)
     .join('')}</ol>
