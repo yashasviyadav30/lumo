@@ -13,7 +13,7 @@ import {
   Star,
   Trash2,
 } from '../components/icons'
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
 import AiNotesPanel from '../components/AiNotesPanel'
@@ -179,7 +179,7 @@ function StudyPage({ videoId }: { videoId: string }) {
       const n = await addNote({ video_id: videoId, t_seconds: now(), kind: 'doubt' })
       upsert(n)
       setDoubtFor(n)
-      flash(`Doubt parked at ${clock(n.t_seconds)}. Keep going.`)
+      flash(`Doubt parked at ${clock(n.t_seconds)}. Write it below, or keep going.`)
     } catch {
       flash('Couldn’t save that doubt. Check your connection and try again.', 'info')
     }
@@ -212,16 +212,6 @@ function StudyPage({ videoId }: { videoId: string }) {
 
   const notesPanel = (
     <>
-      {doubtFor && (
-        <DoubtLine
-          note={doubtFor}
-          onSaved={(n) => {
-            upsert(n)
-            setDoubtFor(null)
-          }}
-          onClose={() => setDoubtFor(null)}
-        />
-      )}
       {empty.length > 0 && (
         <div className="tray">
           <p className="tray-head">
@@ -414,6 +404,18 @@ function StudyPage({ videoId }: { videoId: string }) {
             −10s
           </button>
         </div>
+        {/* Right under the buttons, on any tab: tapping Doubt must visibly ask what it is about. */}
+        {doubtFor && (
+          <DoubtLine
+            note={doubtFor}
+            onSaved={(n) => {
+              upsert(n)
+              setDoubtFor(null)
+              flash('Doubt saved. Find it in My notes → Doubts.')
+            }}
+            onClose={() => setDoubtFor(null)}
+          />
+        )}
         {toast && (
           <p className={`toast ${toast.kind}`} role="status">
             {toast.kind === 'ok' ? <Check size={16} aria-hidden="true" /> : <Info size={16} aria-hidden="true" />} {toast.msg}
@@ -506,8 +508,18 @@ function FillMark({ note, onPlay, onSaved }: { note: Note; onPlay: () => void; o
 
 function DoubtLine({ note, onSaved, onClose }: { note: Note; onSaved: (n: Note) => void; onClose: () => void }) {
   const [text, setText] = useState('')
+  const [failed, setFailed] = useState(false)
+  const save = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!text.trim()) return
+    try {
+      onSaved(await updateNote({ id: note.id, text }))
+    } catch {
+      setFailed(true)
+    }
+  }
   return (
-    <div className="fill doubt-line">
+    <form className="fill doubt-line" onSubmit={save}>
       <label htmlFor="doubt-text">
         Doubt at {clock(note.t_seconds)}: what didn’t make sense? <span className="help">(optional)</span>
       </label>
@@ -517,19 +529,21 @@ function DoubtLine({ note, onSaved, onClose }: { note: Note; onSaved: (n: Note) 
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="e.g. Is a Section 8 company covered?"
+          autoComplete="off"
         />
-        <button
-          className="small"
-          onClick={async () => onSaved(await updateNote({ id: note.id, text }))}
-          disabled={!text.trim()}
-        >
+        <button type="submit" className="small" disabled={!text.trim()}>
           Save
         </button>
-        <button className="link" onClick={onClose}>
+        <button type="button" className="link" onClick={onClose}>
           Later
         </button>
       </div>
-    </div>
+      {failed && (
+        <p className="error" role="alert">
+          Couldn’t save it. Check your connection and tap Save again.
+        </p>
+      )}
+    </form>
   )
 }
 

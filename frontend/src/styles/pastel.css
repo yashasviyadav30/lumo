@@ -1048,3 +1048,25 @@ label {
 .install-ios {
   margin: 10px 0 0;
 }
+
+/* the doubt box under Mark / Doubt: a pink card, in the page (never over the player) */
+.study .doubt-line {
+  margin: 10px 0 4px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--pink);
+  color: var(--on-pastel);
+  --text: var(--on-pastel);
+  --muted: rgb(26 26 31 / 0.7);
+  --surface: #fff;
+}
+.study .doubt-line .row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+.study .doubt-line input {
+  flex: 1;
+  min-width: 0;
+}

@@ -151,6 +151,8 @@ describe('study page', () => {
     await new Promise((r) => setTimeout(r, 0)) // let the player report ready
     await userEvent.click(await screen.findByRole('button', { name: /Doubt/ }))
     expect(await screen.findByText(/Doubt parked at 42:10/)).toBeInTheDocument()
+    // The box to write it opens under the buttons even though the Summary tab is showing.
+    expect(screen.getByLabelText(/Doubt at 42:10: what didn’t make sense/)).toBeVisible()
     expect(calls.length).toBeGreaterThan(1)
     for (const c of calls) expect(c.path).not.toContain(VID)
   })
