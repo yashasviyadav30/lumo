@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { getAiNotes, getNotesLang, readOffline, saveOffline, setNotesLang, type AiNotesData, type AiNotesState, type NotesLang } from './aiNotes'
 import { ApiError } from './api'
 
-const POLL_MS = 15_000
+const POLL_MS = 6_000 // most summaries take under a minute now
 const POLL_DAILY_LIMIT_MS = 5 * 60_000
 
 export type AiNotesView =

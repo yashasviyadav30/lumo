@@ -60,10 +60,18 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state" role="status">
           <Hourglass size={22} aria-hidden="true" className="ai-spin" />
           <h3>Making your summary…</h3>
+          {view.progress && (
+            <div className="ai-progress" aria-label={`${view.progress.done} of ${view.progress.total} parts read`}>
+              <span style={{ width: `${Math.max(6, (100 * view.progress.done) / view.progress.total)}%` }} />
+            </div>
+          )}
           <p>
+            {view.progress
+              ? `A long video: ${view.progress.done} of ${view.progress.total} parts read. `
+              : ''}
             {view.reason === 'busy'
-              ? 'The AI is busy right now, so it will try again by itself. Keep watching; this page updates on its own.'
-              : 'Usually under a minute. Keep watching; this page updates on its own.'}
+              ? 'The AI is busy right now and keeps trying by itself. Keep watching; this page updates on its own.'
+              : 'Usually under a minute, a little longer for long videos. Keep watching; this page updates on its own.'}
           </p>
         </div>
       )
@@ -72,7 +80,7 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
           <h3>This video is too long for an AI summary</h3>
-          <p>AI summaries work on videos up to 4 hours. Use My notes for this one.</p>
+          <p>AI summaries work on videos up to 6 hours. Use My notes for this one.</p>
         </div>
       )
     case 'unavailable':
@@ -88,7 +96,10 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state">
           <TriangleAlert size={22} aria-hidden="true" />
           <h3>Couldn’t make a summary of this video</h3>
-          <p>The AI couldn’t read it after several tries. Use My notes for this one.</p>
+          <p>The AI couldn’t read it after several tries. It is often busy for a while; try again in a few minutes.</p>
+          <button onClick={onGenerate}>
+            <Sparkles size={17} aria-hidden="true" /> Try again
+          </button>
         </div>
       )
     default:

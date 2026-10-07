@@ -14,7 +14,7 @@ export type MapNode = { id: string; parent: string | null; label: string; detail
 export type AiNotesData = { summary: string; brief?: string; points: AiPoint[]; mindmap: MapNode[] }
 export type AiNotesState =
   | { status: 'none' | 'failed' | 'too_long' | 'unavailable' }
-  | { status: 'queued'; reason: 'busy' | 'daily_limit' | null }
+  | { status: 'queued'; reason: 'busy' | 'daily_limit' | null; progress?: { done: number; total: number } }
   | { status: 'ready'; notes: AiNotesData }
 
 // Video IDs go in the body, never the URL (R11).
