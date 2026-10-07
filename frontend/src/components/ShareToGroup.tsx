@@ -236,7 +236,7 @@ export default function ShareToGroup({
                   )}
                   <button
                     onClick={send}
-                    disabled={state === "sending" || !groupId}
+                    disabled={state === "sending" || !groupId || (mode === "doubt" && !text.trim())}
                     style={{ marginTop: 12 }}
                   >
                     {state === "sending" ? "Sending…" : "Send to group"}

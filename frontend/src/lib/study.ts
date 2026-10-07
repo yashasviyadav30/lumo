@@ -27,6 +27,7 @@ export type Note = {
 export type NotepadDoc = { content: string; updated_at: string }
 export type StudyData = {
   video: VideoCard | null
+  missing?: boolean // YouTube answered and has no such video
   position_s: number
   notes: Note[]
   description?: string

@@ -170,6 +170,7 @@ function Composer({ groupId, onPosted }: { groupId: string; onPosted: (p: Post) 
     try {
       onPosted(await addPost({ group_id: groupId, kind, text: text.trim() }))
       setText('')
+      setKind('note') // a doubt is one post: the next one starts as a note again
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Couldn’t post.')
     } finally {

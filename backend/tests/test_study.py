@@ -234,3 +234,16 @@ def test_history_items_can_be_removed_or_cleared(yt, signed_in):
     signed_in.post("/api/progress", json={"video_id": LECTURE, "position_s": 300})
     signed_in.post("/api/history/remove", json={})
     assert signed_in.get("/api/library").json()["history"] == []
+
+
+def test_open_says_missing_only_when_youtube_has_no_such_video(yt, signed_in, monkeypatch):
+    from app.youtube import YouTubeError
+
+    r = signed_in.post("/api/study/open", json={"video_id": "AAAAAAAAAAA"}).json()
+    assert r["video"] is None and r["missing"] is True
+
+    def down(ids):
+        raise YouTubeError("down")
+
+    monkeypatch.setattr(yt, "videos", down)
+    assert signed_in.post("/api/study/open", json={"video_id": "BBBBBBBBBBB"}).json()["missing"] is False

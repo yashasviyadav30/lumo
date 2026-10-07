@@ -83,6 +83,17 @@ class VideoIn(BaseModel):
     video_id: str = Field(pattern=VIDEO_ID)
 
 
+def _youtube_says_missing(yt: YouTubeClient | None, video_id: str) -> bool:
+    """True only when YouTube answered and has no such video (a wrong, deleted or private link). If YouTube can't be
+    reached, the page still opens: a real video must never be shown as missing because of an outage."""
+    if yt is None:
+        return False
+    try:
+        return not yt.videos([video_id])
+    except (YouTubeError, QuotaExceeded):
+        return False
+
+
 @router.post("/study/open")
 def open_lecture(body: VideoIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db),
                  yt: YouTubeClient | None = Depends(youtube_optional)) -> dict:
@@ -96,6 +107,7 @@ def open_lecture(body: VideoIn, request: Request, user: User = Depends(current_u
     starred = db.scalar(select(StarredVideo).where(StarredVideo.user_id == user.id, StarredVideo.video_id == body.video_id))
     return {
         "video": info,
+        "missing": info is None and _youtube_says_missing(yt, body.video_id),
         "description": row.description if row else "",
         "starred": starred is not None,
         "notepad": {"content": pad.content, "updated_at": pad.updated_at.isoformat()} if pad else None,

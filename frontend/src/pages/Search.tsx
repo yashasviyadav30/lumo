@@ -1,6 +1,7 @@
 import { History, Search as SearchIcon, X } from '../components/icons'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useLocation } from 'react-router'
+import { peek, remember } from '../lib/api'
 import HiddenLine from '../components/HiddenLine'
 import VideoItem, { NoticeLine } from '../components/VideoItem'
 import { getActiveGoal, type Goal } from '../lib/goals'
@@ -9,8 +10,10 @@ import { useVideoActions } from '../lib/useVideoActions'
 
 export default function Search() {
   const handedOver = (useLocation().state as { q?: string } | null)?.q ?? ''
-  const [query, setQuery] = useState(handedOver)
-  const [data, setData] = useState<SearchResponse | null>(null)
+  // Back from a video brings the last results back (kept in memory, never in the URL: R11).
+  const kept = handedOver ? undefined : peek<{ query: string; data: SearchResponse }>('search:last')
+  const [query, setQuery] = useState(handedOver || kept?.query || '')
+  const [data, setData] = useState<SearchResponse | null>(kept?.data ?? null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [showHidden, setShowHidden] = useState(false)
@@ -38,7 +41,7 @@ export default function Search() {
     setRecent(recentSearches())
     try {
       const found = await searchVideos(text)
-      if (ticket === latest.current) setData(found)
+      if (ticket === latest.current) setData(remember('search:last', { query: text, data: found }).data)
     } catch (err) {
       if (ticket === latest.current) setError(err instanceof Error ? err.message : 'Search failed. Try again.')
     } finally {
@@ -49,7 +52,7 @@ export default function Search() {
   // A search typed in the top bar arrives in memory (never in the URL, R11) and runs straight away.
   useEffect(() => {
     if (handedOver) run(handedOver)
-    else input.current?.focus()
+    else if (!kept) input.current?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handedOver])
 

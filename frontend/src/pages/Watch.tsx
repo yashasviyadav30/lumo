@@ -66,6 +66,7 @@ export default function Watch() {
 function StudyPage({ videoId }: { videoId: string }) {
   const player = useRef<YTPlayer | null>(null)
   const [data, setData] = useState<StudyData | null>(null)
+  const [missing, setMissing] = useState(false) // YouTube doesn't know this video (a wrong or deleted link)
   const [notes, setNotes] = useState<Note[]>([])
   const [start, setStart] = useState<number | undefined>(undefined)
   const [ready, setReady] = useState(false)
@@ -90,6 +91,7 @@ function StudyPage({ videoId }: { videoId: string }) {
   useEffect(() => {
     openLecture(videoId)
       .then((d) => {
+        setMissing(!!d.missing)
         setData(d)
         setNotes(d.notes)
         setStarred(!!d.starred)
@@ -339,6 +341,17 @@ function StudyPage({ videoId }: { videoId: string }) {
       </div>
     </div>
   )
+
+  if (missing)
+    return (
+      <section className="card empty tint-peach not-found">
+        <h1>This video isn’t available</h1>
+        <p className="help">The link may be wrong, or the video was removed or made private on YouTube.</p>
+        <Link className="button" to="/">
+          Go to Home
+        </Link>
+      </section>
+    )
 
   return (
     <section className="study">

@@ -44,6 +44,21 @@ describe('search (Stage 3)', () => {
     expect(call.body).toEqual({ q: 'cost accounting' })
   })
 
+  it('keeps the results when coming back from a video, without searching again', async () => {
+    const { calls } = signInForTest({
+      'POST /api/search': () => ({ status: 200, body: RESPONSE }),
+      'POST /api/study/open': () => ({ status: 200, body: { video: null, position_s: 0, notes: [] } }),
+    })
+    const { router } = renderAt('/search')
+    await search()
+    await screen.findByRole('list', { name: 'Results' })
+    await router.navigate('/watch/lecture0001')
+    await router.navigate(-1)
+    expect(await screen.findByRole('list', { name: 'Results' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Search a topic')).toHaveValue('cost accounting')
+    expect(calls.filter((c) => c.path === '/api/search')).toHaveLength(1)
+  })
+
   it('shows results with YouTube’s own title and thumbnail, linking to the watch page', async () => {
     signInForTest({ 'POST /api/search': () => ({ status: 200, body: RESPONSE }) })
     renderAt('/search')
