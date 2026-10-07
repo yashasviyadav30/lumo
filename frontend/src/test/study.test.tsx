@@ -173,6 +173,18 @@ it('asks to press play before marking at 0:00', async () => {
 })
 
 describe('home and personal', () => {
+  it('removes a video from Continue watching with its ✕', async () => {
+    const { calls } = signInForTest({
+      'GET /api/home/summary': () => ({ status: 200, body: { resume: { video_id: VID, position_s: 2530, video: VIDEO }, cards_due: 0, doubts_open: 0, marks_to_fill: 0, week: { reviews: 0, notes: 0 }, totals: { notes: 0, lectures: 1, cards: 0 } } }),
+      'GET /api/goals/active': () => ({ status: 200, body: null }),
+      'POST /api/history/remove': () => ({ status: 204 }),
+    })
+    renderAt('/')
+    await userEvent.click(await screen.findByRole('button', { name: 'Remove from Continue watching' }))
+    expect(screen.queryByText('Continue watching')).not.toBeInTheDocument()
+    expect(calls.find((c) => c.path === '/api/history/remove')?.body).toEqual({ video_id: VID }) // in the body (R11)
+  })
+
   it('opens Home with Continue watching for the last lecture', async () => {
     signInForTest({
       'GET /api/home/summary': () => ({ status: 200, body: { resume: { video_id: VID, position_s: 2530, video: VIDEO }, cards_due: 3, doubts_open: 1, marks_to_fill: 0, week: { reviews: 32, notes: 5 }, totals: { notes: 9, lectures: 2, cards: 4 } } }),

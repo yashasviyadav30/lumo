@@ -1403,3 +1403,27 @@ button.armed,
   font-size: 0.9rem;
   font-weight: 600;
 }
+
+/* ✕ on Continue watching, top right */
+.continue {
+  position: relative;
+}
+.continue-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.75);
+  color: #16151a;
+  box-shadow: none;
+}
+.continue-close:hover {
+  background: #fff;
+}
+.continue > div {
+  padding-right: 34px; /* the title never runs under the ✕ */
+}

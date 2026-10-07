@@ -1,9 +1,9 @@
-import { Play } from "../components/icons";
+import { Play, X } from "../components/icons";
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import Feed from "../components/Feed";
 import { ALL, feedKey, loadFeed } from "../lib/search";
-import { forget, fresh, peek, remember } from "../lib/api";
+import { api, forget, fresh, peek, remember } from "../lib/api";
 import { APP_NAME } from "../config";
 import {
   chooseMeaning,
@@ -21,7 +21,7 @@ import {
 } from "../lib/study";
 
 // The last lecture, one tap away (like YouTube's "continue watching").
-function Continue({ s }: { s: HomeSummary }) {
+function Continue({ s, onRemove }: { s: HomeSummary; onRemove: () => void }) {
   if (!s.resume) return null;
   const v = s.resume.video;
   const to = `/watch/${s.resume.video_id}`;
@@ -30,6 +30,9 @@ function Continue({ s }: { s: HomeSummary }) {
     : 0;
   return (
     <div className="continue">
+      <button className="continue-close" onClick={onRemove} aria-label="Remove from Continue watching" title="Remove from Continue watching">
+        <X size={18} aria-hidden="true" />
+      </button>
       <Link to={to} aria-hidden="true" tabIndex={-1} className="vcard-link">
         <div className="vcard-thumb">
           {v?.thumbnail_url && (
@@ -159,6 +162,23 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit to Home
   }, []);
 
+  // ✕ on Continue watching: the video leaves it (and History, as on YouTube); it comes back if that fails.
+  const removeResume = async () => {
+    const before = summary;
+    const id = summary?.resume?.video_id;
+    if (!before || !id) return;
+    const next = { ...before, resume: null };
+    setSummary(next);
+    remember("home", { goal, summary: next });
+    try {
+      await api("/api/history/remove", { method: "POST", body: JSON.stringify({ video_id: id }) });
+      forget("library");
+    } catch {
+      setSummary(before);
+      remember("home", { goal, summary: before });
+    }
+  };
+
   // A new or changed goal changes the feed: drop the kept feeds so the next ones are fresh.
   const changeGoal = (g: Goal) => {
     setGoalState(g);
@@ -222,7 +242,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      {summary && <Continue s={summary} />}
+      {summary && <Continue s={summary} onRemove={removeResume} />}
       {goal && !editing && (
         <p className="page-sub">
           Learning: <b>{goalSummary(goal)}</b>{" "}
