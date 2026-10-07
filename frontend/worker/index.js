@@ -20,4 +20,8 @@ export default {
     }
     return env.ASSETS.fetch(request)
   },
+  // Cron (wrangler.jsonc): keep the backend awake so no one meets the sleeping-server wait.
+  async scheduled(_event, _env, ctx) {
+    ctx.waitUntil(fetch(BACKEND + '/health').catch(() => undefined))
+  },
 }
