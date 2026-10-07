@@ -16,7 +16,7 @@ export type AiNotesData = { summary: string; brief?: string; points: AiPoint[]; 
 export type AiNotesState =
   | { status: 'none' | 'failed' | 'too_long' | 'unavailable' }
   | { status: 'queued'; reason: 'busy' | 'daily_limit' | null; progress?: { done: number; total: number } }
-  | { status: 'ready'; notes: AiNotesData }
+  | { status: 'ready'; notes: AiNotesData; updating?: boolean } // updating: a newer format is on its way
 
 // Video IDs go in the body, never the URL (R11).
 export const getAiNotes = (video_id: string, lang: NotesLang, create: boolean) =>

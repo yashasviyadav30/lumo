@@ -252,3 +252,32 @@ def test_a_part_time_counted_from_the_part_is_moved_into_the_part():
     notes = clean(raw, 4 * 3600, part=(3600, 4500))
     assert [p["seconds"] for p in notes["points"]] == [3690, 3670]
     assert notes["mindmap"][0]["seconds"] == 3720
+
+
+def test_an_older_format_opens_at_once_while_the_new_one_is_made(signed_in, db):
+    add_video(db)
+    old = {"summary": "Old one-liner.", "points": [], "mindmap": []}  # format 1: no "v"
+    db.add(AiNotes(video_id=VID, lang="en", status="ready", data=old))
+    db.commit()
+    peek = signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json()
+    assert peek["status"] == "ready" and peek["notes"] == old and peek["updating"] is True  # no waiting screen
+    assert run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None, seconds=0: ANSWER) == "ready"
+    new = signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json()
+    assert new["notes"]["v"] == ai_notes.NOTES_VERSION and "updating" not in new
+
+
+def test_if_the_new_format_never_comes_the_old_notes_stay(signed_in, db):
+    add_video(db)
+    old = {"summary": "Old.", "points": [], "mindmap": []}
+    db.add(AiNotes(video_id=VID, lang="en", status="ready", data=old))
+    db.commit()
+    signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False})
+
+    def busy(v, lang, part=None, seconds=0):
+        raise GeminiBusy("HTTP 503")
+
+    t = datetime.now(timezone.utc)
+    for _ in range(ai_notes.MAX_ATTEMPTS):
+        status = run_due(db, t, call=busy)
+        t += timedelta(hours=1)
+    assert status == "ready" and db.get(AiNotes, (VID, "en")).data == old

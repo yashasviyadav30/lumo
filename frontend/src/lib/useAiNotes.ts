@@ -36,11 +36,13 @@ export function useAiNotes(videoId: string) {
   }, [load])
 
   const queued = 'status' in view && view.status === 'queued' ? view.reason : undefined
+  const updating = 'status' in view && view.status === 'ready' && !!view.updating // old notes shown, new ones coming
   useEffect(() => {
-    if (queued === undefined) return
-    const t = window.setInterval(() => load(false), queued === 'daily_limit' ? POLL_DAILY_LIMIT_MS : POLL_MS)
+    if (queued === undefined && !updating) return
+    const every = updating ? 20_000 : queued === 'daily_limit' ? POLL_DAILY_LIMIT_MS : POLL_MS
+    const t = window.setInterval(() => load(false), every)
     return () => window.clearInterval(t)
-  }, [queued, load])
+  }, [queued, updating, load])
 
   const chooseLang = (l: NotesLang) => {
     setNotesLang(l)

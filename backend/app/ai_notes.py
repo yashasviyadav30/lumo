@@ -38,7 +38,7 @@ LANGS = {"en": "English", "hi": "Hindi (Devanagari script)", "auto": "the main l
 # parts kept failing with "high demand" on the free tier; 15-minute parts go through (tested 2026-10-07).
 PART_S = 15 * 60
 ONE_CALL_UP_TO_S = 20 * 60  # a 20-minute lecture is still one call
-PARALLEL = 2  # parts asked at once (the free tier's per-minute token limit)
+PARALLEL = 3  # parts asked at once (each about 35k tokens at 0.5 fps: under the free tier's per-minute limit)
 FPS = 0.5  # frames a second Gemini looks at: speech carries most lessons, and it is under half the tokens of 1 fps
 RETRY_WAITS = (5, 15)  # seconds before asking again when an answer comes back busy, before backing off the job
 MAX_VIDEO_S = 6 * 3600  # long podcasts too; one uses most of the free daily budget
@@ -339,6 +339,7 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
 
     todo = parts(duration)
     kept: dict[str, dict] = dict(job.data["parts"]) if job.data and "parts" in job.data else {}
+    previous = (job.data or {}).get("previous")  # older notes still shown while these are made
     missing = [i for i in range(len(todo)) if str(i) not in kept]
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
         results = list(pool.map(
@@ -355,13 +356,14 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
         job.status, job.reason = "ready", None
     else:
         log.info("gemini %s: %s", "busy" if isinstance(errors[0], GeminiBusy) else "failed", errors[0])  # no video ID (R11)
-        job.data = {"parts": kept, "total": len(todo)}  # finished parts wait here for the rest
+        job.data = {"parts": kept, "total": len(todo), **({"previous": previous} if previous else {})}  # wait for the rest
         if isinstance(errors[0], GeminiBusy):
             job.reason, job.next_try_at = "busy", now + min(timedelta(minutes=2 ** job.attempts), timedelta(minutes=30))
         else:
             job.reason, job.next_try_at = None, now + timedelta(minutes=10)
     if job.status == "queued" and job.attempts >= MAX_ATTEMPTS:
-        job.status = "failed"
+        # Couldn't make the newer format: keep the older notes rather than lose them.
+        job.status, job.data = ("ready", previous) if previous else ("failed", job.data)
     job.updated_at = now
     db.commit()
     return job.status
@@ -383,6 +385,9 @@ def view(job: AiNotes) -> dict:
     out: dict = {"status": job.status}
     if job.status == "ready":
         out["notes"] = job.data
+    elif job.status == "queued" and job.data and job.data.get("previous"):
+        # A newer format is being made: the old notes open at once instead of a wait.
+        out.update(status="ready", notes=job.data["previous"], updating=True)
     elif job.status == "queued":
         out["reason"] = job.reason
         if job.data and "parts" in job.data:  # a long video part-way done
