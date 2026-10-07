@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     # Tried in order; the next one is used when one is overloaded (free models often answer 503).
     gemini_models: str = "gemini-3.5-flash-lite,gemini-3.8-flash"
     # Free tier allows 8 hours of YouTube video per day (Gemini video docs, 2026-09-23). Keep a margin.
-    gemini_video_s_per_day: int = 7 * 3600
+    gemini_video_s_per_day: int = 20 * 3600  # our own guard; 15-minute parts at 0.5 fps cost far less than the old 1-hour parts
 
     @property
     def sqlalchemy_url(self) -> str:

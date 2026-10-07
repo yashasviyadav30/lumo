@@ -100,7 +100,7 @@ def test_busy_backs_off_then_gives_up(db):
 
 def test_daily_limit_waits_for_tomorrow_without_calling(db):
     add_video(db, duration_s=3000)
-    quota.record(db, ai_notes.BUDGET_BUCKET, 7 * 3600 - 100)
+    quota.record(db, ai_notes.BUDGET_BUCKET, get_settings().gemini_video_s_per_day - 100)
     ai_notes.request_notes(db, VID, "hi")
     now = datetime.now(timezone.utc)
     assert run_due(db, now, call=lambda v, lang, part=None, seconds=0: pytest.fail("must not call Gemini")) == "queued"
