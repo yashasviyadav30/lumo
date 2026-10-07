@@ -22,11 +22,11 @@ body{width:1600px;height:820px;background:${t.bg};font-family:'Plus Jakarta Sans
 .b2{width:200px;height:200px;border-radius:50%;background:#f6bed6;left:560px;top:-90px}
 .b3{width:300px;height:220px;background:#c9c3f5;right:-80px;bottom:-110px;transform:rotate(12deg)}
 .b4{width:140px;height:140px;border-radius:50%;background:#bfebdd;left:640px;bottom:40px}
-.text{position:absolute;left:110px;top:150px;width:640px}
+.text{position:absolute;left:110px;top:150px;width:680px}
 .brand{display:flex;align-items:center;gap:20px}
 .brand svg{width:92px;height:92px;border-radius:24px;box-shadow:0 10px 30px rgb(22 21 26/.25)}
 .brand span{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:76px;color:${t.ink};letter-spacing:-2px}
-h1{margin-top:34px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:62px;line-height:1.02;color:${t.ink};letter-spacing:-1.5px}
+h1{margin-top:34px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:54px;line-height:1.02;color:${t.ink};letter-spacing:-1.5px}
 h1 em{font-style:normal;color:#7b6ff0}
 p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500;width:560px}
 .pills{display:flex;gap:12px;margin-top:30px}
@@ -45,7 +45,7 @@ p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500
   <div class="pills"><span class="pill" style="background:#fbe38e">Summaries</span><span class="pill" style="background:#c9c3f5">Mind maps</span><span class="pill" style="background:#bfebdd">Study groups</span></div>
 </div>
 <div class="phone p1"><img src="${shot('home')}"></div>
-<div class="phone p2"><img src="${shot('mind-map')}"></div>
+<div class="phone p2"><img src="${shot('map-full-card')}"></div>
 <div class="phone p3"><img src="${shot('brief')}"></div>
 </body></html>`
 

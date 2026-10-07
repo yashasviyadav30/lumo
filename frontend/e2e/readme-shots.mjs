@@ -93,6 +93,16 @@ try {
   await page.waitForTimeout(900)
   await page.screenshot({ path: out('idea-card') })
   await page.getByRole('button', { name: 'Close' }).click()
+  // the map full screen, then with an idea's card
+  await page.getByRole('button', { name: 'Open full screen' }).click()
+  await page.waitForTimeout(1200)
+  await page.screenshot({ path: out('map-full') })
+  await page.locator('.mm-node.d1').nth(1).click()
+  await page.waitForTimeout(1200)
+  await page.screenshot({ path: out('map-full-card') })
+  await page.keyboard.press('Escape')
+  await page.keyboard.press('Escape')
+  await page.waitForTimeout(500)
   // the share panel
   await page.getByRole('button', { name: 'Share', exact: true }).first().click()
   await page.locator('.share-links').waitFor()
