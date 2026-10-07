@@ -189,7 +189,7 @@ export default function ShareToGroup({
                     disabled={state === "sending" || !groupId}
                     style={{ marginTop: 12 }}
                   >
-                    {state === "sending" ? "Sharing…" : "Share"}
+                    {state === "sending" ? "Sending…" : "Send to group"}
                   </button>
                 </>
               )}

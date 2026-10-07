@@ -74,7 +74,7 @@ try {
   await asha.page.getByLabel('Open it on').selectOption('map')
   await asha.page.getByLabel('Message (optional)').fill('Watch this before Sunday, the mind map is great')
   await shot(asha.page, 'phone-share-sheet')
-  await asha.page.getByRole('button', { name: 'Share', exact: true }).last().click()
+  await asha.page.getByRole('button', { name: 'Send to group' }).click()
   await asha.page.getByText('Shared.').waitFor()
 
   // Ravi opens the invite link while signed out, signs up, and lands on the join screen.
