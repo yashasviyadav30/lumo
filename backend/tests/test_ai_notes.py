@@ -62,7 +62,7 @@ def test_job_becomes_ready_and_records_video_seconds(db):
     add_video(db)
     ai_notes.request_notes(db, VID, "en")
     calls = []
-    assert run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None: calls.append((v, lang)) or ANSWER) == "ready"
+    assert run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None, seconds=0: calls.append((v, lang)) or ANSWER) == "ready"
     assert calls == [(VID, "en")]
     job = db.get(AiNotes, (VID, "en"))
     assert job.data["summary"] == "What a neural network is."
@@ -71,17 +71,26 @@ def test_job_becomes_ready_and_records_video_seconds(db):
     assert run_due(db, datetime.now(timezone.utc)) is None  # nothing left to do
 
 
+@pytest.fixture(autouse=True)
+def no_retry_waits(monkeypatch):
+    monkeypatch.setattr(ai_notes, "RETRY_WAITS", (0, 0))
+
+
 def test_busy_backs_off_then_gives_up(db):
     add_video(db)
     ai_notes.request_notes(db, VID, "en")
+    calls = []
 
-    def busy(v, lang, part=None):
+    def busy(v, lang, part=None, seconds=0):
+        calls.append(part)
         raise GeminiBusy("HTTP 503")
 
     t = datetime.now(timezone.utc)
     assert run_due(db, t, call=busy) == "queued"
+    assert len(calls) == 3  # asked again twice within the same run before backing off
     job = db.get(AiNotes, (VID, "en"))
     assert job.reason == "busy" and job.attempts == 1
+    assert aware(job.next_try_at) - t <= timedelta(minutes=2)  # back soon, not hours later
     assert run_due(db, t, call=busy) is None  # not due yet
     for _ in range(ai_notes.MAX_ATTEMPTS - 1):
         t += timedelta(hours=4)
@@ -94,14 +103,14 @@ def test_daily_limit_waits_for_tomorrow_without_calling(db):
     quota.record(db, ai_notes.BUDGET_BUCKET, 7 * 3600 - 100)
     ai_notes.request_notes(db, VID, "hi")
     now = datetime.now(timezone.utc)
-    assert run_due(db, now, call=lambda v, lang, part=None: pytest.fail("must not call Gemini")) == "queued"
+    assert run_due(db, now, call=lambda v, lang, part=None, seconds=0: pytest.fail("must not call Gemini")) == "queued"
     job = db.get(AiNotes, (VID, "hi"))
     assert job.reason == "daily_limit" and job.attempts == 0
     assert aware(job.next_try_at) > now
 
 
 def part_answer(asked):
-    def answer(v, lang, part=None):
+    def answer(v, lang, part=None, seconds=0):
         asked.append(part)
         m = (part[0] if part else 0) // 60
         return json.dumps({"summary": f"from {m}", "points": [{"title": "P", "time": f"{m}:05", "short": "s", "detail": "d"}],
@@ -110,24 +119,65 @@ def part_answer(asked):
     return answer
 
 
-def test_long_video_is_read_in_parts_and_merged(db):
-    add_video(db, duration_s=2 * 3600 + 600)
+def whole_video(seen):
+    """A fake combining call: notes for the whole video, built from the parts it was given."""
+    def combine(done, lang, duration):
+        seen.append([d["summary"] for d in done])
+        return json.dumps({"summary": "The whole talk.", "brief": "One.\n\nTwo.",
+                           "points": [{"title": "Start", "time": "0:05", "short": "s", "detail": "d"},
+                                      {"title": "Late", "time": "1:00:05", "short": "s", "detail": "d"}],
+                           "mindmap": [{"id": "r", "parent": "", "label": "Talk", "detail": "", "time": "0:00"},
+                                       {"id": "t", "parent": "r", "label": "Theme", "detail": "", "time": "15:10"}]})
+    return combine
+
+
+def test_long_video_is_read_in_15_minute_parts_then_combined(db):
+    add_video(db, duration_s=3600 + 600)  # 70 minutes: five parts
+    ai_notes.request_notes(db, VID, "en")
+    asked, seen = [], []
+    assert run_due(db, datetime.now(timezone.utc), call=part_answer(asked), combine=whole_video(seen)) == "ready"
+    assert sorted(asked) == [(0, 900), (900, 1800), (1800, 2700), (2700, 3600), (3600, 4200)]
+    assert seen == [["from 0", "from 15", "from 30", "from 45", "from 60"]]  # in order
+    data = db.get(AiNotes, (VID, "en")).data
+    assert data["summary"] == "The whole talk." and [p["seconds"] for p in data["points"]] == [5, 3605]
+    assert quota.used(db, ai_notes.BUDGET_BUCKET) == 4200
+
+
+def test_combining_falls_back_to_a_plain_merge(db):
+    add_video(db, duration_s=1800 + 60)
+    ai_notes.request_notes(db, VID, "en")
+
+    def broken(done, lang, duration):
+        raise GeminiBusy("HTTP 503")
+
+    assert run_due(db, datetime.now(timezone.utc), call=part_answer([]), combine=broken) == "ready"
+    data = db.get(AiNotes, (VID, "en")).data
+    assert data["brief"].split("\n\n") == ["Part 1. from 0", "Part 2. from 15", "Part 3. from 30"]
+    assert {n["id"]: n for n in data["mindmap"]}["p2-r"]["label"] == "Part 2: Root"
+
+
+def test_finished_parts_are_kept_and_only_failed_ones_are_asked_again(db, signed_in):
+    add_video(db, duration_s=2700)  # three parts
     ai_notes.request_notes(db, VID, "en")
     asked = []
-    assert run_due(db, datetime.now(timezone.utc), call=part_answer(asked)) == "ready"
-    assert asked == [(0, 3600), (3600, 7200), (7200, 7800)]
-    data = db.get(AiNotes, (VID, "en")).data
-    assert data["summary"] == "from 0 from 60 from 120"
-    assert data["brief"].split("\n\n") == ["Part 1. from 0", "Part 2. from 60", "Part 3. from 120"]
-    assert [p["seconds"] for p in data["points"]] == [5, 3605, 7205]
-    nodes = {n["id"]: n for n in data["mindmap"]}
-    assert nodes["all"]["parent"] is None and nodes["p2-r"]["parent"] == "all" and nodes["p2-a"]["parent"] == "p2-r"
-    assert nodes["p3-r"]["label"] == "Part 3: Root"
-    assert quota.used(db, ai_notes.BUDGET_BUCKET) == 7800
+    answer = part_answer(asked)
+
+    def second_part_busy(v, lang, part=None, seconds=0):
+        if part == (900, 1800):
+            raise GeminiBusy("HTTP 503")
+        return answer(v, lang, part, seconds)
+
+    t = datetime.now(timezone.utc)
+    assert run_due(db, t, call=second_part_busy) == "queued"
+    peek = signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json()
+    assert peek["progress"] == {"done": 2, "total": 3}  # the page can say "2 of 3 parts"
+    asked.clear()
+    assert run_due(db, t + timedelta(hours=1), call=answer, combine=whole_video([])) == "ready"
+    assert asked == [(900, 1800)]
 
 
-def test_seventy_minute_video_is_one_call(db):
-    add_video(db, duration_s=70 * 60)
+def test_twenty_minute_video_is_one_call(db):
+    add_video(db, duration_s=20 * 60)
     ai_notes.request_notes(db, VID, "en")
     asked = []
     run_due(db, datetime.now(timezone.utc), call=part_answer(asked))
@@ -135,9 +185,9 @@ def test_seventy_minute_video_is_one_call(db):
 
 
 def test_too_long_video_is_refused(db):
-    add_video(db, duration_s=5 * 3600)
+    add_video(db, duration_s=7 * 3600)
     ai_notes.request_notes(db, VID, "en")
-    assert run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None: pytest.fail("must not call Gemini")) == "too_long"
+    assert run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None, seconds=0: pytest.fail("must not call Gemini")) == "too_long"
 
 
 def test_endpoint_shares_one_job_between_users(signed_in, db):
@@ -148,7 +198,7 @@ def test_endpoint_shares_one_job_between_users(signed_in, db):
     assert db.query(AiNotes).count() == 0
     r = signed_in.post("/api/ai-notes", json={"video_id": VID, "lang": "en"})
     assert r.json() == {"status": "queued", "reason": None}
-    run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None: ANSWER)
+    run_due(db, datetime.now(timezone.utc), call=lambda v, lang, part=None, seconds=0: ANSWER)
     r = signed_in.post("/api/ai-notes", json={"video_id": VID, "lang": "en"})
     assert r.json()["status"] == "ready" and r.json()["notes"]["points"][0]["seconds"] == 4
     assert db.query(AiNotes).count() == 1
@@ -181,3 +231,15 @@ def test_purge_deletes_ai_notes_after_30_days(db):
                 AiNotes(video_id="new________", lang="en", updated_at=NOW - timedelta(days=1))])
     db.commit()
     assert purge(db, now=NOW)["ai_notes"] == 1
+
+
+def test_try_again_requeues_a_failed_summary(signed_in, db):
+    add_video(db)
+    ai_notes.request_notes(db, VID, "en")
+    job = db.get(AiNotes, (VID, "en"))
+    job.status, job.attempts = "failed", ai_notes.MAX_ATTEMPTS
+    db.commit()
+    assert signed_in.post("/api/ai-notes", json={"video_id": VID, "create": False}).json()["status"] == "failed"
+    assert signed_in.post("/api/ai-notes", json={"video_id": VID, "create": True}).json()["status"] == "queued"
+    db.refresh(job)
+    assert job.attempts == 0

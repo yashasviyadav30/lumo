@@ -1,6 +1,7 @@
 """AI notes and mind map for the study page. Video IDs travel in the body, never the URL (R11)."""
 
 from collections import defaultdict
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -44,4 +45,7 @@ def get_or_request(body: AiNotesIn, request: Request, user: User = Depends(curre
             raise HTTPException(status_code=429, detail="too_many_notes_today")
         _new_jobs[key] += 1
         job = ai_notes.request_notes(db, body.video_id, body.lang)
+    elif job.status == "failed" and body.create:  # "Try again": Gemini's bad hours shouldn't fail a video for good
+        job.status, job.attempts, job.reason, job.next_try_at = "queued", 0, None, datetime.now(timezone.utc)
+        db.commit()
     return ai_notes.view(job)
