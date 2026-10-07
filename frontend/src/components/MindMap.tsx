@@ -164,8 +164,12 @@ export default function MindMap({
     const node = flow.current?.getNode(picked.id)
     if (!node || !flow.current) return
     const zoom = Math.max(flow.current.getZoom(), 0.8)
-    const sheetPx = window.innerWidth < 900 ? window.innerHeight * 0.31 : 0 // half the sheet's 62%
-    flow.current.setCenter(node.position.x + NODE_W / 2, node.position.y + 20 + sheetPx / zoom, { zoom, duration: 350 })
+    // Phones: the sheet covers the lower 62%, so the idea goes up into the rest. Laptops: the card is a 420px
+    // panel on the right, so the idea goes left into the open part.
+    const wide = window.innerWidth >= 900
+    const downPx = wide ? 0 : window.innerHeight * 0.31
+    const rightPx = wide ? (420 + 16) / 2 : 0
+    flow.current.setCenter(node.position.x + NODE_W / 2 + rightPx / zoom, node.position.y + 20 + downPx / zoom, { zoom, duration: 350 })
   }, [picked, full])
 
   const pick = (id: string | undefined) => setPicked(data?.mindmap.find((n) => n.id === id) ?? null)
