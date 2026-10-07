@@ -20,6 +20,17 @@ describe('screen memory', () => {
     expect(peek('library')).toBeUndefined()
   })
 
+  it('a request started before forget neither comes back as current nor gets kept', async () => {
+    let finish: (v: string) => void = () => {}
+    const old = fresh('feed:all', () => new Promise<string>((r) => (finish = r)))
+    forget('feed:') // e.g. a new goal was saved while the old feed was loading
+    const next = fresh('feed:all', async () => 'goal feed')
+    finish('old feed')
+    expect(await old).toBe('old feed')
+    expect(await next).toBe('goal feed')
+    expect(peek('feed:all')).toBe('goal feed')
+  })
+
   it('keeps nothing from a failed load', async () => {
     await expect(fresh('shorts', async () => Promise.reject(new Error('down')))).rejects.toThrow('down')
     expect(peek('shorts')).toBeUndefined()

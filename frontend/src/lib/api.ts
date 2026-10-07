@@ -12,7 +12,7 @@ export function readToken(): string | null {
 }
 
 export function writeToken(token: string | null): void {
-  memo.clear() // another person (or nobody) from now on: forget everything kept for the last one
+  forget('') // another person (or nobody) from now on: forget everything kept for the last one
   try {
     if (token) localStorage.setItem(TOKEN_KEY, token)
     else localStorage.removeItem(TOKEN_KEY)
@@ -28,8 +28,10 @@ const inflight = new Map<string, Promise<unknown>>()
 
 export const peek = <T,>(key: string): T | undefined => memo.get(key) as T | undefined
 export const remember = <T,>(key: string, value: T): T => (memo.set(key, value), value)
+// Also drops requests still on their way: an answer asked for before (say) a new goal must not come back as current.
 export function forget(prefix: string): void {
   for (const k of [...memo.keys()]) if (k.startsWith(prefix)) memo.delete(k)
+  for (const k of [...inflight.keys()]) if (k.startsWith(prefix)) inflight.delete(k)
 }
 
 // Loads and keeps the answer. If the same request is already on its way (Home starts the feed early), it waits
@@ -37,9 +39,9 @@ export function forget(prefix: string): void {
 export function fresh<T>(key: string, load: () => Promise<T>): Promise<T> {
   const running = inflight.get(key) as Promise<T> | undefined
   if (running) return running
-  const p = load()
-    .then((v) => remember(key, v))
-    .finally(() => inflight.delete(key))
+  const p: Promise<T> = load()
+    .then((v) => (inflight.get(key) === p ? remember(key, v) : v)) // forgotten meanwhile: answer, but don't keep
+    .finally(() => inflight.get(key) === p && inflight.delete(key))
   inflight.set(key, p)
   return p
 }
