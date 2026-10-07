@@ -192,6 +192,7 @@ class GroupPost(Base):
     video_id: Mapped[str | None] = mapped_column(String(11), nullable=True)  # video ID only; titles fetched fresh (R1)
     t_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     attach: Mapped[str | None] = mapped_column(String(10), nullable=True)  # notes | map: open the video on that tab
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # doubts only
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 

@@ -65,6 +65,8 @@ def _post_view(p: GroupPost, names: dict, me: User, owner: uuid.UUID | None, rep
         "author": names.get(p.user_id, "Former member"),
         "mine": p.user_id == me.id,
         "can_delete": p.user_id == me.id or owner == me.id,
+        "answered": p.answered_at is not None,
+        "can_answer": p.kind == "doubt" and (p.user_id == me.id or owner == me.id),
         "reported": p.id in reported,
         "text": p.text,
         "video_id": p.video_id,
@@ -116,6 +118,10 @@ class PostIn(GroupIn):
 
 class PostRef(BaseModel):
     post_id: uuid.UUID
+
+
+class AnsweredIn(PostRef):
+    answered: bool
 
 
 class ReplyIn(PostRef):
@@ -277,6 +283,18 @@ def delete_post(body: PostRef, user: User = Depends(current_user), db: Session =
     if post.user_id != user.id and _owner_id(db, db.get(StudyGroup, post.group_id)) != user.id:
         raise HTTPException(status_code=403, detail="not_allowed")
     db.delete(post)
+    db.commit()
+
+
+@router.post("/post/answered", status_code=204)
+def mark_answered(body: AnsweredIn, user: User = Depends(current_user), db: Session = Depends(get_db)) -> None:
+    """The person who asked a doubt (or the group owner) marks it answered, or open again."""
+    post, _ = _post_for(db, user, body.post_id)
+    if post.kind != "doubt":
+        raise HTTPException(status_code=422, detail="not_a_doubt")
+    if post.user_id != user.id and _owner_id(db, db.get(StudyGroup, post.group_id)) != user.id:
+        raise HTTPException(status_code=403, detail="not_allowed")
+    post.answered_at = datetime.now(timezone.utc) if body.answered else None
     db.commit()
 
 

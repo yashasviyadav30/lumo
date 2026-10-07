@@ -107,3 +107,21 @@ def test_group_ids_never_reach_the_log(signed_in, group, db):
     signed_in.post("/api/groups/open", json={"group_id": group["id"]})
     for row in db.query(AppLog):
         assert group["id"] not in (row.route or "") and group["invite_code"] not in (row.route or "")
+
+
+def test_a_doubt_is_marked_answered_by_its_asker_or_the_owner_only(signed_in, group):
+    ravi = other(signed_in, "ravi@example.com")
+    signed_in.post("/api/groups/join", json={"code": group["invite_code"], "my_name": "Ravi"}, headers=ravi)
+    gid = group["id"]
+    mine = signed_in.post("/api/groups/post", json={"group_id": gid, "kind": "doubt", "text": "Why sigmoid?"}).json()
+    assert mine["can_answer"] and not mine["answered"]
+    note = signed_in.post("/api/groups/post", json={"group_id": gid, "kind": "note", "text": "Read ch 2"}).json()
+    # Ravi neither asked it nor owns the group.
+    assert signed_in.post("/api/groups/post/answered", json={"post_id": mine["id"], "answered": True}, headers=ravi).status_code == 403
+    assert signed_in.post("/api/groups/post/answered", json={"post_id": note["id"], "answered": True}).status_code == 422
+    assert signed_in.post("/api/groups/post/answered", json={"post_id": mine["id"], "answered": True}).status_code == 204
+    feed = signed_in.post("/api/groups/open", json={"group_id": gid}).json()
+    assert next(p for p in feed["posts"] if p["id"] == mine["id"])["answered"]
+    # Ravi's own doubt: the owner may close it too.
+    his = signed_in.post("/api/groups/post", json={"group_id": gid, "kind": "doubt", "text": "And ReLU?"}, headers=ravi).json()
+    assert signed_in.post("/api/groups/post/answered", json={"post_id": his["id"], "answered": True}).status_code == 204

@@ -64,6 +64,21 @@ describe('study groups (plan v3 step 4)', () => {
     expect(calls.every((c) => !c.path.includes(GID))).toBe(true)
   })
 
+  it('the owner marks a doubt answered from its menu', async () => {
+    const { calls } = signInForTest({
+      'GET /api/groups': () => ({ status: 200, body: { groups: [], unread: 0 } }),
+      'POST /api/groups/open': () => ({ status: 200, body: { ...VIEW, posts: [post({ can_answer: true, answered: false })] } }),
+      'POST /api/groups/post/answered': () => ({ status: 204 }),
+    })
+    renderAt(`/groups/${GID}`)
+    const list = await screen.findByRole('list', { name: 'Posts' })
+    expect(within(list).queryByText('Answered')).not.toBeInTheDocument()
+    await userEvent.click(within(list).getByRole('button', { name: 'Post actions' }))
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Mark answered' }))
+    expect(await within(list).findByText('Answered')).toBeInTheDocument()
+    expect(calls.find((c) => c.path === '/api/groups/post/answered')?.body).toEqual({ post_id: 'p1', answered: true })
+  })
+
   it('an invite opened while signed out joins right after sign-in', async () => {
     const { calls } = mockApi({
       'POST /api/auth/login': () => ({ status: 200, body: { token: 't1', me: ME } }),

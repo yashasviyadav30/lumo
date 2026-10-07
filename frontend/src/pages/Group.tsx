@@ -1,4 +1,4 @@
-import { CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from '../components/icons'
+import { CircleCheck, CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from '../components/icons'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
@@ -10,6 +10,7 @@ import {
   openGroup,
   relTime,
   removeMember,
+  markAnswered,
   reportPost,
   shareInvite,
   type GroupView,
@@ -19,7 +20,7 @@ import { clock } from '../lib/study'
 
 const KIND_LABEL: Record<string, string> = { note: 'Note', doubt: 'Doubt', video: 'Shared a video', reply: 'Reply' }
 
-function PostMenu({ post, onReport, onDelete }: { post: Post; onReport: () => void; onDelete: () => void }) {
+function PostMenu({ post, onReport, onDelete, onAnswer }: { post: Post; onReport: () => void; onDelete: () => void; onAnswer?: () => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -40,6 +41,11 @@ function PostMenu({ post, onReport, onDelete }: { post: Post; onReport: () => vo
       </button>
       {open && (
         <div className="menu" role="menu">
+          {post.can_answer && onAnswer && (
+            <button role="menuitem" onClick={() => (setOpen(false), onAnswer())}>
+              <CircleCheck size={16} aria-hidden="true" /> {post.answered ? 'Open the doubt again' : 'Mark answered'}
+            </button>
+          )}
           {!post.mine && (
             <button role="menuitem" disabled={post.reported} onClick={() => (setOpen(false), onReport())}>
               <Flag size={16} aria-hidden="true" /> {post.reported ? 'Reported' : 'Report'}
@@ -292,6 +298,16 @@ export default function Group() {
       setNotice(err instanceof Error ? err.message : 'Couldn’t delete.')
     }
   }
+  const onAnswer = async (p: Post) => {
+    const answered = !p.answered
+    setPosts((all) => all.map((x) => (x.id === p.id ? { ...x, answered } : x)))
+    try {
+      await markAnswered(p.id, answered)
+    } catch (err) {
+      setPosts((all) => all.map((x) => (x.id === p.id ? { ...x, answered: !answered } : x)))
+      setNotice(err instanceof Error ? err.message : 'Couldn’t save that. Try again.')
+    }
+  }
   const onReport = async (p: Post) => {
     try {
       await reportPost(p.id)
@@ -354,8 +370,13 @@ export default function Group() {
             <div className="post-head">
               <b>{p.author}</b>
               <span className={`kind-label kind-${p.kind}`}>{KIND_LABEL[p.kind]}</span>
+              {p.answered && (
+                <span className="answered-badge">
+                  <CircleCheck size={14} weight="fill" aria-hidden="true" /> Answered
+                </span>
+              )}
               <span className="help">{relTime(p.created_at)}</span>
-              <PostMenu post={p} onReport={() => onReport(p)} onDelete={() => onDelete(p)} />
+              <PostMenu post={p} onReport={() => onReport(p)} onDelete={() => onDelete(p)} onAnswer={() => onAnswer(p)} />
             </div>
             <PostBody post={p} />
             <button className="link thread-toggle" aria-expanded={open === p.id} onClick={() => setOpen(open === p.id ? null : p.id)}>

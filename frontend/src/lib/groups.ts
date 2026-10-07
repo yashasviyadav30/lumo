@@ -11,6 +11,8 @@ export type Post = {
   author: string
   mine: boolean
   can_delete: boolean
+  answered?: boolean // doubts: the asker or the owner closed it
+  can_answer?: boolean
   reported: boolean
   text: string
   video_id: string | null
@@ -35,6 +37,7 @@ export const addPost = (p: NewPost) => post<Post>('/api/groups/post', p)
 export const getThread = (post_id: string) => post<{ post: Post; replies: Post[] }>('/api/groups/thread', { post_id })
 export const addReply = (post_id: string, text: string) => post<Post>('/api/groups/reply', { post_id, text })
 export const deletePost = (post_id: string) => post<void>('/api/groups/post/delete', { post_id })
+export const markAnswered = (post_id: string, answered: boolean) => post<void>('/api/groups/post/answered', { post_id, answered })
 export const reportPost = (post_id: string) => post<void>('/api/groups/report', { post_id })
 export const leaveGroup = (group_id: string) => post<void>('/api/groups/leave', { group_id })
 export const removeMember = (group_id: string, member_id: number) => post<void>('/api/groups/remove', { group_id, member_id })

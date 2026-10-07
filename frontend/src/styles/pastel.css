@@ -916,3 +916,19 @@ button:disabled:not(.link):not([role='tab']):not([role='menuitem']) {
 @media (prefers-reduced-motion: reduce) {
   .recall li.open { animation: none; }
 }
+
+/* group doubts closed by the asker or the owner */
+.answered-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--mint);
+  color: #1f5c46;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.post-card.kind-doubt:has(.answered-badge) {
+  background: color-mix(in srgb, var(--pink) 45%, var(--surface));
+}
