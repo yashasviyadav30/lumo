@@ -79,6 +79,21 @@ describe('study groups (plan v3 step 4)', () => {
     expect(calls.find((c) => c.path === '/api/groups/post/answered')?.body).toEqual({ post_id: 'p1', answered: true })
   })
 
+  it('a shared video opened while signed out opens right after sign-in', async () => {
+    mockApi({
+      'POST /api/auth/login': () => ({ status: 200, body: { token: 't1', me: ME } }),
+      'POST /api/study/open': () => ({ status: 200, body: { video: null, position_s: 0, notes: [] } }),
+      'GET /api/groups': () => ({ status: 200, body: { groups: [], unread: 0 } }),
+    })
+    const { router } = renderAt('/watch/aircAruvnKk')
+    await waitFor(() => expect(router.state.location.pathname).toBe('/welcome'))
+    await router.navigate('/sign-in')
+    await userEvent.type(await screen.findByLabelText('Email'), 'asha@example.com')
+    await userEvent.type(screen.getByLabelText('Password'), 'correct horse 1')
+    await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+    await waitFor(() => expect(router.state.location.pathname).toBe('/watch/aircAruvnKk'))
+  })
+
   it('an invite opened while signed out joins right after sign-in', async () => {
     const { calls } = mockApi({
       'POST /api/auth/login': () => ({ status: 200, body: { token: 't1', me: ME } }),

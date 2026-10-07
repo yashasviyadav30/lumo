@@ -81,15 +81,29 @@ export function pendingJoin(): string | null {
     return null
   }
 }
+// A shared video or group link opened while signed out: back there right after signing in or up.
+const AFTER = 'focuslearn.afterSignIn'
+const RETURNABLE = /^\/(watch\/[A-Za-z0-9_-]{11}|groups\/[A-Za-z0-9-]{8,40})$/
+export function rememberReturn(path: string) {
+  if (!RETURNABLE.test(path)) return
+  try {
+    localStorage.setItem(AFTER, path)
+  } catch {
+    // private mode: they open the link again
+  }
+}
 export function nextAfterSignIn(): string {
   const code = pendingJoin()
-  if (!code) return '/'
+  let after: string | null = null
   try {
+    after = localStorage.getItem(AFTER)
     localStorage.removeItem(PENDING)
+    localStorage.removeItem(AFTER)
   } catch {
     // ignore
   }
-  return `/join/${code}`
+  if (code) return `/join/${code}`
+  return after && RETURNABLE.test(after) ? after : '/'
 }
 
 // The name the user used last time, offered again for the next group.
