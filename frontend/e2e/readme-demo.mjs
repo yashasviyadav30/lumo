@@ -22,10 +22,17 @@ const token = await setup.evaluate(async () => {
   })
   return (await r.json()).token
 })
+// The same learning channels as the README shots, so Home opens on their newest videos.
+const FOLLOW = ['UCsXVk37bltHxD1rDPwtNM8Q', 'UCHnyfMqiRRG1u-2MsSQLbXA', 'UCsooa4yRKGN_zEE8iknghZA', 'UCX6b17PVsYBQ0ip5gyeme-Q',
+  'UCYO_jab_esuFRV4b17AJtAw', 'UC6nSFpj9HTCZ5t-N3Rm3-HA', 'UCUHW94eEFW7hkUMVaZz4eDg', 'UCZYTClx2T1of7BRZ86-8fow']
 await setup.evaluate(
-  (t) =>
-    fetch('/api/goals', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` }, body: JSON.stringify({ text: 'machine learning for beginners' }) }),
-  token,
+  async ([t, follow]) => {
+    const post = (path, body) =>
+      fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` }, body: JSON.stringify(body) })
+    for (const channel_id of follow) await post('/api/follows', { channel_id })
+    await post('/api/goals', { text: 'science and how the world works' })
+  },
+  [token, FOLLOW],
 )
 await setup.close()
 
@@ -44,8 +51,7 @@ try {
   await page.locator('.vgrid li.vcard img').first().waitFor({ timeout: 90_000 })
   await pause(2500)
   tourStart = (Date.now() - started) / 1000 - 0.5
-  await page.mouse.wheel(0, 500)
-  await pause(1600)
+  await pause(1200) // Home's top row only: further down, the newest uploads can be anything
   await page.goto(BASE + '/watch/' + VIDEO)
   await page.locator('.sum-short').waitFor({ timeout: 60_000 })
   await pause(2200)

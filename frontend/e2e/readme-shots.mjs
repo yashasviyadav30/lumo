@@ -4,7 +4,18 @@
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
-const VIDEO = 'aircAruvnKk'
+const VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: the richest mind map
+// Well-known learning channels with strong thumbnails; Home shows their newest videos first.
+const FOLLOW = {
+  UCsXVk37bltHxD1rDPwtNM8Q: 'Kurzgesagt',
+  'UCHnyfMqiRRG1u-2MsSQLbXA': 'Veritasium',
+  UCsooa4yRKGN_zEE8iknghZA: 'TED-Ed',
+  'UCX6b17PVsYBQ0ip5gyeme-Q': 'CrashCourse',
+  UCYO_jab_esuFRV4b17AJtAw: '3Blue1Brown',
+  'UC6nSFpj9HTCZ5t-N3Rm3-HA': 'Vsauce',
+  UCUHW94eEFW7hkUMVaZz4eDg: 'MinutePhysics',
+  'UCZYTClx2T1of7BRZ86-8fow': 'SciShow',
+}
 const PHONE = { width: 412, height: 915 }
 const LAPTOP = { width: 1440, height: 900 }
 const out = (name) => `e2e/screenshots/readme-${name}.png`
@@ -49,9 +60,11 @@ try {
     localStorage.setItem('focuslearn.studyHintSeen', '1')
   }, token)
 
+  for (const channel_id of Object.keys(FOLLOW)) await api('/api/follows', { channel_id })
+
   // Home with a goal
   await page.goto(BASE + '/')
-  await page.getByLabel('Your learning goal').fill('machine learning for beginners')
+  await page.getByLabel('Your learning goal').fill('science and how the world works')
   await page.getByRole('button', { name: 'Start' }).click()
   await page.getByText('Learning:').waitFor({ timeout: 90_000 }) // the goal's own feed, not the one before it
   // the feed is in and the first thumbnails have drawn
@@ -66,8 +79,14 @@ try {
   await page.waitForTimeout(1500)
   await page.screenshot({ path: out('home') })
 
-  // Study page: summary, then the mind map
-  await page.goto(BASE + '/watch/' + VIDEO)
+  // The summary, notes and key terms come from one of those channels' videos (8 to 25 minutes), for variety.
+  const feed = await api('/api/feed', { recent: [] })
+  const names = new Set(Object.values(FOLLOW).filter((n) => n !== '3Blue1Brown'))
+  const PICK = feed.results.find((v) => names.has(v.channel_title) && v.duration_s >= 480 && v.duration_s <= 1500)?.video_id ?? VIDEO
+  console.log('summary video:', PICK)
+
+  // Study page: summary, notes and key terms on PICK
+  await page.goto(BASE + '/watch/' + PICK)
   const generate = page.getByRole('button', { name: /Generate summary/ })
   await page.locator('.sum-short, .ai-notes button').first().waitFor({ timeout: 60_000 })
   if (await generate.count()) await generate.click()
@@ -82,7 +101,16 @@ try {
   await page.screenshot({ path: out('brief') })
   await showUnderPlayer('.key-terms')
   await page.screenshot({ path: out('terms') })
-  await page.getByRole('button', { name: 'Hide brief summary' }).click()
+  // the share panel, on the same video
+  await page.getByRole('button', { name: 'Share', exact: true }).first().click()
+  await page.locator('.share-links').waitFor()
+  await page.waitForTimeout(800)
+  await showUnderPlayer('.share-inline')
+  await page.screenshot({ path: out('share') })
+
+  // The mind map on the 3Blue1Brown lecture
+  await page.goto(BASE + '/watch/' + VIDEO)
+  await page.locator('.sum-short, .ai-notes button').first().waitFor({ timeout: 60_000 })
   await page.getByRole('tab', { name: /Mind map/ }).click()
   await page.locator('.mm-node').first().waitFor()
   await showUnderPlayer('.study-tabs')
@@ -103,16 +131,10 @@ try {
   await page.keyboard.press('Escape')
   await page.keyboard.press('Escape')
   await page.waitForTimeout(500)
-  // the share panel
-  await page.getByRole('button', { name: 'Share', exact: true }).first().click()
-  await page.locator('.share-links').waitFor()
-  await page.waitForTimeout(800)
-  await showUnderPlayer('.share-inline')
-  await page.screenshot({ path: out('share') })
 
   // A group with a shared video and an answered doubt
-  const g = await api('/api/groups', { name: 'ML study circle', my_name: 'Meera' })
-  await api('/api/groups/post', { group_id: g.id, kind: 'video', video_id: VIDEO, attach: 'map', text: 'Watch this before Sunday. The mind map makes layers click.' })
+  const g = await api('/api/groups', { name: 'Science study circle', my_name: 'Maya' })
+  await api('/api/groups/post', { group_id: g.id, kind: 'video', video_id: PICK, attach: 'notes', text: 'Watch this before Sunday. The summary is a great start.' })
   const doubt = await api('/api/groups/post', { group_id: g.id, kind: 'doubt', video_id: VIDEO, t_seconds: 173, text: 'Why does each neuron hold a number between 0 and 1?' })
   await api('/api/groups/reply', { post_id: doubt.id, text: 'That is the activation. Sigmoid squeezes any sum into 0 to 1 (see 13:10).' })
   await api('/api/groups/post/answered', { post_id: doubt.id, answered: true })
@@ -124,9 +146,9 @@ try {
   // Laptop, night: the study page
   await page.setViewportSize(LAPTOP)
   await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto(BASE + '/watch/' + VIDEO)
+  await page.goto(BASE + '/watch/' + PICK)
   await page.locator('.sum-short').waitFor({ timeout: 60_000 })
-  await page.waitForTimeout(2500)
+  await page.waitForTimeout(4000)
   await page.screenshot({ path: out('laptop') })
   console.log('✔ readme shots')
 } catch (e) {
