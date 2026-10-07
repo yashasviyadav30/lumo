@@ -1,4 +1,4 @@
-import { Background, Controls, Handle, Position, ReactFlow, type Edge, type Node, type NodeProps } from '@xyflow/react'
+import { Background, Controls, Handle, Position, ReactFlow, type Edge, type Node, type NodeProps, type ReactFlowInstance } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { ArrowLeft, CopyPlus, Maximize2, Play, X } from './icons'
 import { useEffect, useMemo, useRef, useState, type Ref } from 'react'
@@ -135,9 +135,14 @@ export default function MindMap({
   useBackToClose(full, () => setFull(false))
   useBackToClose(picked !== null, () => setPicked(null))
 
+  const pickedOpen = useRef(false)
+  useEffect(() => {
+    pickedOpen.current = picked !== null
+  })
   useEffect(() => {
     if (!full) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setFull(false)
+    // Esc closes the top layer first, like Back: the card, then full screen.
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && (pickedOpen.current ? setPicked(null) : setFull(false))
     document.body.classList.add('no-scroll')
     exitBtn.current?.focus() // focus moves into the full-screen map
     window.addEventListener('keydown', onKey)
@@ -147,9 +152,20 @@ export default function MindMap({
     }
   }, [full])
 
-  // Inline, the card opens under the map: bring it into view.
+  // Inline, the card opens under the map: bring its top into view (below the pinned player, see scroll-margin).
+  // Full screen, the sheet covers the lower part: move the tapped idea into the part above it.
+  const flow = useRef<ReactFlowInstance<Node<IdeaData>, Edge> | null>(null)
   useEffect(() => {
-    if (picked && !full) detail.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    if (!picked) return
+    if (!full) {
+      detail.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      return
+    }
+    const node = flow.current?.getNode(picked.id)
+    if (!node || !flow.current) return
+    const zoom = Math.max(flow.current.getZoom(), 0.8)
+    const sheetPx = window.innerWidth < 900 ? window.innerHeight * 0.31 : 0 // half the sheet's 62%
+    flow.current.setCenter(node.position.x + NODE_W / 2, node.position.y + 20 + sheetPx / zoom, { zoom, duration: 350 })
   }, [picked, full])
 
   const pick = (id: string | undefined) => setPicked(data?.mindmap.find((n) => n.id === id) ?? null)
@@ -201,7 +217,8 @@ export default function MindMap({
               fitView
               // First look: the main idea and its branches, big enough to read; the sub-ideas run off to both
               // sides (drag, pinch or − to see the whole map). The whole map at once was unreadable on a phone.
-              fitViewOptions={{ padding: 0.12, minZoom: 0.25, maxZoom: 1, nodes: overview }}
+              fitViewOptions={{ padding: 0.12, minZoom: 0.6, maxZoom: 1, nodes: overview }}
+              onInit={(rf) => (flow.current = rf)}
               minZoom={0.2}
               maxZoom={2}
               nodesDraggable={false}

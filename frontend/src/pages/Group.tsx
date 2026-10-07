@@ -1,4 +1,5 @@
 import { CircleCheck, CircleHelp, EllipsisVertical, Flag, MessageSquare, Play, Send, Share2, StickyNote, Trash2, UserMinus, UsersRound } from '../components/icons'
+import { useBackToClose } from '../lib/useBackToClose'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
@@ -23,6 +24,7 @@ const KIND_LABEL: Record<string, string> = { note: 'Note', doubt: 'Doubt', video
 function PostMenu({ post, onReport, onDelete, onAnswer }: { post: Post; onReport: () => void; onDelete: () => void; onAnswer?: () => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  useBackToClose(open, () => setOpen(false))
   useEffect(() => {
     if (!open) return
     const close = (e: Event) => !ref.current?.contains(e.target as Node) && setOpen(false)
@@ -298,6 +300,11 @@ export default function Group() {
       setNotice(err instanceof Error ? err.message : 'Couldn’t delete.')
     }
   }
+  useEffect(() => {
+    if (!notice) return
+    const t = window.setTimeout(() => setNotice(null), 4000) // floating messages go by themselves
+    return () => window.clearTimeout(t)
+  }, [notice])
   const onAnswer = async (p: Post) => {
     const answered = !p.answered
     setPosts((all) => all.map((x) => (x.id === p.id ? { ...x, answered } : x)))
@@ -352,7 +359,7 @@ export default function Group() {
         <p className="notice-line">Group made. Tap Invite and send the link to your friends on WhatsApp.</p>
       )}
       {notice && (
-        <p className="notice-line" role="status">
+        <p className="notice-line action-notice" role="status">
           {notice}
         </p>
       )}

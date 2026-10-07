@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
 import { APP_URL } from "../config";
+import { useBackToClose } from "../lib/useBackToClose";
 import { videoShareText } from "../lib/exportNotes";
 import { addPost, myGroups, type GroupSummary } from "../lib/groups";
 import { clock } from "../lib/study";
@@ -71,6 +72,7 @@ export default function ShareToGroup({
     "idle",
   );
   const first = useRef<HTMLSelectElement>(null);
+  useBackToClose(open, () => setOpen(false));
 
   useEffect(() => {
     if (!open) return;

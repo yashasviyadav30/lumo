@@ -62,6 +62,18 @@ function Tool({ on, label, onClick, children }: { on?: boolean; label: string; o
 function Toolbar({ editor, onTime, onImages }: { editor: Editor; onTime: () => void; onImages: (files: File[]) => void }) {
   const [menu, setMenu] = useState<'colour' | 'highlight' | 'underline' | null>(null)
   const picker = useRef<HTMLInputElement>(null)
+  useBackToClose(menu !== null, () => setMenu(null))
+  useEffect(() => {
+    if (!menu) return
+    const outside = (e: Event) => !(e.target as Element).closest?.('.np-menu-wrap') && setMenu(null)
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setMenu(null)
+    document.addEventListener('pointerdown', outside)
+    document.addEventListener('keydown', esc)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      document.removeEventListener('keydown', esc)
+    }
+  }, [menu])
   const st = useEditorState({
     editor,
     selector: ({ editor: e }) => ({

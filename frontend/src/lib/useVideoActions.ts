@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { followChannel, muteChannel, notInterested, unmuteChannel, type VideoCard } from './search'
 import { starVideo } from './study'
 
@@ -7,6 +7,11 @@ export type Notice = { text: string; undo?: () => Promise<void> }
 // The ⋮ menu actions shared by Home, Search and Shorts: one notice line, with Undo where it makes sense.
 export function useVideoActions() {
   const [notice, setNotice] = useState<Notice | null>(null)
+  useEffect(() => {
+    if (!notice) return
+    const t = window.setTimeout(() => setNotice(null), notice.undo ? 6000 : 4000) // a floating message goes by itself
+    return () => window.clearTimeout(t)
+  }, [notice])
   const [goneVideos, setGoneVideos] = useState<ReadonlySet<string>>(new Set())
   const [goneChannels, setGoneChannels] = useState<ReadonlySet<string>>(new Set())
   const toggled = (set: ReadonlySet<string>, id: string, on: boolean) => {

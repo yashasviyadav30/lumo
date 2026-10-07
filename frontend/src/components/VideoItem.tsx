@@ -1,4 +1,5 @@
 import { Ban, EllipsisVertical, EyeOff, Star, UserPlus } from './icons'
+import { useBackToClose } from '../lib/useBackToClose'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { APP_NAME } from '../config'
@@ -17,6 +18,7 @@ type Props = {
 function CardMenu({ video, actions }: { video: VideoCard; actions: Partial<VideoActions> }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  useBackToClose(open, () => setOpen(false)) // Back closes the menu instead of leaving Home
   useEffect(() => {
     if (!open) return
     const close = (e: Event) => !ref.current?.contains(e.target as Node) && setOpen(false)
@@ -60,7 +62,7 @@ function CardMenu({ video, actions }: { video: VideoCard; actions: Partial<Video
 export function NoticeLine({ notice, onUndo }: { notice: Notice | null; onUndo: () => void }) {
   if (!notice) return null
   return (
-    <p className="notice-line" role="status">
+    <p className="notice-line action-notice" role="status">
       {notice.text}{' '}
       {notice.undo && (
         <button className="link" onClick={onUndo}>

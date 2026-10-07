@@ -13,6 +13,7 @@ import {
   Star,
   Trash2,
 } from '../components/icons'
+import { useBackToClose } from '../lib/useBackToClose'
 import { Suspense, useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { lazyWithReload } from '../lib/lazy'
 import { Link, useLocation, useParams } from 'react-router'
@@ -508,6 +509,7 @@ function FillMark({ note, onPlay, onSaved }: { note: Note; onPlay: () => void; o
 
 function DoubtLine({ note, onSaved, onClose }: { note: Note; onSaved: (n: Note) => void; onClose: () => void }) {
   const [text, setText] = useState('')
+  useBackToClose(true, onClose) // Back = "Later", not leaving the video
   const [failed, setFailed] = useState(false)
   const save = async (e: FormEvent) => {
     e.preventDefault()

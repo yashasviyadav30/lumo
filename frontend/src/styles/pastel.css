@@ -1325,3 +1325,38 @@ label {
   font-size: 0.92rem;
   line-height: 1.5;
 }
+/* the idea card scrolls in below the pinned player and Mark row on phones, not under them */
+.mm-detail {
+  scroll-margin-top: 16px;
+}
+@media (max-width: 899px) {
+  .study .mm-detail {
+    scroll-margin-top: calc(56px + (100vw - 32px) * 9 / 16 + 76px);
+  }
+}
+
+/* after a ⋮ action, Delete or Report: a floating message above the tab bar, where people are looking */
+.action-notice {
+  position: fixed;
+  left: 50%;
+  bottom: calc(100px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 40;
+  width: max-content;
+  max-width: min(92vw, 480px);
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #16151a;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgb(22 21 26 / 0.3);
+}
+.action-notice .link {
+  color: var(--butter);
+  font-weight: 800;
+  min-height: 0;
+}
+@media (min-width: 960px) {
+  .action-notice { bottom: 28px; }
+}
