@@ -243,3 +243,12 @@ def test_try_again_requeues_a_failed_summary(signed_in, db):
     assert signed_in.post("/api/ai-notes", json={"video_id": VID, "create": True}).json()["status"] == "queued"
     db.refresh(job)
     assert job.attempts == 0
+
+
+def test_a_part_time_counted_from_the_part_is_moved_into_the_part():
+    raw = json.dumps({"summary": "s", "points": [{"title": "Bayes", "time": "1:30", "short": "s", "detail": "d"},
+                                                 {"title": "Right", "time": "1:01:10", "short": "s", "detail": "d"}],
+                      "mindmap": [{"id": "r", "parent": "", "label": "R", "detail": "", "time": "2:00"}]})
+    notes = clean(raw, 4 * 3600, part=(3600, 4500))
+    assert [p["seconds"] for p in notes["points"]] == [3690, 3670]
+    assert notes["mindmap"][0]["seconds"] == 3720
