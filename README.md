@@ -37,58 +37,38 @@ Every video plays through YouTube's own player, so creators keep their views and
 ## See it in 20 seconds
 
 <p align="center">
-  <img src="docs/brand/demo.gif" alt="A tour on a phone: Home with videos for a goal, a video's summary, the brief summary notes, the mind map, and an idea's card in full screen" width="300">
+  <img src="docs/brand/demo.gif" alt="A tour on a laptop: Home with science videos, a video's summary and study notes, then the mind map in full screen with an idea's card" width="760">
 </p>
 
-<p align="center"><sub>Home → a video → its summary → the brief summary notes → the mind map → an idea's card.</sub></p>
+<p align="center"><sub>Home → a video's summary and study notes → the mind map → an idea's card.</sub></p>
 
 ## What you get
 
-### 📝 Read the video before you watch it
+### 📝 Summaries and study notes for any video
 
-A summary that covers the whole video, then **Brief summary**: real study notes in sections, with the definitions, steps, examples and numbers as the teacher gave them and the key terms in bold. **Key terms** lists every term with its meaning, and **Test yourself** turns the key points into recall cards. Works on lectures, podcasts and interviews up to 6 hours, in English or Hindi, and the PDF keeps it all.
-
-<p align="center">
-  <img src="docs/screenshots/summary.webp" alt="The summary under the pinned player" width="250">
-  &nbsp;
-  <img src="docs/screenshots/brief.webp" alt="The brief summary as sectioned study notes" width="250">
-  &nbsp;
-  <img src="docs/screenshots/terms.webp" alt="Key terms with their meanings" width="250">
-</p>
-
-### 🧠 See the whole lecture as a mind map
-
-The main idea in the middle, its branches on both sides, a colour per branch. Tap an idea to read its card: where it sits, what it means, the lecture's points on it with their times, and its sub-ideas. **Play from here** jumps the video to that second, and while the video plays, the idea being taught right now lights up.
+A summary that covers the whole video, then **Brief summary**: study notes in sections, with the definitions, steps, examples and numbers as the teacher gave them. **Key terms** explains every term, and **Test yourself** turns the key points into recall cards. Lectures, podcasts and interviews up to 6 hours, in English or Hindi.
 
 <p align="center">
-  <img src="docs/screenshots/map-full-card.webp" alt="The mind map in full screen with an idea's card open" width="250">
-  &nbsp;
-  <img src="docs/screenshots/idea-card.webp" alt="An idea's card under the map" width="250">
+  <img src="docs/screenshots/laptop-summary.webp" alt="A SciShow video with its summary and brief summary notes beside the player" width="92%">
 </p>
 
-### 👥 Study together, at the exact second
+### 🧠 The whole lecture as a mind map
 
-Make a group, invite friends with a link, and share a video or a doubt at the moment it confused you. Talk it through in a thread; whoever asked marks it answered. Members see the name you pick for each group, never your email. Or send any video to WhatsApp or Telegram in one tap: friends land on it in Lumo, summary included.
+The main idea in the middle, branches on both sides, a colour per branch. Tap an idea to see what it means, the lecture's points on it with their times, and **Play from here**. While the video plays, the idea being taught right now lights up.
 
 <p align="center">
-  <img src="docs/screenshots/group.webp" alt="A study group with an answered doubt and a shared video" width="250">
-  &nbsp;
-  <img src="docs/screenshots/share.webp" alt="Share a video to WhatsApp, Telegram or a study group" width="250">
+  <img src="docs/screenshots/laptop-map.webp" alt="The mind map of a neural network lecture in full screen at night, with an idea's card open" width="92%">
 </p>
 
-### 🏠 A home that's only about what you're learning
+### 👥 Study groups that talk about the exact second
 
-Set a goal like "CA Inter costing" or "machine learning for beginners" and Home fills with videos for it, plus podcasts and interviews. Songs, games and comedy are off from the start; switch any of them back on in Settings. Shorts come only from channels you follow, and your YouTube subscriptions import in one tap. Your own notepad sits beside the player, with highlights, coloured underlines, pasted screenshots and times that jump back to the moment.
+Invite friends with a link, share a video or a doubt at the moment it confused you, and talk it through in a thread. Or send any video to WhatsApp or Telegram in one tap.
 
 <p align="center">
-  <img src="docs/screenshots/home.webp" alt="Home with videos for a learning goal" width="250">
+  <img src="docs/screenshots/laptop-group.webp" alt="A study group with a shared video and an answered doubt" width="92%">
 </p>
 
-### 💻 And on a laptop
-
-<p align="center">
-  <img src="docs/screenshots/laptop.webp" alt="Lumo on a laptop at night: the study page with the summary and key terms beside the player" width="92%">
-</p>
+**Also inside:** a Home that shows only what you're learning (songs, games and comedy are off from the start), your own notepad beside the player, Mark and Doubt at the current second, Shorts only from channels you follow, and night mode.
 
 ## Install in 10 seconds
 

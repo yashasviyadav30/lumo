@@ -1,4 +1,4 @@
-// The README's demo: a 20-second tour of the live app on a phone, recorded as video, then made a GIF with ffmpeg.
+// The README's demo: a 20-second tour of the live app on a laptop, recorded as video, then made a GIF with ffmpeg.
 // Run: E2E_BASE=<live url> node e2e/readme-demo.mjs → docs/brand/demo.gif (throwaway account, always deleted)
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
@@ -6,7 +6,7 @@ import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
 const VIDEO = 'aircAruvnKk'
-const SIZE = { width: 412, height: 915 }
+const SIZE = { width: 1280, height: 800 }
 const dir = 'e2e/screenshots/demo'
 fs.rmSync(dir, { recursive: true, force: true })
 
@@ -23,7 +23,7 @@ const token = await setup.evaluate(async () => {
   return (await r.json()).token
 })
 // The same learning channels as the README shots, so Home opens on their newest videos.
-const FOLLOW = ['UCsXVk37bltHxD1rDPwtNM8Q', 'UCHnyfMqiRRG1u-2MsSQLbXA', 'UCsooa4yRKGN_zEE8iknghZA', 'UCX6b17PVsYBQ0ip5gyeme-Q',
+const FOLLOW = ['UCsXVk37bltHxD1rDPwtNM8Q', 'UCHnyfMqiRRG1u-2MsSQLbXA', 'UCsooa4yRKGN_zEE8iknghZA',
   'UCYO_jab_esuFRV4b17AJtAw', 'UC6nSFpj9HTCZ5t-N3Rm3-HA', 'UCUHW94eEFW7hkUMVaZz4eDg', 'UCZYTClx2T1of7BRZ86-8fow']
 await setup.evaluate(
   async ([t, follow]) => {
@@ -36,7 +36,7 @@ await setup.evaluate(
 )
 await setup.close()
 
-const context = await browser.newContext({ viewport: SIZE, deviceScaleFactor: 2, recordVideo: { dir, size: SIZE } })
+const context = await browser.newContext({ viewport: SIZE, deviceScaleFactor: 1, recordVideo: { dir, size: SIZE } })
 await context.addInitScript((t) => {
   localStorage.setItem('focuslearn.token', t)
   localStorage.setItem('focuslearn.guideSeen', '1')
@@ -55,12 +55,10 @@ try {
   await page.goto(BASE + '/watch/' + VIDEO)
   await page.locator('.sum-short').waitFor({ timeout: 60_000 })
   await pause(2200)
-  await page.locator('.study-tabs').evaluate((el) => window.scrollBy({ top: el.getBoundingClientRect().top - 420, behavior: 'smooth' }))
-  await pause(1800)
   await page.getByRole('button', { name: 'Brief summary' }).click()
   await pause(600)
-  await page.mouse.wheel(0, 650)
-  await pause(2400)
+  await page.mouse.wheel(0, 420)
+  await pause(2600)
   await page.getByRole('tab', { name: /Mind map/ }).click()
   await page.locator('.mm-node').first().waitFor()
   await pause(1800)
@@ -81,7 +79,7 @@ try {
 const video = fs.readdirSync(dir).find((f) => f.endsWith('.webm'))
 const src = `${dir}/${video}`
 // A palette made from the video itself, no dithering, and only changed areas redrawn: sharp and under 3 MB.
-const filters = 'fps=10,scale=320:-1:flags=lanczos'
+const filters = 'fps=10,scale=760:-1:flags=lanczos'
 execFileSync('ffmpeg', ['-y', '-ss', String(tourStart), '-i', src, '-vf', `${filters},palettegen=max_colors=128:stats_mode=diff`, `${dir}/palette.png`], { stdio: 'ignore' })
 execFileSync(
   'ffmpeg',

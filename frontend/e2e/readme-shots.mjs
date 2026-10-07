@@ -10,7 +10,6 @@ const FOLLOW = {
   UCsXVk37bltHxD1rDPwtNM8Q: 'Kurzgesagt',
   'UCHnyfMqiRRG1u-2MsSQLbXA': 'Veritasium',
   UCsooa4yRKGN_zEE8iknghZA: 'TED-Ed',
-  'UCX6b17PVsYBQ0ip5gyeme-Q': 'CrashCourse',
   UCYO_jab_esuFRV4b17AJtAw: '3Blue1Brown',
   'UC6nSFpj9HTCZ5t-N3Rm3-HA': 'Vsauce',
   UCUHW94eEFW7hkUMVaZz4eDg: 'MinutePhysics',
