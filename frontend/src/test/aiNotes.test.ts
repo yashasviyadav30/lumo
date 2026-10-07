@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ROW_H, appendToDoc, copyLine, ideaAt, layoutTree, type MapNode } from '../lib/aiNotes'
-import { notesText, printableHtml } from '../lib/exportNotes'
+import { notesText, printableHtml, videoShareText } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
 
@@ -81,5 +81,14 @@ describe('ideaAt', () => {
   it('lights nothing before the video starts', () => {
     expect(ideaAt(map, 0)).toBeNull()
     expect(ideaAt(map, null)).toBeNull()
+  })
+})
+
+describe('sharing a video', () => {
+  it('carries the Lumo link and the plain YouTube link', () => {
+    const text = videoShareText('Neural networks', 'aircAruvnKk')
+    expect(text).toContain('/watch/aircAruvnKk')
+    expect(text).toContain('https://youtu.be/aircAruvnKk')
+    expect(text.startsWith('Neural networks')).toBe(true)
   })
 })

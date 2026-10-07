@@ -380,7 +380,7 @@ function StudyPage({ videoId }: { videoId: string }) {
             )}
           </div>
           <div className="title-actions">
-          <ShareToGroup videoId={videoId} getTime={() => player.current?.getCurrentTime() ?? 0} />
+          <ShareToGroup videoId={videoId} title={title} getTime={() => player.current?.getCurrentTime() ?? 0} />
           <button
             className={`star-video${starred ? ' on' : ''}${pop ? ' pop' : ''}`}
             onClick={toggleStar}

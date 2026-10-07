@@ -1,8 +1,8 @@
+import { APP_URL } from '../config'
 import type { AiNotesData, MapNode } from './aiNotes'
 import { clock } from './study'
 
 // Export AI notes: a printable page (the phone's print dialog saves it as PDF) or a share to WhatsApp.
-const APP_URL = 'https://focuslearn.focuslearn.workers.dev'
 const at = (videoId: string, s: number) => `https://youtu.be/${videoId}?t=${s}`
 
 export function notesText(title: string, videoId: string, notes: AiNotesData): string {
@@ -66,4 +66,13 @@ export function printNotes(title: string, videoId: string, notes: AiNotesData): 
   w.document.write(printableHtml(title, videoId, notes))
   w.document.close()
   return true
+}
+
+// The message a shared video carries: the Lumo link (opens it here, with its summary) and the plain YouTube link
+// for friends who don't use Lumo.
+export function videoShareText(title: string, videoId: string): string {
+  return `${title}
+
+Watch with its AI summary and mind map on Lumo: ${APP_URL}/watch/${videoId}
+On YouTube: https://youtu.be/${videoId}`
 }

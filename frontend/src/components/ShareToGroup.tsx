@@ -1,17 +1,63 @@
-import { Share2, X } from "./icons";
+import { Copy, Share2, ShareNetwork, TelegramLogo, WhatsappLogo, X } from "./icons";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
+import { APP_URL } from "../config";
+import { videoShareText } from "../lib/exportNotes";
 import { addPost, myGroups, type GroupSummary } from "../lib/groups";
 import { clock } from "../lib/study";
 
-// "Share" on the study page (plan v3): send the video (optionally opened on its AI notes or mind map) or ask a
-// doubt at the current second, to one of their groups.
+// The row of quick ways out: WhatsApp, Telegram, the phone's own share sheet, or copy.
+function ShareLinks({ title, videoId }: { title: string; videoId: string }) {
+  const [copied, setCopied] = useState(false);
+  const text = videoShareText(title, videoId);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy this link", `${APP_URL}/watch/${videoId}`);
+    }
+  };
+  return (
+    <div className="share-links" role="group" aria-label="Send the video">
+      <a className="share-link wa" href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer">
+        <WhatsappLogo size={22} weight="fill" aria-hidden="true" /> WhatsApp
+      </a>
+      <a
+        className="share-link tg"
+        href={`https://t.me/share/url?url=${encodeURIComponent(`${APP_URL}/watch/${videoId}`)}&text=${encodeURIComponent(title)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <TelegramLogo size={22} weight="fill" aria-hidden="true" /> Telegram
+      </a>
+      {"share" in navigator && (
+        <button
+          type="button"
+          className="share-link"
+          onClick={() => navigator.share({ title, text }).catch(() => undefined)}
+        >
+          <ShareNetwork size={22} aria-hidden="true" /> More
+        </button>
+      )}
+      <button type="button" className="share-link" onClick={copy} aria-live="polite">
+        <Copy size={22} aria-hidden="true" /> {copied ? "Copied" : "Copy link"}
+      </button>
+    </div>
+  );
+}
+
+// "Share" on the study page: send the video anywhere (WhatsApp, Telegram, the share sheet), or to one of their
+// study groups (optionally opened on its summary or mind map), or ask the group a doubt at the current second.
 export default function ShareToGroup({
   videoId,
+  title,
   getTime,
 }: {
   videoId: string;
+  title: string;
   getTime: () => number;
 }) {
   const [open, setOpen] = useState(false);
@@ -93,7 +139,7 @@ export default function ShareToGroup({
           >
             <div>
               <div className="mm-card-head">
-                <h2 id="share-title">Share to a study group</h2>
+                <h2 id="share-title">Share this video</h2>
                 <button
                   className="mm-close"
                   onClick={() => setOpen(false)}
@@ -102,6 +148,8 @@ export default function ShareToGroup({
                   <X size={18} />
                 </button>
               </div>
+              <ShareLinks title={title} videoId={videoId} />
+              <h3 className="share-sub">Or send it to a study group</h3>
               {!groups && (
                 <div
                   className="skeleton"
@@ -110,9 +158,9 @@ export default function ShareToGroup({
                 />
               )}
               {groups && groups.length === 0 && (
-                <p>
-                  You’re not in a group yet.{" "}
-                  <Link to="/groups">Create one</Link> and invite friends.
+                <p className="share-none">
+                  You’re not in a study group yet. <Link to="/groups">Create one</Link>, invite friends, and share
+                  videos and doubts at the exact second.
                 </p>
               )}
               {groups && groups.length > 0 && state !== "sent" && (
