@@ -47,6 +47,10 @@ export default function SignIn() {
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
+      <p className="help">
+        Forgot your password? If your email is a Gmail address, tap Continue with Google above: it opens the same
+        account.
+      </p>
       <p>
         New here? <Link to="/sign-up">Create an account</Link>
       </p>
