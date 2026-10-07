@@ -75,11 +75,30 @@ try {
   await page.waitForTimeout(5000) // the YouTube player draws its poster
   await showUnderPlayer('.study-tabs')
   await page.screenshot({ path: out('summary') })
+  // the brief summary as study notes, and the key terms
+  await page.getByRole('button', { name: 'Brief summary' }).click()
+  await page.waitForTimeout(500)
+  await showUnderPlayer('.sum-brief')
+  await page.screenshot({ path: out('brief') })
+  await showUnderPlayer('.key-terms')
+  await page.screenshot({ path: out('terms') })
+  await page.getByRole('button', { name: 'Hide brief summary' }).click()
   await page.getByRole('tab', { name: /Mind map/ }).click()
   await page.locator('.mm-node').first().waitFor()
   await showUnderPlayer('.study-tabs')
   await page.waitForTimeout(800)
   await page.screenshot({ path: out('mind-map') })
+  // an idea's card under the map
+  await page.locator('.mm-node.d1').first().click()
+  await page.waitForTimeout(900)
+  await page.screenshot({ path: out('idea-card') })
+  await page.getByRole('button', { name: 'Close' }).click()
+  // the share panel
+  await page.getByRole('button', { name: 'Share', exact: true }).first().click()
+  await page.locator('.share-links').waitFor()
+  await page.waitForTimeout(800)
+  await showUnderPlayer('.share-inline')
+  await page.screenshot({ path: out('share') })
 
   // A group with a shared video and an answered doubt
   const g = await api('/api/groups', { name: 'ML study circle', my_name: 'Meera' })

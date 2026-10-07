@@ -67,10 +67,12 @@ try {
   await page.locator('.mm-node.d1').first().click()
   await shot('phone-light-map', { fullPage: true })
   await shot('phone-light-map-screen') // what the phone really shows (full-page shots move sticky bars)
+  await page.getByRole('button', { name: 'Close' }).click() // the idea's card closes before full screen
   await page.getByRole('button', { name: 'Open full screen' }).click()
   await page.locator('.mm-node.d2').first().click()
   await shot('phone-light-map-full')
-  await page.keyboard.press('Escape')
+  await page.keyboard.press('Escape') // closes the card
+  await page.keyboard.press('Escape') // then full screen
 
   await tab(/My notes/).click()
   await page.locator('.np-doc').waitFor()
