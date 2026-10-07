@@ -260,17 +260,24 @@ function StudyPage({ videoId }: { videoId: string }) {
   )
 
   // "Copy to my notes": add to the saved notepad (works even while the editor isn't open).
-  const copyToNotes = async (heading: string, body: string, seconds: number | null) => {
-    const next = appendToDoc(padContent.current, [copyLine(heading, body, seconds)])
+  const copyLines = async (lines: ReturnType<typeof copyLine>[], done: string) => {
+    const next = appendToDoc(padContent.current, lines)
     padContent.current = next.content
     setPadVersion((v) => v + 1)
     try {
       await saveNotepad(videoId, next.content, next.text)
-      flash('Copied to My notes.')
+      flash(done)
     } catch {
       flash('Couldn’t save to My notes. Check your connection.', 'info')
     }
   }
+  const copyToNotes = (heading: string, body: string, seconds: number | null) =>
+    copyLines([copyLine(heading, body, seconds)], 'Copied to My notes.')
+  const copyAllToNotes = (points: Array<{ title: string; short: string; seconds: number | null }>) =>
+    copyLines(
+      points.map((p) => copyLine(p.title, p.short, p.seconds)),
+      `Copied ${points.length} key point${points.length === 1 ? '' : 's'} to My notes.`,
+    )
 
   const tabs = (
     <div className="study-tabs">
@@ -293,7 +300,7 @@ function StudyPage({ videoId }: { videoId: string }) {
         </button>
       </div>
       <div role="tabpanel" className="tab-panel">
-        {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onToast={flash} />}
+        {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onCopyAll={copyAllToNotes} onToast={flash} />}
         {tab === 'map' && (
           <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
             <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} onFull={() => player.current?.pauseVideo()} />

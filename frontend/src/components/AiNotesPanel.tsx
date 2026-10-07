@@ -1,4 +1,4 @@
-import { ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
+import { Brain, ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
 import { useState } from 'react'
 import { LANGS, type AiNotesData, type AiPoint, type NotesLang } from '../lib/aiNotes'
 import { printNotes, shareNotes } from '../lib/exportNotes'
@@ -140,6 +140,7 @@ export default function AiNotesPanel({
   videoId,
   onSeek,
   onCopy,
+  onCopyAll,
   onToast,
 }: {
   ai: ReturnType<typeof useAiNotes>
@@ -147,9 +148,11 @@ export default function AiNotesPanel({
   videoId: string
   onSeek: (t: number) => void
   onCopy: (title: string, body: string, seconds: number | null) => void
+  onCopyAll: (points: Array<{ title: string; short: string; seconds: number | null }>) => void
   onToast: (msg: string) => void
 }) {
   const notes = notesOf(ai.view)
+  const [testing, setTesting] = useState(false)
   return (
     <div className="ai-notes">
       <div className="ai-head">
@@ -160,7 +163,20 @@ export default function AiNotesPanel({
       ) : (
         <>
           <SummaryCard notes={notes} />
-          <h3 className="ai-sub">Key points</h3>
+          <div className="ai-sub-row">
+            <h3 className="ai-sub">Key points</h3>
+            <div className="ai-sub-actions">
+              <button className="small secondary" aria-pressed={testing} onClick={() => setTesting(!testing)}>
+                <Brain size={16} aria-hidden="true" /> {testing ? 'Back to reading' : 'Test yourself'}
+              </button>
+              <button className="small secondary" onClick={() => onCopyAll(byTime(notes.points))}>
+                <CopyPlus size={16} aria-hidden="true" /> Copy all
+              </button>
+            </div>
+          </div>
+          {testing ? (
+            <RecallDeck points={byTime(notes.points)} onSeek={onSeek} />
+          ) : (
           <ol className="ai-points">
             {byTime(notes.points).map((p, i) => (
               <li key={i}>
@@ -192,6 +208,7 @@ export default function AiNotesPanel({
               </li>
             ))}
           </ol>
+          )}
           <div className="ai-export">
             <button
               className="small secondary"
@@ -210,5 +227,43 @@ export default function AiNotesPanel({
         </>
       )}
     </div>
+  )
+}
+
+// "Test yourself": each key point's title is the question; try to recall it, then reveal. Active recall from the
+// summary's own words, no score and nothing kept (R8: no points or streaks).
+function RecallDeck({ points, onSeek }: { points: AiPoint[]; onSeek: (t: number) => void }) {
+  const [shown, setShown] = useState<Set<number>>(new Set())
+  const reveal = (i: number) => setShown((s) => new Set(s).add(i))
+  return (
+    <>
+      <p className="help recall-help">Read each title, say the idea in your own words, then check.</p>
+      <ol className="recall">
+        {points.map((p, i) => (
+          <li key={i} className={shown.has(i) ? 'open' : ''}>
+            <b>{p.title}</b>
+            {shown.has(i) ? (
+              <div className="recall-answer">
+                <p>{p.short}</p>
+                {p.seconds !== null && (
+                  <button className="ts-chip" onClick={() => onSeek(p.seconds!)} aria-label={`Play from ${clock(p.seconds)}`}>
+                    {clock(p.seconds)}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button className="small" onClick={() => reveal(i)}>
+                Show answer
+              </button>
+            )}
+          </li>
+        ))}
+      </ol>
+      {shown.size > 0 && (
+        <button className="link" onClick={() => setShown(new Set())}>
+          Hide the answers and go again
+        </button>
+      )}
+    </>
   )
 }

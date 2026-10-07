@@ -128,6 +128,15 @@ describe('study page', () => {
     await userEvent.click(screen.getByText('Who must spend'))
     await userEvent.click(screen.getByRole('button', { name: /Copy to my notes/ }))
     await waitFor(() => expect(calls.find((c) => c.path === '/api/notepad/save')?.body).toMatchObject({ video_id: VID, text: '[12:40] Who must spend: Big companies spend 2%.' }))
+ 
+    // Test yourself: the title is the question, the answer stays hidden until asked for; nothing is scored.
+    await userEvent.click(screen.getByRole('button', { name: 'Test yourself' }))
+    expect(screen.queryByText('Big companies spend 2%.')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Show answer' }))
+    expect(screen.getByText('Big companies spend 2%.')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Back to reading' }))
+    await userEvent.click(screen.getByRole('button', { name: /Copy all/ }))
+    expect(await screen.findByText('Copied 1 key point to My notes.')).toBeInTheDocument()
   })
 
   it('never puts the video ID in a URL (R11)', async () => {

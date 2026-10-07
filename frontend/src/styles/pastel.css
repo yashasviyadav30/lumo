@@ -855,3 +855,64 @@ button:disabled:not(.link):not([role='tab']):not([role='menuitem']) {
   font-size: 1.5rem;
   margin: 6px 0 0;
 }
+
+/* Summary: Key points heading with its actions; "Test yourself" recall cards */
+.ai-sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 18px;
+}
+.ai-sub-row .ai-sub {
+  margin: 0;
+}
+.ai-sub-actions {
+  display: flex;
+  gap: 8px;
+}
+.ai-sub-actions button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.recall-help {
+  margin: 10px 0 8px;
+}
+.recall {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.recall li {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 16px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1.5px dashed var(--line);
+}
+.recall li.open {
+  border: 0;
+  background: var(--mint);
+  color: var(--on-pastel);
+  --text: var(--on-pastel);
+  animation: recall-flip 0.25s ease;
+}
+.recall-answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.recall-answer p {
+  margin: 0;
+}
+@keyframes recall-flip {
+  from { transform: rotateX(70deg); opacity: 0.3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .recall li.open { animation: none; }
+}
