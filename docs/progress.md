@@ -4,6 +4,22 @@ Autonomous build session started 2026-09-29. Scope: Stages 1, 2, 3 and 4A of [pl
 
 Rules for this session: R1–R14, the cost rule, no secrets printed or committed. Anything that needs the user is listed under "Blocked on the user" and skipped.
 
+## Summary engine fix (2026-10-07, evening)
+
+Long videos never finished: 1-hour parts kept getting "high demand" from the free Gemini models, retried with
+backoff up to 3 hours, and blocked the queue. Now: 15-minute parts (one call up to 20 min), two at a time, at
+0.5 fps (about 35k tokens a part instead of 82k at 1 fps); finished parts are kept on the job, so a retry redoes
+only the failed ones; busy answers are retried after 5 s and 15 s, then the job backs off 2, 4, 8… minutes (max 30);
+a final text-only call combines the parts into one summary, brief and themed mind map (plain merge if it fails);
+times Gemini counted from a part's start are moved into the part. Max length 6 h; daily guard 20 video-hours.
+Measured: 30 min of lecture in 38 s; a 2 h lecture in about 5 min with busy retries; a 3.9 h course in about a
+minute when Gemini was quiet. The page shows "n of m parts read", polls every 6 s, and offers Try again.
+Also: Share sends a video to WhatsApp, Telegram, the share sheet or a copied link; a shared video opened while
+signed out opens after sign-in; Doubt opens its box on any tab; Install the app button; Gmail recovery hint.
+
+Waiting on the owner: publish the Google sign-in consent screen (Testing → In production) so anyone can use
+Continue with Google; Play Store needs a Play Console account (one-time US$25) and a 14-day closed test.
+
 ## Final pass (2026-10-07)
 
 Reviews run in parallel (design walk-through on the live site, speed, bugs, security) and fixed:
