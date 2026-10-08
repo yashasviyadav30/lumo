@@ -3,7 +3,8 @@
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
-const MAP_VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: the richest mind map
+const STUDY_VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: summary, notes and a 24-idea mind map
+const DOUBT_VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture
 const FOLLOW = {
   UCsXVk37bltHxD1rDPwtNM8Q: 'Kurzgesagt',
   'UCHnyfMqiRRG1u-2MsSQLbXA': 'Veritasium',
@@ -64,10 +65,7 @@ try {
   await page.screenshot({ path: out('home') })
 
   // A video's summary with its notes open, from one of those channels (8 to 25 minutes)
-  const feed = await api('/api/feed', { recent: [] })
-  const names = new Set(Object.values(FOLLOW).filter((n) => n !== '3Blue1Brown'))
-  const pick = feed.results.find((v) => names.has(v.channel_title) && v.duration_s >= 480 && v.duration_s <= 1500)?.video_id ?? MAP_VIDEO
-  console.log('summary video:', pick)
+  const pick = STUDY_VIDEO
   await page.goto(BASE + '/watch/' + pick)
   await page.locator('.sum-short, .ai-notes button').first().waitFor({ timeout: 60_000 })
   const generate = page.getByRole('button', { name: /Generate summary/ })
@@ -81,7 +79,7 @@ try {
 
   // A study group with the video and an answered doubt
   const g = await api('/api/groups', { name: 'Science study circle', my_name: 'Maya' })
-  const doubt = await api('/api/groups/post', { group_id: g.id, kind: 'doubt', video_id: MAP_VIDEO, t_seconds: 173, text: 'Why does each neuron hold a number between 0 and 1?' })
+  const doubt = await api('/api/groups/post', { group_id: g.id, kind: 'doubt', video_id: DOUBT_VIDEO, t_seconds: 173, text: 'Why does each neuron hold a number between 0 and 1?' })
   await api('/api/groups/reply', { post_id: doubt.id, text: 'That is its activation. Sigmoid squeezes any sum into 0 to 1 (see 13:10).' })
   await api('/api/groups/post/answered', { post_id: doubt.id, answered: true })
   await api('/api/groups/post', { group_id: g.id, kind: 'video', video_id: pick, attach: 'notes', text: 'Watch this before Sunday. The summary is a great start.' })
@@ -90,14 +88,14 @@ try {
   await page.waitForTimeout(2500)
   await page.screenshot({ path: out('group') })
 
-  // The mind map, full screen at night, with an idea's card
+  // The whole mind map, full screen at night: every idea at once
   await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto(BASE + '/watch/' + MAP_VIDEO)
+  await page.goto(BASE + '/watch/' + STUDY_VIDEO)
   await page.getByRole('tab', { name: /Mind map/ }).click()
   await page.locator('.mm-node').first().waitFor({ timeout: 60_000 })
   await page.getByRole('button', { name: 'Open full screen' }).click()
   await page.waitForTimeout(1200)
-  await page.locator('.mm-node.d1').nth(1).click()
+  await page.locator('.react-flow__controls-fitview').click() // fit the whole map, not just the branches
   await page.waitForTimeout(1500)
   await page.screenshot({ path: out('map') })
   console.log('✔ laptop shots')

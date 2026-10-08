@@ -1,9 +1,9 @@
-// The README's banner (light and dark) and its two buttons, drawn from the real laptop screenshots.
-// Run after readme-laptop.mjs: node e2e/readme-banner.mjs → docs/brand/*.webp and *.svg
+// The README's banner (light and dark) and its two buttons, drawn from the real app screenshots.
+// Run after readme-shots.mjs: node e2e/readme-banner.mjs → docs/brand/*.webp and *.svg
 import fs from 'node:fs'
 import { chromium } from 'playwright'
 
-const lap = (name) => `data:image/png;base64,${fs.readFileSync(`e2e/screenshots/laptop-${name}.png`).toString('base64')}`
+const shot = (name) => `data:image/png;base64,${fs.readFileSync(`e2e/screenshots/readme-${name}.png`).toString('base64')}`
 const logo = fs.readFileSync('public/favicon.svg', 'utf8')
 fs.mkdirSync('../docs/brand', { recursive: true })
 
@@ -31,11 +31,11 @@ h1 em{font-style:normal;color:#7b6ff0}
 p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500;width:560px}
 .pills{display:flex;gap:12px;margin-top:30px}
 .pill{padding:10px 18px;border-radius:999px;font-weight:600;font-size:18px;color:#16151a}
-.win{position:absolute;border-radius:16px;background:${t.frame};padding:34px 6px 6px;box-shadow:0 30px 80px rgb(22 21 26/.35)}
-.win::before{content:'';position:absolute;left:16px;top:13px;width:9px;height:9px;border-radius:50%;background:#f5a7a0;box-shadow:16px 0 #fbe38e,32px 0 #bfebdd}
-.win img{display:block;width:100%;border-radius:10px}
-.w1{left:960px;top:70px;width:620px;transform:rotate(3deg)}
-.w2{left:790px;top:230px;width:680px;z-index:2;transform:rotate(-2deg)}
+.phone{position:absolute;width:272px;height:604px;border-radius:44px;background:${t.frame};padding:10px;box-shadow:0 30px 70px rgb(22 21 26/.35)}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:35px;display:block}
+.p1{left:820px;top:150px;transform:rotate(-7deg)}
+.p2{left:1060px;top:80px;transform:rotate(0deg);z-index:2}
+.p3{left:1300px;top:170px;transform:rotate(7deg)}
 </style></head><body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
 <div class="text">
@@ -44,8 +44,9 @@ p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500
   <p>An AI summary and mind map for any video, your notes beside the player, and study groups.</p>
   <div class="pills"><span class="pill" style="background:#fbe38e">Summaries</span><span class="pill" style="background:#c9c3f5">Mind maps</span><span class="pill" style="background:#bfebdd">Study groups</span></div>
 </div>
-<div class="win w1"><img src="${lap('map')}"></div>
-<div class="win w2"><img src="${lap('home')}"></div>
+<div class="phone p1"><img src="${shot('home')}"></div>
+<div class="phone p2"><img src="${shot('map-full-card')}"></div>
+<div class="phone p3"><img src="${shot('brief')}"></div>
 </body></html>`
 
 const browser = await chromium.launch({ channel: 'msedge' })

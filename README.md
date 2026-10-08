@@ -37,7 +37,7 @@ Every video plays through YouTube's own player, so creators keep their views and
 ## See it in 20 seconds
 
 <p align="center">
-  <img src="docs/brand/demo.gif" alt="A tour on a laptop: Home with science videos, a video's summary and study notes, then the mind map in full screen with an idea's card" width="760">
+  <img src="docs/brand/demo.gif" alt="A tour on a laptop: Home with science videos, a neural network lecture's summary and study notes, then its mind map in full screen with an idea's card" width="760">
 </p>
 
 <p align="center"><sub>Home → a video's summary and study notes → the mind map → an idea's card.</sub></p>
@@ -49,7 +49,7 @@ Every video plays through YouTube's own player, so creators keep their views and
 A summary that covers the whole video, then **Brief summary**: study notes in sections, with the definitions, steps, examples and numbers as the teacher gave them. **Key terms** explains every term, and **Test yourself** turns the key points into recall cards. Lectures, podcasts and interviews up to 6 hours, in English or Hindi.
 
 <p align="center">
-  <img src="docs/screenshots/laptop-summary.webp" alt="A SciShow video with its summary and brief summary notes beside the player" width="92%">
+  <img src="docs/screenshots/laptop-summary.webp" alt="3Blue1Brown's neural network lecture with its summary and brief summary notes beside the player" width="92%">
 </p>
 
 ### 🧠 The whole lecture as a mind map
@@ -57,7 +57,7 @@ A summary that covers the whole video, then **Brief summary**: study notes in se
 The main idea in the middle, branches on both sides, a colour per branch. Tap an idea to see what it means, the lecture's points on it with their times, and **Play from here**. While the video plays, the idea being taught right now lights up.
 
 <p align="center">
-  <img src="docs/screenshots/laptop-map.webp" alt="The mind map of a neural network lecture in full screen at night, with an idea's card open" width="92%">
+  <img src="docs/screenshots/laptop-map.webp" alt="The whole mind map of a neural network lecture in full screen at night: 24 ideas in 7 branches" width="92%">
 </p>
 
 ### 👥 Study groups that talk about the exact second

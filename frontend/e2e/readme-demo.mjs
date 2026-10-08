@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
-const VIDEO = 'aircAruvnKk'
+const VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: summary, notes and a 24-idea mind map
 const SIZE = { width: 1280, height: 800 }
 const dir = 'e2e/screenshots/demo'
 fs.rmSync(dir, { recursive: true, force: true })

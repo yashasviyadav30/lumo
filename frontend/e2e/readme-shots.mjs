@@ -4,7 +4,7 @@
 import { chromium } from 'playwright'
 
 const BASE = process.env.E2E_BASE ?? 'http://localhost:5173'
-const VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: the richest mind map
+const VIDEO = 'aircAruvnKk' // 3Blue1Brown's neural network lecture: summary, notes and a 24-idea mind map
 // Well-known learning channels with strong thumbnails; Home shows their newest videos first.
 const FOLLOW = {
   UCsXVk37bltHxD1rDPwtNM8Q: 'Kurzgesagt',
@@ -78,11 +78,8 @@ try {
   await page.waitForTimeout(1500)
   await page.screenshot({ path: out('home') })
 
-  // The summary, notes and key terms come from one of those channels' videos (8 to 25 minutes), for variety.
-  const feed = await api('/api/feed', { recent: [] })
-  const names = new Set(Object.values(FOLLOW).filter((n) => n !== '3Blue1Brown'))
-  const PICK = feed.results.find((v) => names.has(v.channel_title) && v.duration_s >= 480 && v.duration_s <= 1500)?.video_id ?? VIDEO
-  console.log('summary video:', PICK)
+  // The summary, notes, key terms and mind map all come from the same neural network lecture.
+  const PICK = VIDEO
 
   // Study page: summary, notes and key terms on PICK
   await page.goto(BASE + '/watch/' + PICK)
@@ -134,7 +131,7 @@ try {
   // A group with a shared video and an answered doubt
   const g = await api('/api/groups', { name: 'Science study circle', my_name: 'Maya' })
   await api('/api/groups/post', { group_id: g.id, kind: 'video', video_id: PICK, attach: 'notes', text: 'Watch this before Sunday. The summary is a great start.' })
-  const doubt = await api('/api/groups/post', { group_id: g.id, kind: 'doubt', video_id: VIDEO, t_seconds: 173, text: 'Why does each neuron hold a number between 0 and 1?' })
+  const doubt = await api('/api/groups/post', { group_id: g.id, kind: 'doubt', video_id: 'aircAruvnKk', t_seconds: 173, text: 'Why does each neuron hold a number between 0 and 1?' })
   await api('/api/groups/reply', { post_id: doubt.id, text: 'That is the activation. Sigmoid squeezes any sum into 0 to 1 (see 13:10).' })
   await api('/api/groups/post/answered', { post_id: doubt.id, answered: true })
   await page.goto(BASE + '/groups/' + g.id)
