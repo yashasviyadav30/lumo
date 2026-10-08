@@ -8,8 +8,8 @@ const logo = fs.readFileSync('public/favicon.svg', 'utf8')
 fs.mkdirSync('../docs/brand', { recursive: true })
 
 const theme = {
-  light: { bg: '#fbf7ef', ink: '#16151a', sub: '#5d5966', frame: '#16151a' },
-  dark: { bg: '#121116', ink: '#f4f2ee', sub: '#aaa6b4', frame: '#2a2833' },
+  light: { bg: '#fbf7ef', ink: '#16151a', sub: '#5d5966', frame: '#16151a', we: '#4b3fbf' },
+  dark: { bg: '#121116', ink: '#f4f2ee', sub: '#aaa6b4', frame: '#2a2833', we: '#c9c3f5' },
 }
 
 const page = (t) => `<!doctype html><html><head><meta charset="utf-8">
@@ -26,6 +26,7 @@ body{width:1600px;height:820px;background:${t.bg};font-family:'Plus Jakarta Sans
 .brand{display:flex;align-items:center;gap:20px}
 .brand svg{width:92px;height:92px;border-radius:24px;box-shadow:0 10px 30px rgb(22 21 26/.25)}
 .brand span{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:76px;color:${t.ink};letter-spacing:-2px}
+.brand span i{font-style:normal;color:${t.we}}
 h1{margin-top:34px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:54px;line-height:1.02;color:${t.ink};letter-spacing:-1.5px}
 h1 em{font-style:normal;color:#7b6ff0}
 p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500;width:560px}
@@ -39,7 +40,7 @@ p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500
 </style></head><body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
 <div class="text">
-  <div class="brand">${logo}<span>Thrywe</span></div>
+  <div class="brand">${logo}<span>Thry<i>we</i></span></div>
   <h1>Learn anything from YouTube. <em>Without the noise.</em></h1>
   <p>An AI summary and mind map for any video, your notes beside the player, and study groups.</p>
   <div class="pills"><span class="pill" style="background:#fbe38e">Summaries</span><span class="pill" style="background:#c9c3f5">Mind maps</span><span class="pill" style="background:#bfebdd">Study groups</span></div>
