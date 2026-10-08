@@ -1,6 +1,6 @@
 import { Brain, ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
 import { useState } from 'react'
-import { LANGS, type AiNotesData, type AiPoint, type AiTerm, type NotesLang } from '../lib/aiNotes'
+import { LANGS, startsAt, type AiNotesData, type AiPoint, type AiTerm, type NotesLang } from '../lib/aiNotes'
 import { inlineParts, parseNotes } from '../lib/notesFormat'
 import { printNotes, shareNotes } from '../lib/exportNotes'
 import { clock } from '../lib/study'
@@ -54,8 +54,8 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
       return view.reason === 'daily_limit' ? (
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
-          <h3>Queued for tomorrow</h3>
-          <p>Today’s free AI limit is used up. Your summary will be ready by tomorrow. Take your own notes in My notes meanwhile.</p>
+          <h3>Queued: starts {startsAt(view.starts_at)}</h3>
+          <p>Today’s free AI limit is used up. This summary starts by itself then, and opens for everyone. Take your own notes in My notes meanwhile.</p>
         </div>
       ) : (
         <div className="ai-state" role="status">

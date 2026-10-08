@@ -345,7 +345,10 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
         job.status, job.reason, job.updated_at = "too_long", None, now
         db.commit()
         return job.status
-    if quota.used(db, BUDGET_BUCKET) + cost > get_settings().gemini_video_s_per_day:
+    previous = (job.data or {}).get("previous")  # older notes still shown while these are made
+    budget = get_settings().gemini_video_s_per_day
+    # Remaking old notes in a newer format may use only half the day, so videos with no notes always have room.
+    if quota.used(db, BUDGET_BUCKET) + cost > (budget // 2 if previous else budget):
         job.reason, job.next_try_at = "daily_limit", _next_pacific_midnight(now)
         db.commit()
         return job.status
@@ -355,7 +358,6 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
 
     todo = parts(duration)
     kept: dict[str, dict] = dict(job.data["parts"]) if job.data and "parts" in job.data else {}
-    previous = (job.data or {}).get("previous")  # older notes still shown while these are made
     missing = [i for i in range(len(todo)) if str(i) not in kept]
     results = []
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
@@ -413,6 +415,8 @@ def view(job: AiNotes) -> dict:
         out.update(status="ready", notes=job.data["previous"], updating=True)
     elif job.status == "queued":
         out["reason"] = job.reason
+        if job.reason == "daily_limit":  # when it starts, so the page can say "after 12:35 pm" in the user's time
+            out["starts_at"] = job.next_try_at.astimezone(timezone.utc).isoformat()
         if job.data and "parts" in job.data:  # a long video part-way done
             done = job.data["parts"]
             out["progress"] = {"done": len(done), "total": job.data["total"]}

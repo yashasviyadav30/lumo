@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { appendToDoc, copyLine, ideaAt, ideaContext, layoutMindMap, type MapNode } from '../lib/aiNotes'
+import { appendToDoc, copyLine, ideaAt, ideaContext, layoutMindMap, startsAt, type MapNode } from '../lib/aiNotes'
 import { notesText, printableHtml, videoShareText } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
@@ -136,5 +136,14 @@ describe('printable sectioned notes', () => {
     expect(html).toContain('<h3>Ohm &lt;law&gt;</h3>')
     expect(html).toContain('<li><b>V = IR</b> &lt;b&gt;not html&lt;/b&gt;</li>')
     expect(html).toContain('<dt><b>Ohm</b></dt><dd>unit &lt;of&gt; resistance</dd>')
+  })
+})
+
+describe('startsAt', () => {
+  it('names today or tomorrow in the local time', () => {
+    const now = new Date(2026, 9, 8, 10, 0)
+    expect(startsAt(new Date(2026, 9, 8, 12, 35).toISOString(), now)).toMatch(/^today at 12:35/i)
+    expect(startsAt(new Date(2026, 9, 9, 12, 35).toISOString(), now)).toMatch(/^tomorrow at 12:35/i)
+    expect(startsAt(undefined, now)).toBe('tomorrow')
   })
 })

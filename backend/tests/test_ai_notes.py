@@ -107,6 +107,20 @@ def test_daily_limit_waits_for_tomorrow_without_calling(db):
     job = db.get(AiNotes, (VID, "hi"))
     assert job.reason == "daily_limit" and job.attempts == 0
     assert aware(job.next_try_at) > now
+    assert ai_notes.view(job)["starts_at"]
+
+
+def test_rebuilds_leave_half_the_day_for_new_videos(db):
+    add_video(db, duration_s=600)
+    quota.record(db, ai_notes.BUDGET_BUCKET, get_settings().gemini_video_s_per_day // 2)
+    job = ai_notes.request_notes(db, VID, "en")
+    old = {"summary": "old", "points": [], "mindmap": [], "v": 1}
+    job.data = {"previous": old}
+    db.commit()
+    never = lambda v, lang, part=None, seconds=0: pytest.fail("must not call Gemini")  # noqa: E731
+    assert run_due(db, datetime.now(timezone.utc), call=never) == "queued"
+    assert job.reason == "daily_limit"
+    assert ai_notes.view(job) == {"status": "ready", "notes": old, "updating": True}  # the old notes stay open
 
 
 def part_answer(asked):

@@ -18,6 +18,7 @@ export type AiNotesState =
   | {
       status: 'queued'
       reason: 'busy' | 'daily_limit' | null
+      starts_at?: string // daily_limit: when it starts by itself (the free limit resets)
       progress?: { done: number; total: number }
       partial?: AiNotesData // a long video: the notes on its first minutes, while the rest is read
       covered_s?: number
@@ -182,4 +183,12 @@ export function ideaContext(nodes: MapNode[], points: AiPoint[], id: string) {
   const until = after.length ? Math.min(...after) : Infinity
   const related = points.filter((p) => p.seconds !== null && p.seconds >= from && p.seconds < until)
   return { path, children, points: related.slice(0, 6) }
+}
+
+// "today at 12:35 pm" / "tomorrow at 12:35 pm" in the user's own time (the free limit resets at midnight in California).
+export function startsAt(iso: string | undefined, now = new Date()): string {
+  if (!iso) return 'tomorrow'
+  const at = new Date(iso)
+  const time = at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  return `${at.toDateString() === now.toDateString() ? 'today' : 'tomorrow'} at ${time}`
 }
