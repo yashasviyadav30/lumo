@@ -1,6 +1,6 @@
 // App-wide settings. Name chosen by the user on 2026-10-06 (R9: own name and look).
 export const APP_NAME = 'Lumo'
-export const APP_URL = 'https://focuslearn.focuslearn.workers.dev'
+export const APP_URL = 'https://lumo.focuslearn.workers.dev'
 export const APP_TAGLINE = 'Learn anything from YouTube, without the noise'
 
 // Backend address. Empty means "same origin" (the Vite dev server proxies /api to the backend).

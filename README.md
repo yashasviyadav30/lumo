@@ -1,4 +1,4 @@
-<a href="https://focuslearn.focuslearn.workers.dev">
+<a href="https://lumo.focuslearn.workers.dev">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/brand/banner-dark.webp">
     <img src="docs/brand/banner-light.webp" alt="Lumo: learn anything from YouTube, without the noise. An AI summary and mind map for any video, your notes beside the player, and study groups.">
@@ -6,7 +6,7 @@
 </a>
 
 <p align="center">
-  <a href="https://focuslearn.focuslearn.workers.dev"><img src="docs/brand/button-open.svg" alt="Open Lumo" height="52"></a>
+  <a href="https://lumo.focuslearn.workers.dev"><img src="docs/brand/button-open.svg" alt="Open Lumo" height="52"></a>
   &nbsp;
   <a href="#install-in-10-seconds"><img src="docs/brand/button-install.svg" alt="Install the app" height="52"></a>
 </p>
@@ -76,7 +76,7 @@ Lumo installs straight from the browser: no store, a small download, and it upda
 
 | Your device | How |
 |---|---|
-| **Android** | Open **[focuslearn.focuslearn.workers.dev](https://focuslearn.focuslearn.workers.dev)** in Chrome and tap **Install the app** on the welcome page (or ⋮ → *Install app*). Lumo gets its own icon and opens full screen. |
+| **Android** | Open **[lumo.focuslearn.workers.dev](https://lumo.focuslearn.workers.dev)** in Chrome and tap **Install the app** on the welcome page (or ⋮ → *Install app*). Lumo gets its own icon and opens full screen. |
 | **iPhone / iPad** | Open the link in Safari, tap **Share**, then **Add to Home Screen**. |
 | **Laptop** | Open the link in Chrome or Edge and click the install icon at the right end of the address bar. |
 
@@ -183,7 +183,7 @@ npm install
 npx vite --port 5173          # sends /api to localhost:8000
 ```
 
-To work on the screens against the live server, start the app with `API_PROXY=https://focuslearn.focuslearn.workers.dev npx vite`.
+To work on the screens against the live server, start the app with `API_PROXY=https://lumo.focuslearn.workers.dev npx vite`.
 
 ### Tests
 
@@ -217,7 +217,7 @@ If Lumo helps you learn, a ⭐ on this repository helps other learners find it.
 
 <p align="center">
   <br>
-  <a href="https://focuslearn.focuslearn.workers.dev"><img src="docs/brand/button-open.svg" alt="Open Lumo" height="52"></a>
+  <a href="https://lumo.focuslearn.workers.dev"><img src="docs/brand/button-open.svg" alt="Open Lumo" height="52"></a>
   <br><br>
   <sub>Made in India, for anyone learning from YouTube.</sub>
 </p>
