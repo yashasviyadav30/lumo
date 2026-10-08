@@ -105,7 +105,6 @@ export default function Layout() {
         )}
         <Link to="/" className="brand-link" aria-label={`${APP_NAME} home`}>
           <Logo size={28} />
-          <span className="brand">{APP_NAME}</span>
         </Link>
         <TopSearch />
         <div className="top-actions">

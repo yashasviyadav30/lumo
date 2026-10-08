@@ -12,7 +12,7 @@ export default function RequireAccount() {
     return (
       <div className="boot" role="status" aria-busy="true">
         <Logo size={56} />
-        <span>Opening Lumo…</span>
+        <span>Opening Thrywe…</span>
       </div>
     )
   if (!me && readToken()) {
@@ -20,7 +20,7 @@ export default function RequireAccount() {
     return (
       <div className="boot" role="alert">
         <Logo size={56} />
-        <span>Can’t reach Lumo right now.</span>
+        <span>Can’t reach Thrywe right now.</span>
         <button onClick={() => window.location.reload()}>Try again</button>
       </div>
     )

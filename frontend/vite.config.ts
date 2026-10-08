@@ -8,10 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon-192.png'],
+      includeAssets: ['favicon.svg', 'icon-192.png', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Lumo',
-        short_name: 'Lumo',
+        name: 'Thrywe',
+        short_name: 'Thrywe',
         description:
           'Learn anything from YouTube, without the noise: an AI summary and mind map for any video, your own notes beside the player, and study groups.',
         id: '/',

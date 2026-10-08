@@ -4,7 +4,7 @@ import { reasonCounts, type HiddenCard } from '../lib/search'
 
 type Props = { hidden: HiddenCard[]; shown: boolean; onToggleShow: () => void }
 
-// "N hidden by Lumo · Why · Show" (R6). Says the app hid them, not YouTube (Policies III.C).
+// "N hidden by Thrywe · Why · Show" (R6). Says the app hid them, not YouTube (Policies III.C).
 export default function HiddenLine({ hidden, shown, onToggleShow }: Props) {
   const [why, setWhy] = useState(false)
   const whyId = useId()

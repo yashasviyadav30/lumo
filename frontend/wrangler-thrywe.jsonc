@@ -1,0 +1,10 @@
+// thrywe.focuslearn.workers.dev, the app's address. While Google sign-in does not list it yet, it forwards every page to
+// the older address that Google knows (FORWARD_TO). Once it is added in Google's console, deploy it with the normal
+// config instead: npx wrangler deploy --name thrywe
+{
+  "name": "thrywe",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "vars": { "FORWARD_TO": "https://focuslearn.focuslearn.workers.dev" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": true }
+}

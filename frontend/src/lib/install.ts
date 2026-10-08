@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-// "Install Lumo": Chrome on Android (and desktop) offers the app's own install prompt once the page qualifies; we
+// "Install Thrywe": Chrome on Android (and desktop) offers the app's own install prompt once the page qualifies; we
 // keep that offer and show it behind our button. iPhones have no prompt: Safari's Share → Add to Home Screen.
 type InstallPrompt = Event & { prompt(): Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> }
 

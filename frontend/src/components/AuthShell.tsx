@@ -7,7 +7,7 @@ const BENEFITS = [
   { Icon: UsersThree, text: 'Study groups that talk about the exact second', short: 'Study groups', tint: 'mint' },
 ] as const
 
-// The frame for sign-in and sign-up, the first screens people see: what Lumo gives on one side (laptops), the card
+// The frame for sign-in and sign-up, the first screens people see: what Thrywe gives on one side (laptops), the card
 // on the other. On phones the benefits shrink to three chips above the card.
 export default function AuthShell({ title, lead, children }: { title: string; lead: string; children: ReactNode }) {
   return (

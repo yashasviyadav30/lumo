@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { APP_NAME } from '../config'
 import Notice from './Notice'
 
-// Google said yes, but this email has no Lumo account yet: the only things left are the 18+ check (R10) and the
+// Google said yes, but this email has no Thrywe account yet: the only things left are the 18+ check (R10) and the
 // notice. Asked right here, with Google's answer kept, so nobody has to press the Google button twice.
 export default function GoogleNewAccount({
   busy,

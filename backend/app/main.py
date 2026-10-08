@@ -30,7 +30,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 
 def create_app(run_background_jobs: bool = True) -> FastAPI:
-    app = FastAPI(title="Lumo backend", lifespan=lifespan if run_background_jobs else None)
+    app = FastAPI(title="Thrywe backend", lifespan=lifespan if run_background_jobs else None)
     app.add_middleware(RequestLogMiddleware)
     app.add_middleware(
         CORSMiddleware,

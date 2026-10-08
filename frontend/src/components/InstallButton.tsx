@@ -1,7 +1,7 @@
 import { DeviceMobile } from './icons'
 import { useInstall } from '../lib/install'
 
-// One tap to put Lumo on the home screen like an app (Android, laptops); the two taps it takes on an iPhone.
+// One tap to put Thrywe on the home screen like an app (Android, laptops); the two taps it takes on an iPhone.
 export default function InstallButton({ className = '' }: { className?: string }) {
   const { state, install } = useInstall()
   if (state === 'ready')

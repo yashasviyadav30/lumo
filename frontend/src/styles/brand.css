@@ -1,4 +1,4 @@
-/* Lumo brand. Loaded last, so it wins over index.css and v3.css. */
+/* Thrywe brand. Loaded last, so it wins over index.css and v3.css. */
 /* Palette v2 (2026-10-06, after the user's review): midnight and starlight. Quiet colour, one mood, like the
    reference sites the user liked: buttons are plain pills (ink by day, white by night), the accent is a soft starlight
    blue used sparingly. No orange. */
@@ -18,7 +18,7 @@
   --focus: #2a4fb8;
   --np-blue: #2a4fb8;
   --watched: #f04438;
-  --lumo-glow: #0e1422;
+  --brand-glow: #0e1422;
   --glow-soft: rgb(120 150 230 / 0.16);
   --shadow: 0 1px 2px rgb(14 20 34 / 0.05), 0 8px 24px rgb(14 20 34 / 0.06);
   --shadow-lg: 0 24px 60px rgb(14 20 34 / 0.14);
@@ -43,7 +43,7 @@
   --info-soft: rgb(159 193 255 / 0.13);
   --focus: #9fc1ff;
   --np-blue: #9fc1ff;
-  --lumo-glow: #f2f5fb;
+  --brand-glow: #f2f5fb;
   --glow-soft: rgb(110 150 255 / 0.14);
   --shadow: 0 10px 30px rgb(0 0 0 / 0.4);
   --shadow-lg: 0 30px 70px rgb(0 0 0 / 0.55);
@@ -65,7 +65,7 @@
     --info-soft: rgb(159 193 255 / 0.13);
     --focus: #9fc1ff;
     --np-blue: #9fc1ff;
-    --lumo-glow: #f2f5fb;
+    --brand-glow: #f2f5fb;
     --glow-soft: rgb(110 150 255 / 0.14);
     --shadow: 0 10px 30px rgb(0 0 0 / 0.4);
     --shadow-lg: 0 30px 70px rgb(0 0 0 / 0.55);
@@ -103,7 +103,7 @@ h3,
 /* ---------- buttons: the glow ---------- */
 .button,
 button {
-  background: var(--lumo-glow);
+  background: var(--brand-glow);
   color: var(--primary-ink);
   box-shadow: var(--btn-shadow);
 }
@@ -169,7 +169,7 @@ button.danger-link,
   color: var(--primary);
 }
 .ts-chip:hover {
-  background: var(--lumo-glow);
+  background: var(--brand-glow);
   color: var(--primary-ink);
 }
 button.danger {
@@ -233,7 +233,7 @@ button.danger {
   border: 0;
   background:
     linear-gradient(var(--surface), var(--surface)) padding-box,
-    var(--lumo-glow) border-box;
+    var(--brand-glow) border-box;
   border: 1.5px solid transparent;
   box-shadow: var(--shadow);
 }
@@ -272,7 +272,7 @@ button.danger {
   border: 1.5px solid transparent;
   background:
     linear-gradient(var(--surface), var(--surface)) padding-box,
-    var(--lumo-glow) border-box;
+    var(--brand-glow) border-box;
   box-shadow: 0 10px 30px var(--glow-soft);
   font-size: 1.02rem;
 }
@@ -283,7 +283,7 @@ button.danger {
   color: var(--primary);
 }
 .mm-node.d0 {
-  background: var(--lumo-glow);
+  background: var(--brand-glow);
   color: var(--primary-ink);
   border-color: transparent;
   box-shadow: var(--btn-shadow);
@@ -460,7 +460,7 @@ button.danger {
   font: 600 12px var(--display);
 }
 .lp-node.root rect {
-  fill: var(--lumo-glow);
+  fill: var(--brand-glow);
   stroke: none;
 }
 .lp-node.root text {
@@ -546,7 +546,7 @@ button.danger {
   display: grid;
   place-items: center;
   border-radius: 13px;
-  background: var(--lumo-glow);
+  background: var(--brand-glow);
   color: var(--primary-ink);
   box-shadow: var(--btn-shadow);
 }

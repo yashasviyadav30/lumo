@@ -11,7 +11,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lumo Guide</title>
+<title>Thrywe Guide</title>
 <style>
 :root {
   --bg: #0a0b09; --surface: #121411; --surface-2: #1a1d18; --text: #f2f5ec; --muted: #9aa294;
@@ -81,7 +81,7 @@ footer { margin-top: 64px; color: var(--muted); font-size: .85rem; text-align: c
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">Lumo guide</p>
+  <p class="kicker">Thrywe guide</p>
   <h1>Every screen, <span class="hl">every button</span>, <span class="dim">explained.</span></h1>
   <p class="lead">Each picture below is a real screen of the app. A line runs from every button and panel to a note that says what it does. Hover a note (or tap it on a phone) to light up its arrow.</p>
 

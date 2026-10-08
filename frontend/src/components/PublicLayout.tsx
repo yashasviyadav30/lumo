@@ -9,9 +9,8 @@ export default function PublicLayout() {
   return (
     <div className={`app${landing ? ' landing-page' : ''}`}>
       <header className="topbar">
-        <Link to="/welcome" className="brand-link">
+        <Link to="/welcome" className="brand-link" aria-label={`${APP_NAME} home`}>
           <Logo size={32} />
-          <span className="brand">{APP_NAME}</span>
         </Link>
         {landing && (
           <nav className="lp-nav" aria-label="Account">

@@ -11,7 +11,8 @@ describe('app shell (1.1)', () => {
 
   it('shows our own name and the four tabs (Home, Shorts, Library, My notes)', async () => {
     renderAt('/')
-    expect(await screen.findByText(APP_NAME)).toBeInTheDocument()
+    // The name is drawn inside the logo, so the home link carries it for screen readers.
+    expect(await screen.findByRole('link', { name: `${APP_NAME} home` })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Main' })
     for (const label of ['Home', 'Shorts', 'Library', 'My notes']) {
       expect(nav).toHaveTextContent(label)

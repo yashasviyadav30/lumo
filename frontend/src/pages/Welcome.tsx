@@ -1,7 +1,7 @@
 import InstallButton from '../components/InstallButton'
 import { ArrowUpRight, ChatCircleText, Clock, EyeSlash, HighlighterCircle, ImageSquare, Lightning, Sparkle, TreeStructure, UsersThree } from '../components/icons'
 import { Link, useLocation } from 'react-router'
-import { Orb } from '../components/Logo'
+import { AppIcon } from '../components/Logo'
 import { APP_NAME } from '../config'
 import { pendingJoin } from '../lib/groups'
 import { useSession } from '../lib/session'
@@ -102,7 +102,7 @@ export default function Welcome() {
         </div>
         <div className="lp-stage" aria-hidden="true">
           <div className="lp-orb">
-            <Orb size={260} />
+            <AppIcon size={260} />
           </div>
           <div className="lp-float one">
             <SummaryPreview />
@@ -183,7 +183,7 @@ export default function Welcome() {
       </div>
 
       <div className="lp-final">
-        <Orb size={56} />
+        <AppIcon size={56} />
         <h2>Your next video could be the one that makes it click.</h2>
         <Link className="button lp-cta" to="/sign-up">
           Start free <ArrowUpRight size={18} weight="bold" aria-hidden="true" />

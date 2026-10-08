@@ -39,7 +39,7 @@ p{margin-top:24px;font-size:25px;line-height:1.45;color:${t.sub};font-weight:500
 </style></head><body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
 <div class="text">
-  <div class="brand">${logo}<span>Lumo</span></div>
+  <div class="brand">${logo}<span>Thrywe</span></div>
   <h1>Learn anything from YouTube. <em>Without the noise.</em></h1>
   <p>An AI summary and mind map for any video, your notes beside the player, and study groups.</p>
   <div class="pills"><span class="pill" style="background:#fbe38e">Summaries</span><span class="pill" style="background:#c9c3f5">Mind maps</span><span class="pill" style="background:#bfebdd">Study groups</span></div>
@@ -64,6 +64,6 @@ const button = (label, bg, fg) => {
   const w = 34 + label.length * 11.5 + 30
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="52" viewBox="0 0 ${w} 52"><rect width="${w}" height="52" rx="26" fill="${bg}"/><text x="${w / 2}" y="33" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="${fg}">${label}</text></svg>`
 }
-fs.writeFileSync('../docs/brand/button-open.svg', button('Open Lumo  →', '#16151a', '#ffffff'))
+fs.writeFileSync('../docs/brand/button-open.svg', button('Open Thrywe  →', '#16151a', '#ffffff'))
 fs.writeFileSync('../docs/brand/button-install.svg', button('Install the app', '#c9c3f5', '#16151a'))
 console.log('buttons')

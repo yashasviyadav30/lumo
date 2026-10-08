@@ -21,7 +21,7 @@ function plainNotes(text: string): string {
 
 export function notesText(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short'): string {
   const time = (s: number | null) => (s !== null ? `${clock(s)} ` : '')
-  const foot = ['', `Watch: https://youtu.be/${videoId}`, `Summary made with Lumo: ${APP_URL}`]
+  const foot = ['', `Watch: https://youtu.be/${videoId}`, `Summary made with Thrywe: ${APP_URL}`]
   if (length === 'short') {
     const points = notes.points.map((p) => `• ${time(p.seconds)}${p.title}: ${p.short}`)
     return [title, '', notes.summary, '', ...points, ...foot].join('\n')
@@ -45,7 +45,7 @@ export function mapText(title: string, videoId: string, nodes: MapNode[]): strin
     }
   }
   walk(null, 0, new Set())
-  return [`${title}: mind map`, '', ...lines, '', `Watch: https://youtu.be/${videoId}`, `Mind map made with Lumo: ${APP_URL}`].join('\n')
+  return [`${title}: mind map`, '', ...lines, '', `Watch: https://youtu.be/${videoId}`, `Mind map made with Thrywe: ${APP_URL}`].join('\n')
 }
 
 export function shareNotes(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short') {
@@ -111,7 +111,7 @@ ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
     .map((p) => `<li>${time(p.seconds)}<b>${esc(p.title)}</b><br><span class="short">${esc(p.short)}</span><br>${esc(p.detail)}</li>`)
     .join('')}</ol>
 <h2>Mind map</h2>${outline(notes.mindmap, null)}
-<p class="note">Made by AI from the video, not by YouTube or the teacher. Check with the video. Lumo: ${APP_URL}</p>
+<p class="note">Made by AI from the video, not by YouTube or the teacher. Check with the video. Thrywe: ${APP_URL}</p>
 <script>window.onload=()=>setTimeout(()=>print(),300)</script>
 </body></html>`
 }
@@ -124,11 +124,11 @@ export function printNotes(title: string, videoId: string, notes: AiNotesData): 
   return true
 }
 
-// The message a shared video carries: the Lumo link (opens it here, with its summary) and the plain YouTube link
-// for friends who don't use Lumo.
+// The message a shared video carries: the Thrywe link (opens it here, with its summary) and the plain YouTube link
+// for friends who don't use Thrywe.
 export function videoShareText(title: string, videoId: string): string {
   return `${title}
 
-Watch with its AI summary and mind map on Lumo: ${APP_URL}/watch/${videoId}
+Watch with its AI summary and mind map on Thrywe: ${APP_URL}/watch/${videoId}
 On YouTube: https://youtu.be/${videoId}`
 }

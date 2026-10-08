@@ -15,7 +15,7 @@ describe('route error screen', () => {
   it('says the app was updated when a screen file is gone, and offers a reload', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {}) // React logs the thrown error
     renderThrowing('Failed to fetch dynamically imported module: /assets/Search-old.js')
-    expect(screen.getByRole('heading', { name: 'Lumo was just updated' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Thrywe was just updated' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Reload' })).toBeInTheDocument()
   })
 

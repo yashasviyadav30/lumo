@@ -74,7 +74,7 @@ describe('search (Stage 3)', () => {
     signInForTest({ 'POST /api/search': () => ({ status: 200, body: RESPONSE }) })
     renderAt('/search')
     await search()
-    expect(await screen.findByText('2 hidden by Lumo')).toBeInTheDocument()
+    expect(await screen.findByText('2 hidden by Thrywe')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Why' }))
     expect(screen.getByText('1 × YouTube lists this as Music')).toBeInTheDocument()
     expect(screen.getByText('1 × Age-restricted by YouTube')).toBeInTheDocument()

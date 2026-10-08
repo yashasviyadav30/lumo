@@ -31,7 +31,7 @@ export default function SignIn() {
 
   if (newGoogle)
     return (
-      <AuthShell title="Welcome to Lumo" lead="One last step, and you’re in.">
+      <AuthShell title="Welcome to Thrywe" lead="One last step, and you’re in.">
         {error && (
           <p className="error" role="alert">
             {error}

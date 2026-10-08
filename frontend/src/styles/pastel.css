@@ -23,7 +23,7 @@
   --sage: #c9d8a6;
   --coral: #f5a7a0;
   --on-pastel: #1a1a1f;
-  --lumo-glow: var(--ink);
+  --brand-glow: var(--ink);
   --glow-soft: transparent;
   --shadow: 0 2px 6px rgb(26 26 31 / 0.05), 0 10px 28px rgb(26 26 31 / 0.06);
   --shadow-lg: 0 24px 60px rgb(26 26 31 / 0.14);
@@ -52,7 +52,7 @@
   --sky: #b4cbec;
   --sage: #bccb97;
   --coral: #e99891;
-  --lumo-glow: var(--ink);
+  --brand-glow: var(--ink);
   --glow-soft: transparent;
   --shadow: 0 10px 30px rgb(0 0 0 / 0.35);
 }
@@ -78,7 +78,7 @@
     --sky: #b4cbec;
     --sage: #bccb97;
     --coral: #e99891;
-    --lumo-glow: var(--ink);
+    --brand-glow: var(--ink);
     --glow-soft: transparent;
     --shadow: 0 10px 30px rgb(0 0 0 / 0.35);
   }

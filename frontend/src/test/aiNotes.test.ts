@@ -119,7 +119,7 @@ describe('ideaAt', () => {
 })
 
 describe('sharing a video', () => {
-  it('carries the Lumo link and the plain YouTube link', () => {
+  it('carries the Thrywe link and the plain YouTube link', () => {
     const text = videoShareText('Neural networks', 'aircAruvnKk')
     expect(text).toContain('/watch/aircAruvnKk')
     expect(text).toContain('https://youtu.be/aircAruvnKk')
