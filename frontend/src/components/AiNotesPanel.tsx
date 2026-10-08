@@ -55,7 +55,7 @@ export function AiNotesStatus({ view, onGenerate, what }: { view: AiNotesView; o
         <div className="ai-state">
           <Clock3 size={22} aria-hidden="true" />
           <h3>Queued: starts {startsAt(view.starts_at)}</h3>
-          <p>Today’s free AI limit is used up. This summary starts by itself then, and opens for everyone. Take your own notes in My notes meanwhile.</p>
+          <p>Everyone on Lumo shares one free AI allowance a day, and today’s is used up. Nothing for you to do: this summary starts by itself then, and opens for everyone. Meanwhile, take your own notes in My notes.</p>
         </div>
       ) : (
         <div className="ai-state" role="status">

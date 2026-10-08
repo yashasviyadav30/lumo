@@ -54,6 +54,10 @@ class GeminiBusy(Exception):
     """Overloaded, rate-limited or timed out: try again later."""
 
 
+class GeminiDailyLimit(GeminiBusy):
+    """Google's own free quota for the day is used up: wait for its reset, don't keep asking."""
+
+
 class GeminiFailed(Exception):
     """The request itself was refused (private video, bad input)."""
 
@@ -186,13 +190,14 @@ def _ask(content: list[dict], media: bool) -> str:
     if media:
         config["mediaResolution"] = "MEDIA_RESOLUTION_LOW"
     body = {"contents": [{"parts": content}], "generationConfig": config}
-    busy: GeminiBusy | None = None
+    errors: list[GeminiBusy] = []
     for model in settings.gemini_model_list:
         try:
             return _call_model(model, body, settings.gemini_api_key)
         except GeminiBusy as e:
-            busy = e
-    raise busy or GeminiBusy("no_model")
+            errors.append(e)
+    # Only when every model is out for the day is it a daily limit; otherwise it is worth asking again soon.
+    raise next((e for e in errors if not isinstance(e, GeminiDailyLimit)), errors[0] if errors else GeminiBusy("no_model"))
 
 
 def _call_model(model: str, body: dict, key: str) -> str:
@@ -200,6 +205,8 @@ def _call_model(model: str, body: dict, key: str) -> str:
         r = httpx.post(GEMINI_URL.format(model=model), json=body, timeout=300, headers={"x-goog-api-key": key})
     except httpx.TransportError as e:
         raise GeminiBusy(type(e).__name__) from e
+    if r.status_code == 429 and "PerDay" in r.text:  # e.g. GenerateRequestsPerDayPerProjectPerModel-FreeTier
+        raise GeminiDailyLimit("HTTP 429 per day")
     if r.status_code in (404, 429, 500, 502, 503, 504):  # 404: a retired model, so try the next one
         raise GeminiBusy(f"HTTP {r.status_code}")
     if r.status_code != 200:
@@ -308,6 +315,8 @@ def _retrying(ask):
     for wait in (*RETRY_WAITS, None):
         try:
             return ask()
+        except GeminiDailyLimit as e:
+            return e
         except GeminiBusy as e:
             if wait is None:
                 return e
@@ -382,7 +391,10 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
     else:
         log.info("gemini %s: %s", "busy" if isinstance(errors[0], GeminiBusy) else "failed", errors[0])  # no video ID (R11)
         job.data = {"parts": kept, "total": len(todo), **({"previous": previous} if previous else {})}  # wait for the rest
-        if isinstance(errors[0], GeminiBusy):
+        if any(isinstance(e, GeminiDailyLimit) for e in errors):
+            job.attempts -= 1  # not this video's fault: it waits for the reset without nearing MAX_ATTEMPTS
+            job.reason, job.next_try_at = "daily_limit", _next_pacific_midnight(now)
+        elif isinstance(errors[0], GeminiBusy):
             job.reason, job.next_try_at = "busy", now + min(timedelta(minutes=2 ** job.attempts), timedelta(minutes=30))
         else:
             job.reason, job.next_try_at = None, now + timedelta(minutes=10)

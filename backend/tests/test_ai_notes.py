@@ -297,3 +297,18 @@ def test_if_the_new_format_never_comes_the_old_notes_stay(signed_in, db):
         status = run_due(db, t, call=busy)
         t += timedelta(hours=1)
     assert status == "ready" and db.get(AiNotes, (VID, "en")).data == old
+
+
+def test_googles_daily_limit_waits_for_the_reset_without_failing(db):
+    add_video(db, duration_s=600)
+    ai_notes.request_notes(db, VID, "en")
+
+    def out_for_the_day(v, lang, part=None, seconds=0):
+        raise ai_notes.GeminiDailyLimit("HTTP 429 per day")
+
+    now = datetime.now(timezone.utc)
+    for _ in range(ai_notes.MAX_ATTEMPTS + 1):
+        assert run_due(db, now, call=out_for_the_day) == "queued"
+        job = db.get(AiNotes, (VID, "en"))
+        assert job.reason == "daily_limit" and aware(job.next_try_at) > now + timedelta(minutes=30)
+        now = aware(job.next_try_at)
