@@ -1,0 +1,10 @@
+// lumo.focuslearn.workers.dev, the short address. While Google sign-in doesn't list this address yet, it forwards
+// every page to the main address (FORWARD_TO). Once the address is added in Google's console, deploy it with the
+// normal config instead: npx wrangler deploy --name lumo
+{
+  "name": "lumo",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "vars": { "FORWARD_TO": "https://focuslearn.focuslearn.workers.dev" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": true }
+}

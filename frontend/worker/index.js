@@ -6,6 +6,8 @@ const BACKEND = 'https://focus-app-6fb9.onrender.com'
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
+    // A second address can forward to the main one (set by wrangler-lumo.jsonc) until Google sign-in knows it.
+    if (env.FORWARD_TO) return Response.redirect(env.FORWARD_TO + url.pathname + url.search, 302)
     if (url.pathname.startsWith('/api/') || url.pathname === '/health') {
       const headers = new Headers(request.headers)
       headers.delete('cookie')
