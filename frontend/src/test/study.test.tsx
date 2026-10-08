@@ -127,6 +127,7 @@ describe('study page', () => {
     expect(yt.seeks).toContain(760)
     await userEvent.click(screen.getByText('Who must spend'))
     await userEvent.click(screen.getByRole('button', { name: /Copy to my notes/ }))
+    await userEvent.click(screen.getByRole('menuitem', { name: /^Short/ }))
     await waitFor(() => expect(calls.find((c) => c.path === '/api/notepad/save')?.body).toMatchObject({ video_id: VID, text: '[12:40] Who must spend: Big companies spend 2%.' }))
  
     // Test yourself: the title is the question, the answer stays hidden until asked for; nothing is scored.
@@ -136,7 +137,9 @@ describe('study page', () => {
     expect(screen.getByText('Big companies spend 2%.')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Back to reading' }))
     await userEvent.click(screen.getByRole('button', { name: /Copy all/ }))
+    await userEvent.click(screen.getByRole('menuitem', { name: /Key points in full/ }))
     expect(await screen.findByText('Copied 1 key point to My notes.')).toBeInTheDocument()
+    await waitFor(() => expect((calls.filter((c) => c.path === '/api/notepad/save').at(-1)?.body as { text?: string } | undefined)?.text).toContain('Big companies spend 2%. Net worth over 500 crore.'))
   })
 
   it('never puts the video ID in a URL (R11)', async () => {

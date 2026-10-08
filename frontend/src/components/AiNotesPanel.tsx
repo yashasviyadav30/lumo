@@ -1,8 +1,9 @@
 import { Brain, ChevronDown, Clock3, CopyPlus, FileDown, Hourglass, Share2, Sparkles, TriangleAlert } from './icons'
 import { useState } from 'react'
-import { LANGS, startsAt, type AiNotesData, type AiPoint, type AiTerm, type NotesLang } from '../lib/aiNotes'
+import { LANGS, briefDoc, copyLine, startsAt, type AiNotesData, type AiPoint, type AiTerm, type NotesLang } from '../lib/aiNotes'
 import { inlineParts, parseNotes } from '../lib/notesFormat'
-import { printNotes, shareNotes } from '../lib/exportNotes'
+import { printNotes, shareNotes, type NotesLength } from '../lib/exportNotes'
+import PopMenu from './PopMenu'
 import { clock } from '../lib/study'
 import { notesOf, type AiNotesView, type useAiNotes } from '../lib/useAiNotes'
 
@@ -211,19 +212,23 @@ export default function AiNotesPanel({
   videoId,
   onSeek,
   onCopy,
-  onCopyAll,
   onToast,
 }: {
   ai: ReturnType<typeof useAiNotes>
   title: string
   videoId: string
   onSeek: (t: number) => void
-  onCopy: (title: string, body: string, seconds: number | null) => void
-  onCopyAll: (points: Array<{ title: string; short: string; seconds: number | null }>) => void
+  onCopy: (lines: ReturnType<typeof copyLine>[], done: string) => void
   onToast: (msg: string) => void
 }) {
   const notes = notesOf(ai.view)
   const [testing, setTesting] = useState(false)
+  // Short or in full is the reader's choice, for sharing and for copying to My notes alike.
+  const pointLine = (p: AiPoint, full: boolean) => copyLine(p.title, full ? `${p.short} ${p.detail}` : p.short, p.seconds)
+  const copyPoints = (points: AiPoint[], full: boolean) =>
+    onCopy(points.map((p) => pointLine(p, full)), `Copied ${points.length} key point${points.length === 1 ? '' : 's'} to My notes.`)
+  const share = async (length: NotesLength) =>
+    notes && (await shareNotes(title, videoId, notes, length)) === 'whatsapp' && onToast('Opening WhatsApp…')
   return (
     <div className="ai-notes">
       <div className="ai-head">
@@ -242,9 +247,17 @@ export default function AiNotesPanel({
               <button className="small secondary" aria-pressed={testing} onClick={() => setTesting(!testing)}>
                 <Brain size={16} aria-hidden="true" /> {testing ? 'Back to reading' : 'Test yourself'}
               </button>
-              <button className="small secondary" onClick={() => onCopyAll(byTime(notes.points))}>
+              <PopMenu
+                items={[
+                  { label: 'Key points, short', onPick: () => copyPoints(byTime(notes.points), false) },
+                  { label: 'Key points in full', hint: 'With each point’s details', onPick: () => copyPoints(byTime(notes.points), true) },
+                  ...(notes.brief
+                    ? [{ label: 'Brief summary', hint: 'The study notes, in sections', onPick: () => onCopy(briefDoc(notes.brief!), 'Copied the brief summary to My notes.') }]
+                    : []),
+                ]}
+              >
                 <CopyPlus size={16} aria-hidden="true" /> Copy all
-              </button>
+              </PopMenu>
             </div>
           </div>
           {testing ? (
@@ -274,9 +287,15 @@ export default function AiNotesPanel({
                     <span className="ai-short">{p.short}</span>
                   </summary>
                   <p className="ai-detail">{p.detail}</p>
-                  <button className="link ai-copy" onClick={() => onCopy(p.title, p.short, p.seconds)}>
+                  <PopMenu
+                    className="link ai-copy"
+                    items={[
+                      { label: 'Short', onPick: () => onCopy([pointLine(p, false)], 'Copied to My notes.') },
+                      { label: 'In full', hint: 'With the details above', onPick: () => onCopy([pointLine(p, true)], 'Copied to My notes.') },
+                    ]}
+                  >
                     <CopyPlus size={15} aria-hidden="true" /> Copy to my notes
-                  </button>
+                  </PopMenu>
                 </details>
               </li>
             ))}
@@ -289,12 +308,14 @@ export default function AiNotesPanel({
             >
               <FileDown size={16} aria-hidden="true" /> Download PDF
             </button>
-            <button
-              className="small secondary"
-              onClick={async () => (await shareNotes(title, videoId, notes)) === 'whatsapp' && onToast('Opening WhatsApp…')}
+            <PopMenu
+              items={[
+                { label: 'Summary', hint: 'The short summary and key points', onPick: () => share('short') },
+                { label: 'Brief summary', hint: 'Study notes, key terms and every point in full', onPick: () => share('brief') },
+              ]}
             >
               <Share2 size={16} aria-hidden="true" /> Share summary
-            </button>
+            </PopMenu>
           </div>
           <AiLabel offline={'kind' in ai.view && ai.view.kind === 'offline'} />
         </>

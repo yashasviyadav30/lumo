@@ -1,9 +1,10 @@
 import { Background, Controls, Handle, Position, ReactFlow, type Edge, type Node, type NodeProps, type ReactFlowInstance } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { ArrowLeft, CopyPlus, Maximize2, Play, X } from './icons'
+import { ArrowLeft, CopyPlus, Maximize2, Play, Share2, X } from './icons'
 import { useEffect, useMemo, useRef, useState, type Ref } from 'react'
 import { NODE_W, ideaAt, ideaContext, layoutMindMap, type AiPoint, type MapNode } from '../lib/aiNotes'
 import { clock } from '../lib/study'
+import { mapText, shareText } from '../lib/exportNotes'
 import { notesOf, type useAiNotes } from '../lib/useAiNotes'
 import { useBackToClose } from '../lib/useBackToClose'
 import { AiLabel, AiNotesStatus, LangPicker, PartialBanner } from './AiNotesPanel'
@@ -56,12 +57,18 @@ const nodeTypes = { idea: Idea }
 // Zoomable mind map of the video (lazy-loaded: the map library is only fetched when this tab opens).
 export default function MindMap({
   ai,
+  title,
+  videoId,
   onSeek,
   onCopy,
+  onToast,
   onFull,
   nowS,
 }: {
   ai: ReturnType<typeof useAiNotes>
+  title: string
+  videoId: string
+  onToast: (msg: string) => void
   onSeek: (t: number) => void
   onCopy: (title: string, body: string, seconds: number | null) => void
   onFull?: () => void // the full-screen map hides the player: Watch pauses it (never play under a cover, R7)
@@ -254,6 +261,14 @@ export default function MindMap({
           </div>
           {!full && card}
           <p className="help mm-hint">Pinch or scroll to zoom, drag to move. Tap a box to read about it.</p>
+          <div className="ai-export">
+            <button
+              className="small secondary"
+              onClick={async () => (await shareText(title, mapText(title, videoId, data.mindmap))) === 'whatsapp' && onToast('Opening WhatsApp…')}
+            >
+              <Share2 size={16} aria-hidden="true" /> Share mind map
+            </button>
+          </div>
           <AiLabel offline={'kind' in ai.view && ai.view.kind === 'offline'} />
         </>
       )}

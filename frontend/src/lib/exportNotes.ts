@@ -6,13 +6,54 @@ import { clock } from './study'
 // Export AI notes: a printable page (the phone's print dialog saves it as PDF) or a share to WhatsApp.
 const at = (videoId: string, s: number) => `https://youtu.be/${videoId}?t=${s}`
 
-export function notesText(title: string, videoId: string, notes: AiNotesData): string {
-  const points = notes.points.map((p) => `• ${p.seconds !== null ? `${clock(p.seconds)} ` : ''}${p.title}: ${p.short}`)
-  return [title, '', notes.summary, '', ...points, '', `Watch: https://youtu.be/${videoId}`, `Summary made with Lumo: ${APP_URL}`].join('\n')
+// short: the summary and each key point's line (as before). brief: the study notes, key terms and every point in full.
+export type NotesLength = 'short' | 'brief'
+
+// WhatsApp and Telegram read *bold*: the notes' ## headings and **bold** become that, their "- " bullets "•".
+const starred = (t: string) => inlineParts(t).map((p) => (p.bold ? `*${p.text}*` : p.text)).join('')
+function plainNotes(text: string): string {
+  // a heading sits right above its own lines; other blocks get a blank line between them
+  return parseNotes(text).reduce((out, b, i, all) => {
+    const piece = b.kind === 'h' ? `*${b.text}*` : b.kind === 'ul' ? b.items.map((it) => `• ${starred(it)}`).join('\n') : starred(b.text)
+    return out + (i === 0 ? '' : all[i - 1].kind === 'h' ? '\n' : '\n\n') + piece
+  }, '')
 }
 
-export async function shareNotes(title: string, videoId: string, notes: AiNotesData): Promise<'shared' | 'whatsapp'> {
-  const text = notesText(title, videoId, notes)
+export function notesText(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short'): string {
+  const time = (s: number | null) => (s !== null ? `${clock(s)} ` : '')
+  const foot = ['', `Watch: https://youtu.be/${videoId}`, `Summary made with Lumo: ${APP_URL}`]
+  if (length === 'short') {
+    const points = notes.points.map((p) => `• ${time(p.seconds)}${p.title}: ${p.short}`)
+    return [title, '', notes.summary, '', ...points, ...foot].join('\n')
+  }
+  const parts = [title, '', '*Summary*', notes.summary]
+  if (notes.brief) parts.push('', '*Brief summary*', plainNotes(notes.brief))
+  if (notes.terms?.length) parts.push('', '*Key terms*', ...notes.terms.map((t) => `• ${t.term}: ${t.meaning}`))
+  parts.push('', '*Key points*', ...notes.points.map((p) => `• ${time(p.seconds)}*${p.title}*: ${p.short}\n${p.detail}\n`))
+  return [...parts, ...foot].join('\n')
+}
+
+// The mind map as an indented outline, the main idea first.
+export function mapText(title: string, videoId: string, nodes: MapNode[]): string {
+  const lines: string[] = []
+  const walk = (parent: string | null, depth: number, seen: Set<string>) => {
+    for (const n of nodes.filter((x) => x.parent === parent && !seen.has(x.id))) {
+      seen.add(n.id)
+      const label = depth === 0 ? `*${n.label}*` : `${'   '.repeat(depth - 1)}• ${n.label}`
+      lines.push(n.detail && depth > 0 ? `${label}: ${n.detail}` : label)
+      walk(n.id, depth + 1, seen)
+    }
+  }
+  walk(null, 0, new Set())
+  return [`${title}: mind map`, '', ...lines, '', `Watch: https://youtu.be/${videoId}`, `Mind map made with Lumo: ${APP_URL}`].join('\n')
+}
+
+export function shareNotes(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short') {
+  return shareText(title, notesText(title, videoId, notes, length))
+}
+
+// The phone's share sheet; without one (most laptops), WhatsApp in a new tab.
+export async function shareText(title: string, text: string): Promise<'shared' | 'whatsapp'> {
   if (navigator.share) {
     try {
       await navigator.share({ title, text })

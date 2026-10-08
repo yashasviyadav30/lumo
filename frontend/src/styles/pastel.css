@@ -1589,3 +1589,30 @@ button.armed,
     width: 220px;
   }
 }
+
+/* choice menus: share or copy, short or in full */
+.pop-menu {
+  position: relative;
+  display: inline-flex;
+}
+.pop-menu .menu {
+  min-width: 270px;
+}
+.pop-menu .menu button {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 10px 14px;
+  white-space: normal;
+}
+.pop-hint {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.ai-points .pop-menu .menu {
+  left: 0;
+  right: auto;
+}

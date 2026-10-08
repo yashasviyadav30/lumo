@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { appendToDoc, copyLine, ideaAt, ideaContext, layoutMindMap, startsAt, type MapNode } from '../lib/aiNotes'
-import { notesText, printableHtml, videoShareText } from '../lib/exportNotes'
+import { appendToDoc, briefDoc, copyLine, ideaAt, ideaContext, layoutMindMap, startsAt, type MapNode } from '../lib/aiNotes'
+import { mapText, notesText, printableHtml, videoShareText } from '../lib/exportNotes'
 
 const node = (id: string, parent: string | null): MapNode => ({ id, parent, label: id, detail: '', seconds: null })
 
@@ -72,6 +72,28 @@ describe('export', () => {
     const text = notesText('Lecture 1', 'abcdefghijk', notes)
     expect(text).toContain('• 12:40 Ohm <law>: V = IR')
     expect(text).toContain('Watch: https://youtu.be/abcdefghijk')
+  })
+
+  it('shares the short version by default and everything in full when asked', () => {
+    const full = { ...notes, brief: '## Basics\n- **Ohm**: V = IR', terms: [{ term: 'Resistance', meaning: 'How much a part resists current.' }] }
+    const short = notesText('Lecture 1', 'abcdefghijk', full)
+    expect(short).not.toContain('Current & voltage.')
+    expect(short).not.toContain('Basics')
+    const brief = notesText('Lecture 1', 'abcdefghijk', full, 'brief')
+    expect(brief).toContain('*Basics*\n• *Ohm*: V = IR')
+    expect(brief).toContain('• Resistance: How much a part resists current.')
+    expect(brief).toContain('• 12:40 *Ohm <law>*: V = IR\nCurrent & voltage.')
+  })
+
+  it('shares the mind map as an outline, the main idea first', () => {
+    expect(mapText('Lecture 1', 'abcdefghijk', notes.mindmap)).toContain('*Circuits*\n• Ohm: V = IR')
+  })
+
+  it('copies the brief summary to the notepad with its headings, bullets and bold', () => {
+    const [h, list] = briefDoc('## Basics\n- **Ohm**: V = IR')
+    expect(h).toMatchObject({ type: 'heading', content: [{ text: 'Basics' }] })
+    expect(list.type).toBe('bulletList')
+    expect(list.content![0].content![0].content).toEqual([{ type: 'text', text: 'Ohm', marks: [{ type: 'bold' }] }, { type: 'text', text: ': V = IR' }])
   })
 
   it('escapes AI text in the printable page and links each time to that second', () => {

@@ -1,4 +1,5 @@
 import { api } from './api'
+import { inlineParts, parseNotes } from './notesFormat'
 import { clock } from './study'
 
 // AI notes and mind map made by Gemini from the video (plan v3). Shared by everyone who opens the video.
@@ -128,6 +129,19 @@ export function copyLine(title: string, body: string, seconds: number | null): D
   return { type: 'paragraph', content }
 }
 
+// The brief summary for the notepad: its sections as headings, its bullets as a list, **bold** kept.
+export function briefDoc(brief: string): DocNode[] {
+  const inline = (t: string): DocNode[] =>
+    inlineParts(t).map((p) => (p.bold ? { type: 'text', text: p.text, marks: [{ type: 'bold' }] } : { type: 'text', text: p.text }))
+  return parseNotes(brief).map((b) =>
+    b.kind === 'h'
+      ? { type: 'heading', attrs: { level: 3 }, content: [{ type: 'text', text: b.text }] }
+      : b.kind === 'ul'
+        ? { type: 'bulletList', content: b.items.map((i) => ({ type: 'listItem', content: [{ type: 'paragraph', content: inline(i) }] })) }
+        : { type: 'paragraph', content: inline(b.text) },
+  )
+}
+
 const isBlank = (n: DocNode) => n.type === 'paragraph' && !n.content?.length
 
 export function appendToDoc(saved: string | null, paragraphs: DocNode[]): { content: string; text: string } {
@@ -146,7 +160,7 @@ export function appendToDoc(saved: string | null, paragraphs: DocNode[]): { cont
 function plainText(node: DocNode): string {
   if (node.text) return node.text
   const inner = (node.content ?? []).map(plainText)
-  return node.type === 'doc' ? inner.join('\n') : inner.join('')
+  return node.type === 'doc' || node.type === 'bulletList' ? inner.join('\n') : inner.join('')
 }
 
 // The idea being taught at `seconds`: the latest node whose time has passed. None before the video starts.

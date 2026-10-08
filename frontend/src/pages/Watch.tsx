@@ -278,11 +278,6 @@ function StudyPage({ videoId }: { videoId: string }) {
   }
   const copyToNotes = (heading: string, body: string, seconds: number | null) =>
     copyLines([copyLine(heading, body, seconds)], 'Copied to My notes.')
-  const copyAllToNotes = (points: Array<{ title: string; short: string; seconds: number | null }>) =>
-    copyLines(
-      points.map((p) => copyLine(p.title, p.short, p.seconds)),
-      `Copied ${points.length} key point${points.length === 1 ? '' : 's'} to My notes.`,
-    )
 
   const tabs = (
     <div className="study-tabs">
@@ -305,10 +300,10 @@ function StudyPage({ videoId }: { videoId: string }) {
         </button>
       </div>
       <div role="tabpanel" className="tab-panel">
-        {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onCopyAll={copyAllToNotes} onToast={flash} />}
+        {tab === 'notes' && <AiNotesPanel ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyLines} onToast={flash} />}
         {tab === 'map' && (
           <Suspense fallback={<div className="skeleton" style={{ height: 420 }} aria-busy="true" />}>
-            <MindMap ai={ai} onSeek={jump} onCopy={copyToNotes} onFull={() => player.current?.pauseVideo()} nowS={nowS} />
+            <MindMap ai={ai} title={title} videoId={videoId} onSeek={jump} onCopy={copyToNotes} onToast={flash} onFull={() => player.current?.pauseVideo()} nowS={nowS} />
           </Suspense>
         )}
         {tab === 'mine' && (
