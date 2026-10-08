@@ -157,14 +157,34 @@ def test_long_video_is_read_in_15_minute_parts_then_combined(db):
     assert quota.used(db, ai_notes.BUDGET_BUCKET) == 4200
 
 
-def test_combining_falls_back_to_a_plain_merge(db):
+def test_a_failed_combine_keeps_the_parts_and_is_tried_again(db):
     add_video(db, duration_s=1800 + 60)
     ai_notes.request_notes(db, VID, "en")
 
     def broken(done, lang, duration):
         raise GeminiBusy("HTTP 503")
 
-    assert run_due(db, datetime.now(timezone.utc), call=part_answer([]), combine=broken) == "ready"
+    t = datetime.now(timezone.utc)
+    assert run_due(db, t, call=part_answer([]), combine=broken) == "queued"  # not the rough merge yet
+    assert len(db.get(AiNotes, (VID, "en")).data["parts"]) == 3
+    never = lambda v, lang, part=None, seconds=0: pytest.fail("the parts are kept")  # noqa: E731
+    assert run_due(db, t + timedelta(minutes=6), call=never, combine=whole_video([])) == "ready"
+    assert db.get(AiNotes, (VID, "en")).data["summary"] == "The whole talk."
+    assert quota.used(db, ai_notes.BUDGET_BUCKET) == 1860  # the video counted once
+
+
+def test_combining_falls_back_to_a_plain_merge_when_it_keeps_failing(db):
+    add_video(db, duration_s=1800 + 60)
+    ai_notes.request_notes(db, VID, "en")
+
+    def broken(done, lang, duration):
+        raise GeminiBusy("HTTP 503")
+
+    t = datetime.now(timezone.utc)
+    for _ in range(ai_notes.MAX_ATTEMPTS):
+        status = run_due(db, t, call=part_answer([]), combine=broken)
+        t += timedelta(minutes=6)
+    assert status == "ready"
     data = db.get(AiNotes, (VID, "en")).data
     assert data["brief"].split("\n\n") == ["Part 1. from 0", "Part 2. from 15", "Part 3. from 30"]
     assert {n["id"]: n for n in data["mindmap"]}["p2-r"]["label"] == "Part 2: Root"

@@ -326,12 +326,6 @@ def _retrying(ask):
     return GeminiBusy("unreachable")
 
 
-def _whole(done: list[dict], lang: str, duration: int, combine) -> dict:
-    """Notes for the whole video from its parts; the plain merge if the combining call fails."""
-    result = _retrying(lambda: clean(combine(done, lang, duration), duration))
-    return result if isinstance(result, dict) else merge(done)
-
-
 # ---------- jobs ----------
 
 
@@ -355,9 +349,13 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
         db.commit()
         return job.status
     previous = (job.data or {}).get("previous")  # older notes still shown while these are made
+    todo = parts(duration)
+    kept: dict[str, dict] = dict(job.data["parts"]) if job.data and "parts" in job.data else {}
+    missing = [i for i in range(len(todo)) if str(i) not in kept]
     budget = get_settings().gemini_video_s_per_day
     # Remaking old notes in a newer format may use only half the day, so videos with no notes always have room.
-    if quota.used(db, BUDGET_BUCKET) + cost > (budget // 2 if previous else budget):
+    # With every part read, only the text-only combining call is left: that needs no video allowance.
+    if missing and quota.used(db, BUDGET_BUCKET) + cost > (budget // 2 if previous else budget):
         job.reason, job.next_try_at = "daily_limit", _next_pacific_midnight(now)
         db.commit()
         return job.status
@@ -365,9 +363,6 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
     job.next_try_at = now + LEASE
     db.commit()
 
-    todo = parts(duration)
-    kept: dict[str, dict] = dict(job.data["parts"]) if job.data and "parts" in job.data else {}
-    missing = [i for i in range(len(todo)) if str(i) not in kept]
     results = []
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
         running = {pool.submit(_retrying, lambda i=i: clean(call(job.video_id, job.lang, todo[i], duration or 0), duration, todo[i])): i
@@ -385,9 +380,19 @@ def run_due(db: Session, now: datetime | None = None, call=call_gemini, combine=
     errors = [r for r in results if not isinstance(r, dict)]
     if not errors:
         done = [kept[str(i)] for i in range(len(todo))]
-        job.data = done[0] if len(done) == 1 else _whole(done, job.lang, duration or 0, combine)
-        quota.record(db, BUDGET_BUCKET, cost)
-        job.status, job.reason = "ready", None
+        if missing:  # the video's last parts were read in this run: count it once, whatever the combine does
+            quota.record(db, BUDGET_BUCKET, cost)
+        whole = done[0] if len(done) == 1 else _retrying(lambda: clean(combine(done, job.lang, duration or 0), duration))
+        if not isinstance(whole, dict) and job.attempts >= MAX_ATTEMPTS:
+            whole = merge(done)  # the combining call kept failing: the parts side by side beat no notes
+        if isinstance(whole, dict):
+            job.data = whole
+            job.status, job.reason = "ready", None
+        else:
+            # Keep the parts and try only the combine again soon, instead of settling for the rough merge.
+            log.info("gemini combine %s: %s", "busy" if isinstance(whole, GeminiBusy) else "failed", whole)
+            job.data = {"parts": kept, "total": len(todo), **({"previous": previous} if previous else {})}
+            job.reason, job.next_try_at = "busy", now + timedelta(minutes=5)
     else:
         log.info("gemini %s: %s", "busy" if isinstance(errors[0], GeminiBusy) else "failed", errors[0])  # no video ID (R11)
         job.data = {"parts": kept, "total": len(todo), **({"previous": previous} if previous else {})}  # wait for the rest
