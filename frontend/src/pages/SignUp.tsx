@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
+import AuthShell from '../components/AuthShell'
 import GoogleButton from '../components/GoogleButton'
 import GoogleNewAccount from '../components/GoogleNewAccount'
 import Notice from '../components/Notice'
@@ -49,8 +50,7 @@ export default function SignUp() {
 
   if (pendingGoogle)
     return (
-      <section className="auth card">
-        <h1>Create your {APP_NAME} account</h1>
+      <AuthShell title="Create your free account" lead="One last step, and you’re in.">
         {error && (
           <p className="error" role="alert">
             {error}
@@ -62,12 +62,11 @@ export default function SignUp() {
           onCreate={(d) => attempt(() => googleAuth({ credential: pendingGoogle, date_of_birth: d, accepted_notice: true }))}
           onCancel={() => setPendingGoogle(null)}
         />
-      </section>
+      </AuthShell>
     )
 
   return (
-    <section className="auth card">
-      <h1>Create your {APP_NAME} account</h1>
+    <AuthShell title="Create your free account" lead="It takes a minute. No card, no ads.">
       <form onSubmit={onSubmit} noValidate={false}>
         <label htmlFor="dob">Date of birth</label>
         <input id="dob" name="dob" type="date" required aria-describedby="dob-help" value={dob} onChange={(e) => setDob(e.target.value)} />
@@ -100,6 +99,6 @@ export default function SignUp() {
       <p>
         Already have an account? <Link to="/sign-in">Sign in</Link>
       </p>
-    </section>
+    </AuthShell>
   )
 }

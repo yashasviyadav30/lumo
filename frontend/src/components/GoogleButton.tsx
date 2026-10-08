@@ -24,7 +24,7 @@ export default function GoogleButton({ onCredential, after = 'or use email' }: {
       .then((g) => {
         if (!live || !box.current) return
         g.accounts.id.initialize({ client_id: clientId, callback: (r) => callback.current(r.credential) })
-        g.accounts.id.renderButton(box.current, { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: 300 })
+        g.accounts.id.renderButton(box.current, { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: Math.min(400, Math.max(240, box.current.offsetWidth)) }) // as wide as the card
       })
       .catch(() => setFailed(true))
     return () => {

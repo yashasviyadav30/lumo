@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
+import AuthShell from '../components/AuthShell'
 import GoogleButton from '../components/GoogleButton'
 import GoogleNewAccount from '../components/GoogleNewAccount'
-import { APP_NAME } from '../config'
 import { ApiError } from '../lib/api'
 import { nextAfterSignIn } from '../lib/groups'
 import { useSession } from '../lib/session'
@@ -31,8 +31,7 @@ export default function SignIn() {
 
   if (newGoogle)
     return (
-      <section className="auth card">
-        <h1>Welcome to {APP_NAME}</h1>
+      <AuthShell title="Welcome to Lumo" lead="One last step, and you’re in.">
         {error && (
           <p className="error" role="alert">
             {error}
@@ -43,7 +42,7 @@ export default function SignIn() {
           onCreate={(dob) => attempt(() => googleAuth({ credential: newGoogle, date_of_birth: dob, accepted_notice: true }))}
           onCancel={() => setNewGoogle(null)}
         />
-      </section>
+      </AuthShell>
     )
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -53,8 +52,7 @@ export default function SignIn() {
   }
 
   return (
-    <section className="auth card">
-      <h1>Sign in</h1>
+    <AuthShell title="Welcome back" lead="Sign in to pick up where you left off.">
       <GoogleButton onCredential={(credential) => attempt(() => googleAuth({ credential }), credential)} />
       <form onSubmit={onSubmit}>
         <label htmlFor="email">Email</label>
@@ -77,6 +75,6 @@ export default function SignIn() {
       <p>
         New here? <Link to="/sign-up">Create an account</Link>
       </p>
-    </section>
+    </AuthShell>
   )
 }

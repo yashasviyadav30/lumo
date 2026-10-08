@@ -1427,3 +1427,165 @@ button.armed,
 .continue > div {
   padding-right: 34px; /* the title never runs under the ✕ */
 }
+
+/* ---------- sign in / sign up: the first look ---------- */
+.auth-shell {
+  max-width: 1080px;
+  margin: 8px auto 32px;
+  display: grid;
+  gap: 40px;
+  align-items: center;
+}
+.auth-side {
+  display: none;
+}
+.auth.card {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 28px 24px 24px;
+  border-radius: 28px;
+}
+.auth h1 {
+  margin: 0;
+  font-family: 'Bricolage Grotesque', var(--font-display, inherit), sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.auth-lead {
+  margin: 6px 0 14px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.auth-pills {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 0;
+}
+.auth-pills li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #16151a;
+}
+.auth .google-block {
+  margin-bottom: 4px;
+}
+.auth .google-btn {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+.auth form label:not(.check) {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.auth form input:not([type='checkbox']) {
+  min-height: 52px;
+  border-radius: 16px;
+  font-size: 1rem;
+}
+.auth form button[type='submit'] {
+  min-height: 52px;
+  font-size: 1.02rem;
+  border-radius: 999px;
+}
+.auth > p:not(.auth-lead):not(.error) {
+  text-align: center;
+}
+@media (min-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr 460px;
+    margin-top: 40px;
+  }
+  .auth-side {
+    display: block;
+    position: relative;
+    min-height: 520px;
+  }
+  .auth-side-title {
+    margin: 0;
+    max-width: 460px;
+    font-family: 'Bricolage Grotesque', var(--font-display, inherit), sans-serif;
+    font-size: 2.9rem;
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+  .auth-side-title em {
+    font-style: normal;
+    color: #7b6ff0;
+  }
+  .auth-benefits {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+    max-width: 300px;
+    font-weight: 600;
+    font-size: 1.02rem;
+  }
+  .auth-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .auth-chip {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    color: #16151a;
+  }
+  .auth-phone {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    width: 230px;
+    height: auto;
+    border-radius: 32px;
+    border: 8px solid #16151a;
+    box-shadow: 0 30px 70px rgb(22 21 26 / 0.3);
+    transform: rotate(6deg);
+  }
+  .auth-pills {
+    display: none; /* the side says it on a laptop */
+  }
+}
+/* the Google button measures its box: give the box the card's full width */
+.auth .google-btn {
+  display: block;
+  width: 100%;
+}
+.auth .google-btn > div {
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  .auth-side-title {
+    max-width: 330px;
+    font-size: 2.55rem;
+  }
+  .auth-benefits {
+    max-width: 320px;
+  }
+  .auth-phone {
+    top: 0;
+    right: 4px;
+    width: 220px;
+  }
+}
