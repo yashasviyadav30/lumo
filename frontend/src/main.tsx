@@ -13,6 +13,20 @@ import { applyTextSize, applyTheme } from './lib/theme'
 import { preloadPages, routes } from './routes'
 import { registerSW } from 'virtual:pwa-register'
 
+
+// The installed app's opening screen (index.html): keep it about 1.5 s from launch, then fade into the app.
+const splash = document.getElementById('splash')
+if (splash && getComputedStyle(splash).display !== 'none') {
+  const bar = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]:not([media*="dark"])')
+  const keep = bar?.content
+  if (bar) bar.content = '#4b3fbf' // the status bar matches the violet while it shows
+  window.setTimeout(() => {
+    splash.classList.add('done')
+    if (bar && keep) bar.content = keep
+    window.setTimeout(() => splash.remove(), 400)
+  }, Math.max(0, 1500 - performance.now()))
+} else splash?.remove()
+
 applyTheme()
 applyTextSize()
 wakeServer()

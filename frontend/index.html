@@ -21,8 +21,40 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Thrywe: learn anything from YouTube, without the noise. Phones showing Home, a mind map and study notes." />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- The installed app opens on its logo (like other apps): violet, the letters land, then the app fades in.
+         Only in the installed app (display-mode: standalone); it hides itself after 2.6 s even if scripts fail. -->
+    <style>
+      #splash { display: none; }
+      @media (display-mode: standalone) {
+        #splash {
+          display: flex; position: fixed; inset: 0; z-index: 9999; flex-direction: column; align-items: center;
+          justify-content: center; gap: 26px;
+          background: radial-gradient(120% 90% at 50% 40%, #5a4ed1 0%, #4b3fbf 55%, #3d32a8 100%);
+          animation: splash-out 0.45s ease 2.6s forwards;
+        }
+      }
+      #splash svg { width: min(68vw, 400px); height: auto; overflow: visible; }
+      #splash .g { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; animation: splash-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+      #splash .g:nth-child(1) { animation-delay: 0.1s; }
+      #splash .g:nth-child(2) { animation-delay: 0.18s; }
+      #splash .g:nth-child(3) { animation-delay: 0.26s; }
+      #splash .g:nth-child(4) { animation-delay: 0.34s; }
+      #splash .g:nth-child(5) { animation-delay: 0.42s; }
+      #splash .g:nth-child(6) { animation-delay: 0.5s; }
+      #splash p { margin: 0; color: #fbf7ef; opacity: 0; font: 600 15px/1.4 system-ui, sans-serif; letter-spacing: 0.02em; animation: splash-fade 0.5s ease 0.8s forwards; }
+      #splash p b { color: #fbe38e; font-weight: 600; }
+      #splash.done { opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+      @keyframes splash-drop { from { opacity: 0; transform: translateY(-45%) scale(1.2); } to { opacity: 1; transform: none; } }
+      @keyframes splash-fade { to { opacity: 0.92; } }
+      @keyframes splash-out { to { opacity: 0; visibility: hidden; } }
+      @media (prefers-reduced-motion: reduce) { #splash .g, #splash p { animation: none; opacity: 1; } }
+    </style>
   </head>
   <body>
+    <div id="splash" role="presentation">
+      <svg aria-hidden="true" focusable="false" viewBox="-286.0 -960.0 3908.0 1316.0" xmlns="http://www.w3.org/2000/svg"><path class="g" fill="#fbf7ef" d="M177 0V-660H339V0ZM14 -522V-660H502V-522Z"/><path class="g" fill="#fbf7ef" d="M552 0V-279V-700H714V-568Q714 -547 711.5 -512.5Q709 -478 704.5 -439.0Q700 -400 695.5 -364.5Q691 -329 688 -305H697Q706 -388 728.0 -440.5Q750 -493 788.0 -517.5Q826 -542 880 -542Q965 -542 1006.0 -481.5Q1047 -421 1047 -299V0H885V-292Q885 -348 870.0 -374.0Q855 -400 821 -400Q791 -400 767.0 -377.5Q743 -355 728.5 -306.0Q714 -257 714 -179V0Z"/><path class="g" fill="#fbf7ef" d="M1114 0V-287V-528H1254V-318H1262Q1268 -402 1285.5 -450.5Q1303 -499 1329.5 -519.5Q1356 -540 1389 -540Q1407 -540 1426.5 -535.0Q1446 -530 1465 -519L1457 -339Q1435 -352 1414.0 -358.5Q1393 -365 1374 -365Q1342 -365 1320.0 -347.0Q1298 -329 1286.5 -294.0Q1275 -259 1275 -209V0Z"/><path class="g" fill="#fbf7ef" d="M1710 156Q1680 156 1644.0 151.0Q1608 146 1572.0 135.0Q1536 124 1505 107L1542 -56Q1578 -22 1622.5 -8.0Q1667 6 1702 6Q1751 6 1784.5 -13.5Q1818 -33 1835.0 -70.5Q1852 -108 1852 -162V-254H1843Q1841 -184 1820.5 -139.5Q1800 -95 1765.0 -74.0Q1730 -53 1684 -53Q1627 -53 1589.5 -82.0Q1552 -111 1533.0 -169.0Q1514 -227 1514 -314V-528H1675V-356Q1675 -271 1693.0 -232.0Q1711 -193 1750 -193Q1770 -193 1785.5 -203.5Q1801 -214 1811.0 -235.5Q1821 -257 1826.0 -289.5Q1831 -322 1831 -365V-528H1992V-156Q1992 -102 1981.0 -54.5Q1970 -7 1948.0 31.5Q1926 70 1892.5 98.0Q1859 126 1813.5 141.0Q1768 156 1710 156Z"/><path class="g" fill="#fbe38e" d="M2157 0 2032 -528H2204L2265 -136H2270L2338 -528H2517L2583 -136H2588L2654 -528H2815L2692 0H2481L2427 -356H2422L2366 0Z"/><path class="g" fill="#fbe38e" d="M3087 14Q3012 14 2961.5 -7.5Q2911 -29 2880.0 -66.5Q2849 -104 2835.5 -152.0Q2822 -200 2822 -253Q2822 -310 2836.5 -362.0Q2851 -414 2881.5 -454.5Q2912 -495 2960.5 -518.5Q3009 -542 3077 -542Q3145 -542 3193.5 -518.5Q3242 -495 3271.0 -453.0Q3300 -411 3308.5 -356.0Q3317 -301 3306 -237L2923 -231V-319L3182 -324L3161 -273Q3167 -319 3159.5 -350.5Q3152 -382 3132.0 -398.5Q3112 -415 3077 -415Q3040 -415 3018.0 -396.0Q2996 -377 2987.0 -342.5Q2978 -308 2978 -261Q2978 -180 3005.0 -143.0Q3032 -106 3088 -106Q3112 -106 3128.0 -112.0Q3144 -118 3154.0 -129.5Q3164 -141 3168.0 -157.5Q3172 -174 3171 -195L3319 -187Q3322 -154 3312.5 -119.0Q3303 -84 3277.0 -54.0Q3251 -24 3204.5 -5.0Q3158 14 3087 14Z"/></svg>
+      <p>Every lesson. <b>None of the noise.</b></p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

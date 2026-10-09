@@ -20,8 +20,8 @@ export default defineConfig({
         lang: 'en',
         display: 'standalone',
         categories: ['education', 'productivity'],
-        background_color: '#fbf7ef',
-        theme_color: '#fbf7ef',
+        background_color: '#4b3fbf', // the phone's own launch screen: violet with the icon
+        theme_color: '#4b3fbf',
         // What the install sheet shows on Android and desktop Chrome, like a store listing.
         screenshots: [
           { src: '/screenshots/home.webp', sizes: '618x1372', type: 'image/webp', form_factor: 'narrow', label: 'Home: videos for your goal' },
