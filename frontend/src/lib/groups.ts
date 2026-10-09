@@ -83,7 +83,7 @@ export function pendingJoin(): string | null {
 }
 // A shared video or group link opened while signed out: back there right after signing in or up.
 const AFTER = 'focuslearn.afterSignIn'
-const RETURNABLE = /^\/(watch\/[A-Za-z0-9_-]{11}|groups\/[A-Za-z0-9-]{8,40})$/
+const RETURNABLE = /^\/(watch\/[A-Za-z0-9_-]{11}(\?t=\d{1,6})?|groups\/[A-Za-z0-9-]{8,40})$/
 export function rememberReturn(path: string) {
   if (!RETURNABLE.test(path)) return
   try {

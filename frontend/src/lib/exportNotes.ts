@@ -4,7 +4,7 @@ import { inlineParts, parseNotes } from './notesFormat'
 import { clock } from './study'
 
 // Export AI notes: a printable page (the phone's print dialog saves it as PDF) or a share to WhatsApp.
-const at = (videoId: string, s: number) => `https://youtu.be/${videoId}?t=${s}`
+const at = (videoId: string, s: number) => `${APP_URL}/watch/${videoId}?t=${s}`
 
 // short: the summary and each key point's line (as before). brief: the study notes, key terms and every point in full.
 export type NotesLength = 'short' | 'brief'
@@ -21,7 +21,7 @@ function plainNotes(text: string): string {
 
 export function notesText(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short'): string {
   const time = (s: number | null) => (s !== null ? `${clock(s)} ` : '')
-  const foot = ['', `Watch: https://youtu.be/${videoId}`, `Summary made with Thrywe: ${APP_URL}`]
+  const foot = ['', `Watch it on Thrywe: ${APP_URL}/watch/${videoId}`]
   if (length === 'short') {
     const points = notes.points.map((p) => `• ${time(p.seconds)}${p.title}: ${p.short}`)
     return [title, '', notes.summary, '', ...points, ...foot].join('\n')
@@ -45,7 +45,7 @@ export function mapText(title: string, videoId: string, nodes: MapNode[]): strin
     }
   }
   walk(null, 0, new Set())
-  return [`${title}: mind map`, '', ...lines, '', `Watch: https://youtu.be/${videoId}`, `Mind map made with Thrywe: ${APP_URL}`].join('\n')
+  return [`${title}: mind map`, '', ...lines, '', `Watch it on Thrywe: ${APP_URL}/watch/${videoId}`].join('\n')
 }
 
 export function shareNotes(title: string, videoId: string, notes: AiNotesData, length: NotesLength = 'short') {
@@ -101,7 +101,7 @@ ol{padding-left:20px}li{margin:0 0 10px}a{color:#3550d8;text-decoration:none;fon
 ul{padding-left:18px}ul ul{border-left:1px solid #e2e5ec;margin:4px 0}
 @media print{body{margin:0}}
 </style></head><body>
-<h1>${esc(title)}</h1><p class="short">Watch: <a href="https://youtu.be/${videoId}">youtu.be/${videoId}</a></p>
+<h1>${esc(title)}</h1><p class="short">Watch it on Thrywe: <a href="${APP_URL}/watch/${videoId}">${APP_URL}/watch/${videoId}</a></p>
 <h2>Summary</h2><p class="sum">${esc(notes.summary)}</p>${notes.brief ? `<h2>Brief summary</h2>${notesHtml(notes.brief)}` : ''}${
     notes.terms?.length
       ? `<h2>Key terms</h2><dl>${notes.terms.map((t) => `<dt><b>${esc(t.term)}</b></dt><dd>${esc(t.meaning)}</dd>`).join('')}</dl>`
@@ -124,11 +124,10 @@ export function printNotes(title: string, videoId: string, notes: AiNotesData): 
   return true
 }
 
-// The message a shared video carries: the Thrywe link (opens it here, with its summary) and the plain YouTube link
-// for friends who don't use Thrywe.
+// The message a shared video carries: only the Thrywe link, so it opens in Thrywe with its summary and mind map
+// (a YouTube link here would open the YouTube app instead).
 export function videoShareText(title: string, videoId: string): string {
   return `${title}
 
-Watch with its AI summary and mind map on Thrywe: ${APP_URL}/watch/${videoId}
-On YouTube: https://youtu.be/${videoId}`
+Watch it on Thrywe, with its AI summary and mind map: ${APP_URL}/watch/${videoId}`
 }

@@ -87,7 +87,10 @@ function StudyPage({ videoId }: { videoId: string }) {
   const ai = useAiNotes(videoId)
   const padContent = useRef<string | null>(null)
   // A time tapped in the notebook opens the lecture at that note.
-  const noteAt = (useLocation().state as { t?: number } | null)?.t
+  // A shared link can carry the second too: /watch/<id>?t=<seconds>.
+  const loc = useLocation()
+  const linkT = Number(new URLSearchParams(loc.search).get('t'))
+  const noteAt = (loc.state as { t?: number } | null)?.t ?? (Number.isInteger(linkT) && linkT > 0 ? linkT + 5 : undefined)
 
   useEffect(() => {
     openLecture(videoId)

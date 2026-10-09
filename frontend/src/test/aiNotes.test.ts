@@ -71,7 +71,8 @@ describe('export', () => {
   it('shares plain text with times and links', () => {
     const text = notesText('Lecture 1', 'abcdefghijk', notes)
     expect(text).toContain('• 12:40 Ohm <law>: V = IR')
-    expect(text).toContain('Watch: https://youtu.be/abcdefghijk')
+    expect(text).toContain('Watch it on Thrywe: ')
+    expect(text).toContain('/watch/abcdefghijk')
   })
 
   it('shares the short version by default and everything in full when asked', () => {
@@ -100,7 +101,7 @@ describe('export', () => {
     const html = printableHtml('Lecture <1>', 'abcdefghijk', notes)
     expect(html).toContain('Ohm &lt;law&gt;')
     expect(html).not.toContain('<law>')
-    expect(html).toContain('href="https://youtu.be/abcdefghijk?t=760"')
+    expect(html).toContain('/watch/abcdefghijk?t=760"')
     expect(html).toContain('<li><b>Circuits</b><ul><li><b>Ohm</b>: V = IR</li></ul></li>')
   })
 })
@@ -119,10 +120,10 @@ describe('ideaAt', () => {
 })
 
 describe('sharing a video', () => {
-  it('carries the Thrywe link and the plain YouTube link', () => {
+  it('carries only the Thrywe link, so it opens in Thrywe', () => {
     const text = videoShareText('Neural networks', 'aircAruvnKk')
     expect(text).toContain('/watch/aircAruvnKk')
-    expect(text).toContain('https://youtu.be/aircAruvnKk')
+    expect(text).not.toContain('youtu')
     expect(text.startsWith('Neural networks')).toBe(true)
   })
 })
