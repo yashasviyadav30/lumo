@@ -671,7 +671,7 @@ button.secondary,
 @media (max-width: 899px) {
   .study .capture {
     position: sticky;
-    top: calc(56px + (100vw - 32px) * 9 / 16 + 6px);
+    top: calc(var(--topbar-h) + (100vw - 32px) * 9 / 16 + 6px);
     z-index: 7; /* under the player (8): it can slide beneath it, never over it (R7) */
     grid-template-columns: repeat(3, 1fr);
     margin: 8px 0 0;

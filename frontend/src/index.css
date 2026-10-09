@@ -9,6 +9,7 @@
      nothing "vibrates" on the dark background.
    - Each meaning has its own colour: success green, star gold, doubt orange, danger red. */
 :root {
+  --topbar-h: calc(46px + max(10px, env(safe-area-inset-top)));
   --bg: #f8f8f5;
   --surface: #ffffff;
   --surface-2: #f1f2f6;
@@ -2306,7 +2307,7 @@ a.time-chip {
 @media (max-width: 899px) {
   .study .player-wrap {
     position: sticky;
-    top: 56px;
+    top: var(--topbar-h); /* right under the top bar, also on phones with a notch (it never covers the player) */
     z-index: 8;
     background: var(--bg);
     padding-bottom: 6px;
