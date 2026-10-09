@@ -326,6 +326,7 @@ function StudyPage({ videoId }: { videoId: string }) {
                 <Notepad
                   key={padVersion}
                   videoId={videoId}
+                  title={title}
                   initial={padContent.current}
                   onChange={(c) => (padContent.current = c)}
                   getTime={() => player.current?.getCurrentTime() ?? 0}

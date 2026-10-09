@@ -1730,3 +1730,25 @@ button.armed,
     padding: 0 12px;
   }
 }
+
+/* Share on a saved notepad (My notes): a small pill at the end of the card's label. */
+.notepad-share {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: 600 0.8rem var(--font, inherit);
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: none;
+  cursor: pointer;
+}
+.notepad-share:hover {
+  background: var(--primary-soft);
+}

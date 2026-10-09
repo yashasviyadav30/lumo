@@ -18,6 +18,7 @@ import {
   Strikethrough,
   Underline as UnderlineIcon,
   PenLine,
+  Share2,
   Undo2,
   X,
 } from './icons'
@@ -26,6 +27,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from '../lib/api'
 import { UNDERLINE_COLOURS, notepadExtensions, parseDoc, timeFromLink } from '../lib/notepad'
 import { clock, saveNotepad } from '../lib/study'
+import { notepadText, shareText } from '../lib/exportNotes'
 
 // Colours are theme variables, so a note written in dark mode stays readable in light mode.
 const TEXT_COLOURS = [
@@ -283,6 +285,7 @@ const imagesIn = (list: FileList | null | undefined) => [...(list ?? [])].filter
 // Free-form notes beside a lecture, like a small Google Doc. Saves itself a moment after the user stops typing.
 export default function Notepad({
   videoId,
+  title,
   initial,
   getTime,
   onSeek,
@@ -290,6 +293,7 @@ export default function Notepad({
   onChange,
 }: {
   videoId: string
+  title: string
   initial: string | null
   onChange?: (content: string) => void
   getTime: () => number
@@ -416,6 +420,14 @@ export default function Notepad({
           {status === 'image' && 'Adding picture…'}
           {status === 'image-error' && 'Couldn’t add the picture. Try again.'}
         </span>
+        <button
+          className="np-close"
+          onClick={() => shareText(title, notepadText(title, videoId, JSON.stringify(editor.getJSON())))}
+          aria-label="Share my notes"
+          title="Share my notes"
+        >
+          <Share2 size={18} />
+        </button>
         <button
           className="np-close"
           onClick={() => setFull(!full)}

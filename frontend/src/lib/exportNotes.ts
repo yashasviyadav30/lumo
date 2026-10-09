@@ -124,6 +124,53 @@ export function printNotes(title: string, videoId: string, notes: AiNotesData): 
   return true
 }
 
+// The user's own notepad (TipTap JSON) as a message: headings and bold in WhatsApp's *bold*, lists as bullets,
+// ticks for checklists. Screenshots stay out (they're private to the account); time stamps keep their "[12:40]".
+type DocNode = { type?: string; text?: string; attrs?: Record<string, unknown>; marks?: { type: string }[]; content?: DocNode[] }
+function inlineText(n: DocNode): string {
+  if (n.type === 'hardBreak') return '\n'
+  if (n.type !== 'text') return (n.content ?? []).map(inlineText).join('')
+  const types = new Set((n.marks ?? []).map((m) => m.type))
+  const t = n.text ?? ''
+  if (!t.trim() || types.has('link')) return t
+  return types.has('bold') ? `*${t}*` : types.has('italic') ? `_${t}_` : types.has('strike') ? `~${t}~` : t
+}
+function blockText(n: DocNode, depth = 0): string[] {
+  const pad = '   '.repeat(depth)
+  const kids = n.content ?? []
+  switch (n.type) {
+    case 'heading':
+      return [`*${kids.map(inlineText).join('').replace(/\*/g, '')}*`]
+    case 'bulletList':
+    case 'orderedList':
+    case 'taskList':
+      return kids.flatMap((item, i) => {
+        const mark = n.type === 'orderedList' ? `${i + 1}.` : n.type === 'taskList' ? (item.attrs?.checked ? '☑' : '☐') : '•'
+        const [first = '', ...rest] = (item.content ?? []).flatMap((c) => blockText(c, depth + 1))
+        return [`${pad}${mark} ${first.trimStart()}`, ...rest]
+      })
+    case 'blockquote':
+      return kids.flatMap((c) => blockText(c, depth)).map((l) => `> ${l}`)
+    case 'image':
+    case 'horizontalRule':
+      return []
+    default: {
+      const line = kids.map(inlineText).join('')
+      return line.trim() ? [pad + line] : []
+    }
+  }
+}
+export function notepadText(title: string, videoId: string, content: string): string {
+  let doc: DocNode = {}
+  try {
+    doc = JSON.parse(content)
+  } catch {
+    // an empty or broken note shares just the title and link
+  }
+  const body = (doc.content ?? []).map((b) => blockText(b).join('\n')).filter(Boolean).join('\n\n')
+  return [`My notes: ${title}`, '', body, '', `Watch it on Thrywe: ${APP_URL}/watch/${videoId}`].join('\n').replace(/\n{3,}/g, '\n\n')
+}
+
 // The message a shared video carries: only the Thrywe link, so it opens in Thrywe with its summary and mind map
 // (a YouTube link here would open the YouTube app instead).
 export function videoShareText(title: string, videoId: string): string {

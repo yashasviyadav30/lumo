@@ -5,11 +5,13 @@ import {
   NotebookPen,
   PlaySquare,
   Search,
+  Share2,
   Star,
   StickyNote,
 } from '../components/icons'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { lazyWithReload } from '../lib/lazy'
+import { notepadText, shareText } from '../lib/exportNotes'
 import { Link, useLocation, useNavigate } from 'react-router'
 import {
   clock,
@@ -218,6 +220,7 @@ export default function Personal() {
               <div key={l.video_id} className="notepad-card">
                 <p className="notepad-label">
                   <StickyNote size={14} aria-hidden="true" /> {lectureTitle(l.video, l.video_id)}
+                  <ShareNotepad title={lectureTitle(l.video, l.video_id)} videoId={l.video_id} content={l.notepad!.content} />
                 </p>
                 <Suspense fallback={null}>
                   <NotepadView
@@ -251,6 +254,7 @@ export default function Personal() {
               <div className="notepad-card">
                 <p className="notepad-label">
                   <StickyNote size={14} aria-hidden="true" /> Notepad
+                  <ShareNotepad title={lectureTitle(l.video, l.video_id)} videoId={l.video_id} content={l.notepad!.content} />
                 </p>
                 <Suspense fallback={null}>
                   <NotepadView
@@ -264,5 +268,14 @@ export default function Personal() {
         ))
       )}
     </section>
+  )
+}
+
+// Sends the user's own notepad for one video (share sheet on phones, WhatsApp elsewhere).
+function ShareNotepad({ title, videoId, content }: { title: string; videoId: string; content: string }) {
+  return (
+    <button className="notepad-share" onClick={() => shareText(title, notepadText(title, videoId, content))} aria-label={`Share my notes on ${title}`}>
+      <Share2 size={15} aria-hidden="true" /> Share
+    </button>
   )
 }
