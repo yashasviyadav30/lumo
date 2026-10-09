@@ -4,6 +4,9 @@
 {
   "name": "focuslearn",
   "main": "worker/index.js",
+  // The app lives at https://thrywe.pages.dev (Cloudflare Pages). These workers.dev addresses only forward there
+  // (permanently, path kept) and keep the free backend awake with the cron below.
+  "vars": { "FORWARD_TO": "https://thrywe.pages.dev" },
   "compatibility_date": "2026-09-01",
   // Every 10 minutes, wake the free Render server (it sleeps after 15 idle minutes, and the first tap after
   // that waited 30-60 s). One always-on service fits Render's free 750 hours a month.
@@ -13,7 +16,7 @@
     "binding": "ASSETS",
     // Unknown paths (e.g. /watch/abc) get index.html so the app's own router handles them.
     "not_found_handling": "single-page-application",
-    // API calls go to the Worker first; everything else is served straight from the static files.
-    "run_worker_first": ["/api/*", "/health"]
+    // Every request goes to the Worker first: it forwards each one to https://thrywe.pages.dev.
+    "run_worker_first": true
   }
 }

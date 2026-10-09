@@ -56,7 +56,7 @@ export default defineConfig({
   },
   server: {
     // Dev only: send /api to the local backend so the app and API share one origin.
-    // API_PROXY=https://focuslearn.focuslearn.workers.dev checks local screens against the live server
+    // API_PROXY=https://thrywe.pages.dev checks local screens against the live server
     proxy: { '/api': { target: process.env.API_PROXY ?? 'http://localhost:8000', changeOrigin: true } },
   },
   test: {

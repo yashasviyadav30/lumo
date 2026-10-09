@@ -6,6 +6,8 @@ const BACKEND = 'https://focus-app-6fb9.onrender.com'
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
+    // The old workers.dev addresses send everyone to the app's one address, https://thrywe.pages.dev (wrangler.jsonc).
+    if (env.FORWARD_TO) return Response.redirect(env.FORWARD_TO + url.pathname + url.search, 301)
     if (url.pathname.startsWith('/api/') || url.pathname === '/health') {
       const headers = new Headers(request.headers)
       headers.delete('cookie')

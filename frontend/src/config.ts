@@ -1,6 +1,6 @@
 // App-wide settings. Name chosen by the user on 2026-10-06 (R9: own name and look).
 export const APP_NAME = 'Thrywe'
-export const APP_URL = 'https://thrywe.focuslearn.workers.dev'
+export const APP_URL = 'https://thrywe.pages.dev'
 export const APP_TAGLINE = 'Learn anything from YouTube, without the noise'
 
 // Backend address. Empty means "same origin" (the Vite dev server proxies /api to the backend).
