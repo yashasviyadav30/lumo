@@ -24,7 +24,7 @@ function ThemeButton() {
   const Icon = theme === 'light' ? Sun : theme === 'dark' ? Moon : SunMoon
   return (
     <button
-      className="icon-btn"
+      className="icon-btn top-theme"
       aria-label={`Theme: ${THEME_LABEL[theme]}. Change theme`}
       title={`Theme: ${THEME_LABEL[theme]}`}
       onClick={() => {

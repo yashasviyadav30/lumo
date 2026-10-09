@@ -1669,3 +1669,64 @@ button.armed,
     box-shadow: none;
   }
 }
+
+/* ---------- phones: YouTube-sized, not oversized ----------
+   The whole app scales from the root size, so phones start a little smaller (Settings > Text size still makes it
+   bigger). The top bar gets plain icons instead of big white circles; day/night lives only in Settings. */
+@media (max-width: 759px) {
+  html {
+    font-size: 90%;
+  }
+  html[data-text-size='large'] {
+    font-size: 103%;
+  }
+  html[data-text-size='larger'] {
+    font-size: 115%;
+  }
+  .top-theme {
+    display: none !important;
+  }
+  .top-actions .icon-btn,
+  .back-btn {
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    background: transparent;
+    box-shadow: none;
+  }
+  .top-actions .icon-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  .hello {
+    gap: 10px;
+    margin: 4px 0 10px;
+  }
+  .hello-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  .hello h1 {
+    font-size: 1.3rem;
+  }
+  .hello p {
+    font-size: 0.9rem;
+  }
+  .start-card {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .start-card h1,
+  .start-card h2 {
+    font-size: 1.1rem;
+  }
+  .start-card p {
+    margin-bottom: 10px;
+  }
+  .chipbar .chip,
+  .chips .chip {
+    min-height: 32px;
+    padding: 0 12px;
+  }
+}
