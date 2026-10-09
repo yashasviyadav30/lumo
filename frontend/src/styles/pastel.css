@@ -1616,3 +1616,56 @@ button.armed,
   left: 0;
   right: auto;
 }
+
+/* ---------- phone tab bar, YouTube-style (2026-10-09, from users' feedback: the floating pill took too much room) ----------
+   Flat, full width, flush to the bottom, compact icons with small labels; the active tab gets a soft violet pill. */
+@media (max-width: 959px) {
+  .app.signed-in .tabbar,
+  :root[data-theme='dark'] .app.signed-in .tabbar {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: none;
+    margin: 0;
+    gap: 0;
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--surface);
+    box-shadow: none;
+  }
+  .app.signed-in .tab {
+    min-height: 50px;
+    gap: 2px;
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .app.signed-in .tab .tab-icon {
+    width: 52px;
+    height: 28px;
+    border-radius: 999px;
+  }
+  .app.signed-in .tab .tab-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .app.signed-in .tab.active,
+  .app.signed-in .tab.active svg {
+    color: var(--text);
+  }
+  .app.signed-in .tab.active .tab-icon {
+    background: var(--primary-soft);
+  }
+  .app.signed-in .content {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 959px) and (prefers-color-scheme: dark) {
+  :root[data-theme='system'] .app.signed-in .tabbar {
+    background: var(--surface);
+    box-shadow: none;
+  }
+}
