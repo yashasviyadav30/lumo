@@ -14,7 +14,7 @@ import { preloadPages, routes } from './routes'
 import { registerSW } from 'virtual:pwa-register'
 
 
-// The installed app's opening screen (index.html): keep it about 1.5 s from launch, then fade into the app.
+// The installed app’s opening screen (index.html): about 1.6 s from launch, and never cut before the letters land.
 const splash = document.getElementById('splash')
 if (splash && getComputedStyle(splash).display !== 'none') {
   const bar = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]:not([media*="dark"])')
@@ -24,7 +24,7 @@ if (splash && getComputedStyle(splash).display !== 'none') {
     splash.classList.add('done')
     if (bar && keep) bar.content = keep
     window.setTimeout(() => splash.remove(), 400)
-  }, Math.max(0, 1500 - performance.now()))
+  }, Math.max(1100, 1600 - performance.now()))
 } else splash?.remove()
 
 applyTheme()
