@@ -9,6 +9,8 @@
   <a href="https://thrywe.pages.dev"><img src="docs/brand/button-open.svg" alt="Open Thrywe" height="52"></a>
   &nbsp;
   <a href="#install-in-10-seconds"><img src="docs/brand/button-install.svg" alt="Install the app" height="52"></a>
+  &nbsp;
+  <a href="https://youtu.be/LWervRpShtY"><img src="docs/brand/button-video.svg" alt="Watch the launch video on YouTube" height="52"></a>
 </p>
 
 <p align="center">
@@ -33,6 +35,14 @@
 **Thrywe keeps the lessons and drops the rest.** Tell it what you're learning and Home fills with lectures, explainers, podcasts and interviews on that. Open any video and you get a summary, study notes, key terms and a mind map of the whole thing, every idea linked to the second it's taught. Write your own notes beside the player, park doubts at the exact moment, and work through them with friends.
 
 Every video plays through YouTube's own player, so creators keep their views and nothing about the video is changed.
+
+## Watch the launch video
+
+<p align="center">
+  <a href="https://youtu.be/LWervRpShtY"><img src="docs/brand/launch-video.jpg" alt="Thrywe launch video on YouTube: YouTube, built for learning" width="760"></a>
+</p>
+
+<p align="center"><sub>3½ minutes on YouTube: why studying on YouTube goes wrong, and how Thrywe fixes it.</sub></p>
 
 ## See it in 20 seconds
 
