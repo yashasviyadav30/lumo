@@ -1752,3 +1752,17 @@ button.armed,
 .notepad-share:hover {
   background: var(--primary-soft);
 }
+
+/* The AI note: one small grey centred line where the AI's work ends (like ChatGPT's "can make mistakes"). */
+.ai-label {
+  display: block;
+  margin: 14px auto 0;
+  max-width: 46ch;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.sum-card .ai-label {
+  color: color-mix(in srgb, var(--on-pastel) 62%, transparent);
+}

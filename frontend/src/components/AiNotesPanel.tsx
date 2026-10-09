@@ -164,7 +164,7 @@ function KeyTerms({ terms }: { terms: AiTerm[] }) {
   )
 }
 
-function SummaryCard({ notes }: { notes: AiNotesData }) {
+function SummaryCard({ notes, offline }: { notes: AiNotesData; offline: boolean }) {
   const [open, setOpen] = useState(false)
   // Notes made before the sectioned format have no brief: their key points stand in for it.
   const brief = notes.brief || notes.points.map((p) => `${p.title}. ${p.detail}`).join('\n\n')
@@ -181,6 +181,7 @@ function SummaryCard({ notes }: { notes: AiNotesData }) {
       <div id="sum-brief" className={`sum-brief${open ? ' open' : ''}`} hidden={!open}>
         <NotesText text={brief} />
       </div>
+      <AiLabel offline={offline} />
     </section>
   )
 }
@@ -197,10 +198,11 @@ export function PartialBanner({ view }: { view: AiNotesView }) {
   )
 }
 
+// One small line where the AI's work ends, like ChatGPT's "can make mistakes".
 export function AiLabel({ offline }: { offline?: boolean }) {
   return (
     <p className="ai-label">
-      <Sparkles size={13} aria-hidden="true" /> Made by AI from the video, not by YouTube or the teacher. Check with the video.
+      Made by AI from the video, not by the teacher. AI can make mistakes, so check important points with the video.
       {offline && ' Showing your saved copy (offline).'}
     </p>
   )
@@ -239,7 +241,7 @@ export default function AiNotesPanel({
       ) : (
         <>
           <PartialBanner view={ai.view} />
-          <SummaryCard notes={notes} />
+          <SummaryCard notes={notes} offline={'kind' in ai.view && ai.view.kind === 'offline'} />
           {notes.terms && notes.terms.length > 0 && <KeyTerms terms={notes.terms} />}
           <div className="ai-sub-row">
             <h3 className="ai-sub">Key points</h3>
@@ -317,7 +319,6 @@ export default function AiNotesPanel({
               <Share2 size={16} aria-hidden="true" /> Share summary
             </PopMenu>
           </div>
-          <AiLabel offline={'kind' in ai.view && ai.view.kind === 'offline'} />
         </>
       )}
     </div>
